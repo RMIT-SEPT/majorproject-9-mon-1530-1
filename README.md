@@ -6,7 +6,7 @@
 * Abdelmalek, Lawrence (sXXXX)
 * Alsagheer, Abrar (sXXXX)
 * Tawaf, Elizabeth (sXXXX)
-* Yendall, Brodey (sXXXX)
+* Yendall, Brodey (s3718834)
 * Wang, Richard (sXXXX)
 
 ## Records
