@@ -3,7 +3,7 @@
 # Group 00
 
 ## Members
-* Abdelmalek, Lawrence (sXXXX)
+* Abdelmalek, Lawrence (s3656022)
 * Alsagheer, Abrar (sXXXX)
 * Tawaf, Elizabeth (sXXXX)
 * Yendall, Brodey (s3718834)
