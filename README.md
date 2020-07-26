@@ -3,11 +3,11 @@
 # Group 00
 
 ## Members
-* Abrar, Alsagheer (sXXXX)
-* Brodey, Yendall (sXXXX)
-* Elizabeth, Tawaf (sXXXX)
-* Lawrence, Abdelmalek (sXXXX)
-* Richard, Wang (sXXXX)
+* Abdelmalek, Lawrence (sXXXX)
+* Alsagheer, Abrar (sXXXX)
+* Tawaf, Elizabeth (sXXXX)
+* Yendall, Brodey (sXXXX)
+* Wang, Richard (sXXXX)
 
 ## Records
 
