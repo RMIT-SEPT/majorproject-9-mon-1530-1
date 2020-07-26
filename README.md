@@ -3,11 +3,11 @@
 # Group 00
 
 ## Members
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
+* Abrar, Alsagheer (sXXXX)
+* Brodey, Yendall (sXXXX)
+* Elizabeth, Tawaf (sXXXX)
+* Lawrence, Abdelmalek (sXXXX)
+* Richard, Wang (sXXXX)
 
 ## Records
 
