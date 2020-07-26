@@ -5,7 +5,7 @@
 ## Members
 * Abdelmalek, Lawrence (s3656022)
 * Alsagheer, Abrar (sXXXX)
-* Tawaf, Elizabeth (sXXXX)
+* Tawaf, Elizabeth (s3723812)
 * Yendall, Brodey (s3718834)
 * Wang, Richard (sXXXX)
 
