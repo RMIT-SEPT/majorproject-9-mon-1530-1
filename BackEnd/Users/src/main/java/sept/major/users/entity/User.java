@@ -18,6 +18,7 @@ import javax.persistence.Table;
 public class User implements ResponseObject {
     @Id
     private String username;
+
     private String userType;
     private String name;
     private String phone;

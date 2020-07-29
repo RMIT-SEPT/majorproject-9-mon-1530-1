@@ -11,6 +11,7 @@ import sept.major.users.response.error.MissingFieldError;
 import sept.major.users.response.error.ResponseErrorManager;
 import sept.major.users.service.UserService;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,9 @@ public class UserServiceController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ControllerHelper<User> userControllerHelper;
 
     @GetMapping("/bulk")
     public ResponseEntity<List<User>> getBulkUsers(@RequestParam(value = "userType", required = false) String userTypeString) {
@@ -41,6 +45,10 @@ public class UserServiceController {
 
     @PostMapping
     public ResponseEntity createUser(@RequestBody Map<String, Object> requestBody) {
+        User user1 = userControllerHelper.analysePostInput(User.class, requestBody);
+
+        System.out.println("lol");
+
         ResponseErrorManager responseErrorManager = new ResponseErrorManager();
         User user = new User();
 
@@ -78,8 +86,10 @@ public class UserServiceController {
     }
 
     @PatchMapping
-    public User updateUser() {
-        return null;
+    public ResponseEntity updateUser() {
+        Field[] fields = User.class.getDeclaredFields();
+        System.out.println(fields);
+        return new ResponseEntity("test", HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping
