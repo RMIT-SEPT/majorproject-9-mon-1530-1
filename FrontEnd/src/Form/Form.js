@@ -4,7 +4,35 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
+import {
+  fade,
+  ThemeProvider,
+  withStyles,
+  makeStyles,
+  createMuiTheme
+} from "@material-ui/core/styles";
 
+const CssTextField = withStyles({
+  root: {
+    "& label.Mui-focused": {
+      color: "green"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "green"
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "red"
+      },
+      "&:hover fieldset": {
+        borderColor: "light green"
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "green"
+      }
+    }
+  }
+})(TextField);
 
 const form = (props) => {
   return (
@@ -104,9 +132,9 @@ const form = (props) => {
         </Grid>
         <Grid item xs={12}>
         <div className='heading'>Password</div>
-        <TextField
+        <CssTextField
           id="outlined-full-width"
-          // label="Password"
+
           type="password"
           placeholder="6+ characters  "
           style={{ margin:8 }}
