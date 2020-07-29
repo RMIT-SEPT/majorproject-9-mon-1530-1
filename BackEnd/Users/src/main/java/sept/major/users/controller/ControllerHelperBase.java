@@ -39,7 +39,7 @@ public abstract class ControllerHelperBase {
                 && method.getReturnType() == Void.TYPE
                 && method.getParameterCount() == 1
                 && method.getName().startsWith("set")
-                && method.isAccessible());
+                && Modifier.isPublic(method.getModifiers()));
     }
 
     private String getAttributeFromSetter(Method method) {

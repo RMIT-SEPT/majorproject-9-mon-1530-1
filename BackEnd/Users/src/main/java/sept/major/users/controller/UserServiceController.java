@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.users.entity.User;
+import sept.major.users.exception.ResponseErrorFoundException;
 import sept.major.users.lov.UserType;
-import sept.major.users.response.error.FieldIncorrectTypeError;
-import sept.major.users.response.error.MissingFieldError;
-import sept.major.users.response.error.ResponseErrorManager;
 import sept.major.users.service.UserService;
 
 import java.lang.reflect.Field;
@@ -45,44 +43,13 @@ public class UserServiceController {
 
     @PostMapping
     public ResponseEntity createUser(@RequestBody Map<String, Object> requestBody) {
-        User user1 = userControllerHelper.analysePostInput(User.class, requestBody);
-
-        System.out.println("lol");
-
-        ResponseErrorManager responseErrorManager = new ResponseErrorManager();
-        User user = new User();
-
-        String usernamne = getField(requestBody, "username", responseErrorManager);
-        if (usernamne != null) {
-            user.setUsername(usernamne);
+        try {
+            User user = userControllerHelper.analysePostInput(User.class, requestBody);
+            return new ResponseEntity(userService.createUser(user), HttpStatus.OK);
+        } catch (ResponseErrorFoundException e) {
+            return e.generateResponseEntity();
         }
 
-        String userType = getField(requestBody, "userType", responseErrorManager);
-        if (userType != null) {
-            user.setUserType(userType);
-        }
-
-        String name = getField(requestBody, "name", responseErrorManager);
-        if (name != null) {
-            user.setName(name);
-        }
-
-        String phone = getField(requestBody, "phone", responseErrorManager);
-        if (phone != null) {
-            user.setPhone(phone);
-        }
-
-        String address = getField(requestBody, "address", responseErrorManager);
-        if (address != null) {
-            user.setAddress(address);
-        }
-
-        User modelResponse = userService.createUser(user);
-        if (responseErrorManager.hasErrors()) {
-            return responseErrorManager.getResponseEntity();
-        } else {
-            return new ResponseEntity(modelResponse, HttpStatus.ACCEPTED);
-        }
     }
 
     @PatchMapping
@@ -105,20 +72,5 @@ public class UserServiceController {
     @PostMapping("/password/compare")
     public void comparePassword() {
 
-    }
-
-    private String getField(Map<String, Object> requestBody, String field, ResponseErrorManager responseErrorManager) {
-        Object fieldValue = requestBody.get(field);
-        if (fieldValue == null) {
-            responseErrorManager.addError(new MissingFieldError(field));
-        } else {
-            if (fieldValue.getClass().equals(String.class)) {
-                return (String) fieldValue;
-            } else {
-                responseErrorManager.addError(new FieldIncorrectTypeError(field, "String", fieldValue.getClass().toString()));
-            }
-        }
-
-        return null;
     }
 }

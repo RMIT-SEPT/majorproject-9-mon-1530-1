@@ -12,13 +12,11 @@ import javax.persistence.Table;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Table(name = "users", schema = "users")
 @Entity
 public class User implements ResponseObject {
     @Id
     private String username;
-
     private String userType;
     private String name;
     private String phone;
