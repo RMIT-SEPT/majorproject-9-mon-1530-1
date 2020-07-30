@@ -1,8 +1,16 @@
 package sept.major.users.controller;
 
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sept.major.users.entity.User;
+import sept.major.users.entity.UserEntity;
+import sept.major.users.service.UserService;
 
 @Service
-public class UserServiceControllerHelper extends ControllerHelper<User> {
+public class UserServiceControllerHelper extends ControllerHelper<UserEntity, String> {
+
+    @Autowired
+    @Getter
+    UserService service;
+
 }

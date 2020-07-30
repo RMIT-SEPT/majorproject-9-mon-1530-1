@@ -1,10 +1,14 @@
 package sept.major.users.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import sept.major.users.entity.AbstractEntity;
 import sept.major.users.exception.InvalidEntityException;
-import sept.major.users.exception.ResponseErrorFoundException;
+import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.response.error.FieldIncorrectTypeError;
 import sept.major.users.response.error.FieldMissingError;
 import sept.major.users.response.error.ResponseError;
+import sept.major.users.service.CrudService;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,13 +19,25 @@ import java.util.Set;
 
 import static java.lang.Character.toLowerCase;
 
-public abstract class ControllerHelper<T> {
+public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
 
     private HashMap<String, Method> entityMethods = new HashMap<>();
 
-    public T analysePostInput(Class<T> entityClass, Map<String, Object> responseBody) throws ResponseErrorFoundException {
+    public abstract CrudService<E, ID> getService();
+
+
+    public ResponseEntity getEntity(ID id) {
+        try {
+            E entity = getService().read(id);
+            return new ResponseEntity(entity, HttpStatus.OK);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity createEntity(Class<E> entityClass, Map<String, Object> responseBody) {
         Set<ResponseError> responseErrors = new HashSet<>();
-        T entity;
+        E entity;
 
         try {
             entity = entityClass.newInstance();
@@ -53,13 +69,22 @@ public abstract class ControllerHelper<T> {
         }
 
         if (!responseErrors.isEmpty()) {
-            throw new ResponseErrorFoundException(responseErrors);
+            return new ResponseEntity(responseErrors, HttpStatus.BAD_REQUEST);
         }
 
-        return entity;
+        return new ResponseEntity(getService().create(entity), HttpStatus.OK);
     }
 
-    private void updateMethods(Class<T> entityClass) {
+    public ResponseEntity deleteEntity(ID id) {
+        try {
+            getService().delete(id);
+            return new ResponseEntity("Record successfully deleted", HttpStatus.OK);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void updateMethods(Class<E> entityClass) {
         if (entityMethods == null) {
             entityMethods = new HashMap<>();
             Method[] methods = entityClass.getDeclaredMethods();
@@ -72,6 +97,7 @@ public abstract class ControllerHelper<T> {
 
         }
     }
+
 
     private boolean isSetter(Method method) {
         return (!Modifier.isStatic(method.getModifiers())
