@@ -26,6 +26,7 @@
   .left{
 
     height:100vh;
+    padding-top: 3%;
     /* flex-grow: 1 ; */
     background-color: black;
     color:white;
