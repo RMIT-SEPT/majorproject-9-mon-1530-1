@@ -1,0 +1,59 @@
+
+.main {
+  height: 100vh;
+  flex-grow: 1;
+  background-color: black;
+  color: white;
+padding :1%;
+}
+
+.toolBar {
+  height: 10vh;
+  flex-grow: 1;
+  background-color: black;
+
+}
+
+.logo {
+  width: 65%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /* padding-left: 10%; */
+}
+
+.hairdres {
+  width: 80%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+/* .big {
+  width: 60%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+} */
+
+
+.bold {
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 70px;
+  line-height: 95px;
+  letter-spacing: -0.05em;
+  color: #FFFFFF;
+  margin: 1%;
+}
+
+.smaller {
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 35px;
+  letter-spacing: -0.05em;
+  color: white;
+  margin: 1%;
+}
