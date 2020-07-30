@@ -1,14 +1,12 @@
 package sept.major.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.lov.UserType;
 import sept.major.users.service.UserService;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +36,8 @@ public class UserServiceController {
     }
 
     @PatchMapping
-    public ResponseEntity updateUser() {
-        Field[] fields = UserEntity.class.getDeclaredFields();
-        System.out.println(fields);
-        return new ResponseEntity("test", HttpStatus.ACCEPTED);
+    public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, Object> requestBody) {
+        return userControllerHelper.updateEntity(UserEntity.class, username, requestBody);
     }
 
     @GetMapping("/bulk")

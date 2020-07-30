@@ -3,8 +3,13 @@ package sept.major.users.service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import sept.major.users.entity.AbstractEntity;
+import sept.major.users.exception.InvalidEntityException;
 import sept.major.users.exception.RecordNotFoundException;
+import sept.major.users.patch.PatchValue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
@@ -25,8 +30,27 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         return getRepository().save(entity);
     }
 
-    public E patch(ID id) {
-        return null; // TODO patch logic
+    public E patch(ID id, HashMap<String, PatchValue> patchValues) throws RecordNotFoundException {
+
+        E existingEntity = read(id);
+
+        for (Map.Entry<String, PatchValue> patchValueEntry : patchValues.entrySet()) {
+            PatchValue patchValue = patchValueEntry.getValue();
+            try {
+                Object existingValue = patchValue.getGetter().invoke(existingEntity);
+                if (existingValue == null) {
+                    if (patchValue.getValue() != null) {
+                        patchValue.getSetter().invoke(existingValue, patchValue.getValue());
+                    }
+                } else if (existingValue.equals(patchValue.getValue())) {
+                    patchValue.getSetter().invoke(existingValue, patchValue.getValue());
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new InvalidEntityException("Received method that is invokable. Only invokable methods should be here");
+            }
+        }
+
+        return create(existingEntity);
     }
 
     public void delete(ID id) throws RecordNotFoundException {
