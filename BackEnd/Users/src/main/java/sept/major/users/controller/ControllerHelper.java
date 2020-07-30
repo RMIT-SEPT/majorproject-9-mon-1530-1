@@ -7,16 +7,21 @@ import sept.major.users.response.error.FieldMissingError;
 import sept.major.users.response.error.ResponseError;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class ControllerHelper<T> extends ControllerHelperBase {
+import static java.lang.Character.toLowerCase;
+
+public abstract class ControllerHelper<T> {
+
+    private HashMap<String, Method> entityMethods = new HashMap<>();
 
     public T analysePostInput(Class<T> entityClass, Map<String, Object> responseBody) throws ResponseErrorFoundException {
         Set<ResponseError> responseErrors = new HashSet<>();
         T entity;
-
 
         try {
             entity = entityClass.newInstance();
@@ -26,9 +31,9 @@ public abstract class ControllerHelper<T> extends ControllerHelperBase {
             throw new InvalidEntityException("Provided entity of class " + entityClass.toString() + " does not have accessible constructor");
         }
 
-        Map<String, Method> entryClassMethods = getMethods(entityClass);
+        updateMethods(entityClass);
 
-        for (Map.Entry<String, Method> entry : entryClassMethods.entrySet()) {
+        for (Map.Entry<String, Method> entry : entityMethods.entrySet()) {
             Object responseBodyValue = responseBody.get(entry.getKey());
             if (responseBodyValue != null) {
                 try {
@@ -52,5 +57,34 @@ public abstract class ControllerHelper<T> extends ControllerHelperBase {
         }
 
         return entity;
+    }
+
+    private void updateMethods(Class<T> entityClass) {
+        if (entityMethods == null) {
+            entityMethods = new HashMap<>();
+            Method[] methods = entityClass.getDeclaredMethods();
+
+            for (Method method : methods) {
+                if (isSetter(method)) {
+                    entityMethods.put(getAttributeFromSetter(method), method);
+                }
+            }
+
+        }
+    }
+
+    private boolean isSetter(Method method) {
+        return (!Modifier.isStatic(method.getModifiers())
+                && !Modifier.isAbstract(method.getModifiers())
+                && method.getReturnType() == Void.TYPE
+                && method.getParameterCount() == 1
+                && method.getName().startsWith("set")
+                && Modifier.isPublic(method.getModifiers()));
+    }
+
+    private String getAttributeFromSetter(Method method) {
+        StringBuilder stringBuilder = new StringBuilder(method.getName().replaceFirst("set", ""));
+        stringBuilder.setCharAt(0, toLowerCase(stringBuilder.charAt(0)));
+        return stringBuilder.toString();
     }
 }
