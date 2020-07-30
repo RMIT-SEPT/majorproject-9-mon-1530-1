@@ -39,6 +39,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
     }
 
     public ResponseEntity createEntity(Class<E> entityClass, Map<String, Object> responseBody) {
+
         Set<ResponseError> responseErrors = new HashSet<>();
         E entity;
 
@@ -71,11 +72,15 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             }
         }
 
-        if (!responseErrors.isEmpty()) {
-            return new ResponseEntity(responseErrors, HttpStatus.BAD_REQUEST);
+        try {
+            getService().read(entity.getID());
+            return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
+        } catch (RecordNotFoundException e) {
+            if (!responseErrors.isEmpty()) {
+                return new ResponseEntity(responseErrors, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity(getService().create(entity), HttpStatus.OK);
         }
-
-        return new ResponseEntity(getService().create(entity), HttpStatus.OK);
     }
 
     public ResponseEntity updateEntity(Class<E> entityClass, ID id, Map<String, Object> responseBody) {

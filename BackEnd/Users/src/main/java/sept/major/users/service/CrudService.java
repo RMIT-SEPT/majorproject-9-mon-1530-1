@@ -42,8 +42,8 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
                     if (patchValue.getValue() != null) {
                         patchValue.getSetter().invoke(existingValue, patchValue.getValue());
                     }
-                } else if (existingValue.equals(patchValue.getValue())) {
-                    patchValue.getSetter().invoke(existingValue, patchValue.getValue());
+                } else if (!existingValue.equals(patchValue.getValue())) {
+                    patchValue.getSetter().invoke(existingEntity, patchValue.getValue());
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new InvalidEntityException("Received method that is invokable. Only invokable methods should be here");
