@@ -20,10 +20,14 @@ line-height: 41px;
 letter-spacing: -0.05em;
 }
 `
+const MainWrapper = styled.div`
+  background-color:black!important;
 
+`
 const about = (props) => {
+  document.body.style ='background:black;'
   return (
-    <div className='main'>
+    <MainWrapper className='main'>
       <div className='toolBar'>
         <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
           <Grid item xs={2}>
@@ -97,7 +101,7 @@ const about = (props) => {
             </div>
         </Grid>
       </Grid>
-    </div >
+    </MainWrapper >
 
   )
 }
