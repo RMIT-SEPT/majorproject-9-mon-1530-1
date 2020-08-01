@@ -3,7 +3,7 @@ package sept.major.users.response.error;
 import lombok.Getter;
 
 @Getter
-public abstract class ResponseError {
+public class ResponseError {
     protected String field;
     protected String message;
 

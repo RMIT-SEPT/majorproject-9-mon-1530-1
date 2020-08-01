@@ -14,8 +14,11 @@ import javax.persistence.Table;
 @Table(name = "users", schema = "users")
 @Entity
 public class UserEntity extends AbstractEntity<String> {
+
     @Id
+    @Setter(onMethod = @__(@Id))
     private String username;
+
     private String userType;
     private String name;
     private String phone;
@@ -25,4 +28,5 @@ public class UserEntity extends AbstractEntity<String> {
     public String getID() {
         return username;
     }
+
 }

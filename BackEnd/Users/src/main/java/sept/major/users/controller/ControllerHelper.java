@@ -3,6 +3,7 @@ package sept.major.users.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.users.entity.AbstractEntity;
+import sept.major.users.exception.IdentifierUpdateException;
 import sept.major.users.exception.InvalidEntityException;
 import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.patch.PatchValue;
@@ -118,6 +119,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(getService().patch(id, patchValues), HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IdentifierUpdateException e) {
+            return new ResponseEntity(new ResponseError("Identifier field", "Cannot update field used for identifing entites"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -146,6 +149,9 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                 throw new InvalidEntityException(String.format("Provided entity of class %s has no accessible getter methods", entityClass));
             }
         }
+
+        setterMethods.remove("iD");
+        getterMethods.remove("iD");
     }
 
     private boolean isSetter(Method method) {
