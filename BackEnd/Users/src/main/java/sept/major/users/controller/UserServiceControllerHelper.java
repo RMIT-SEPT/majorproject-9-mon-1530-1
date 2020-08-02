@@ -9,8 +9,12 @@ import sept.major.users.service.UserService;
 @Service
 public class UserServiceControllerHelper extends ControllerHelper<UserEntity, String> {
 
-    @Autowired
     @Getter
     UserService service;
+
+    @Autowired
+    public UserServiceControllerHelper(UserService userService) {
+        this.service = userService;
+    }
 
 }

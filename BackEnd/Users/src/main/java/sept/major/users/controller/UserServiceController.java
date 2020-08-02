@@ -14,11 +14,14 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserServiceController {
 
-    @Autowired
     UserService userService;
+    UserServiceControllerHelper userControllerHelper;
 
     @Autowired
-    UserServiceControllerHelper userControllerHelper;
+    public UserServiceController(UserService userService, UserServiceControllerHelper userControllerHelper) {
+        this.userService = userService;
+        this.userControllerHelper = userControllerHelper;
+    }
 
     @GetMapping()
     public ResponseEntity getUser(@RequestParam String username) {

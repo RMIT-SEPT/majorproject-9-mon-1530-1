@@ -14,9 +14,13 @@ import java.util.Map;
 @Service
 public class UserService extends CrudService<UserEntity, String> {
 
-    @Autowired
     @Getter
     private UsersRepository repository;
+
+    @Autowired
+    public UserService(UsersRepository usersRepository) {
+        this.repository = usersRepository;
+    }
 
     public ResponseEntity<List<UserEntity>> getBulkUsers(UserType userType) {
         return null;
