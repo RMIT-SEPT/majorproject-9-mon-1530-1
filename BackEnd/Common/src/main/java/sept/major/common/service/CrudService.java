@@ -1,12 +1,12 @@
-package sept.major.users.service;
+package sept.major.common.service;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import sept.major.users.entity.AbstractEntity;
-import sept.major.users.exception.IdentifierUpdateException;
-import sept.major.users.exception.InvalidEntityException;
-import sept.major.users.exception.RecordNotFoundException;
-import sept.major.users.patch.PatchValue;
+import sept.major.common.entity.AbstractEntity;
+import sept.major.common.exception.IdentifierUpdateException;
+import sept.major.common.exception.InvalidEntityException;
+import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.patch.PatchValue;
 
 import javax.persistence.Id;
 import java.lang.reflect.InvocationTargetException;

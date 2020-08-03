@@ -1,4 +1,4 @@
-package sept.major.users.exception;
+package sept.major.common.exception;
 
 public class IdentifierUpdateException extends Exception {
     public IdentifierUpdateException() {

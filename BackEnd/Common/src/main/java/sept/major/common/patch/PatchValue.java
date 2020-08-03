@@ -1,4 +1,4 @@
-package sept.major.users.patch;
+package sept.major.common.patch;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

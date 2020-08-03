@@ -1,16 +1,16 @@
-package sept.major.users.controller;
+package sept.major.common.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.users.entity.AbstractEntity;
-import sept.major.users.exception.IdentifierUpdateException;
-import sept.major.users.exception.InvalidEntityException;
-import sept.major.users.exception.RecordNotFoundException;
-import sept.major.users.patch.PatchValue;
-import sept.major.users.response.error.FieldIncorrectTypeError;
-import sept.major.users.response.error.FieldMissingError;
-import sept.major.users.response.error.ResponseError;
-import sept.major.users.service.CrudService;
+import sept.major.common.entity.AbstractEntity;
+import sept.major.common.exception.IdentifierUpdateException;
+import sept.major.common.exception.InvalidEntityException;
+import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.patch.PatchValue;
+import sept.major.common.response.FieldIncorrectTypeError;
+import sept.major.common.response.FieldMissingError;
+import sept.major.common.response.ResponseError;
+import sept.major.common.service.CrudService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

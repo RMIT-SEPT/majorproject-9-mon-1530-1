@@ -1,4 +1,4 @@
-package sept.major.users.response.error;
+package sept.major.common.response;
 
 public class RecordMissingError extends ResponseError {
     public RecordMissingError(String field) {

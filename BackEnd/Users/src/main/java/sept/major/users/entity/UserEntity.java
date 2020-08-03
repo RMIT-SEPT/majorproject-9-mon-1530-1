@@ -1,6 +1,7 @@
 package sept.major.users.entity;
 
 import lombok.*;
+import sept.major.common.entity.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

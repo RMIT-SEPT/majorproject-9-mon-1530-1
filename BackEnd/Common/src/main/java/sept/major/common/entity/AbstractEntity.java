@@ -1,4 +1,4 @@
-package sept.major.users.entity;
+package sept.major.common.entity;
 
 public abstract class AbstractEntity<ID> {
     public abstract ID getID();
