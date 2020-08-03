@@ -1,10 +1,9 @@
 import React from 'react'
-import './Main.css'
 import styled from 'styled-components';
 import { Button, Grid } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
-import hairdres from '../media/hairdres.png';
+import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Toolbar/Toolbar.js';
 import TextLoop from "react-text-loop";
 
@@ -63,9 +62,16 @@ const SmallerFont = styled.div`
   color: white;
   margin: 1%;
   margin-left: 5%;
-}
 
 `
+const Hairdresser = styled.img`
+  width: 80%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+`
+
 const main = (props) => {
   return (
     <MainWrapper>
@@ -89,14 +95,14 @@ const main = (props) => {
               </SmallerFont>
             </Grid>
             <Grid item xs={6}>
-              <img className="hairdres" src={hairdres} alt="hairdres" />
+              <Hairdresser src={hairdresser} alt="hairdresser" />
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
-              <a href="http://localhost:3000/form"> <img className="big" src={big} alt="big" /> </a>
+              <a href="http://localhost:3000/form"> <img style={{marginLeft:"10%"}} src={big} alt="big" /> </a>
             </Grid>
             <Grid item xs={3}>
               <img src={book} alt="big" href="http://localhost:3000/form" />

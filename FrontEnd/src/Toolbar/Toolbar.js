@@ -1,15 +1,10 @@
 import React from 'react'
-import './Toolbar.css'
 import styled from 'styled-components';
 import { Button, Grid } from '@material-ui/core';
 import logo from '../media/logo.png';
-import big from '../media/big.png';
-import book from '../media/book.png';
 import login from '../media/login.png';
-import hairdres from '../media/hairdres.png';
 import small from '../media/small.png';
-import construction from '../media/undraw_under_construction_46pa-2 1.png';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 
 const GreenButton = styled(Button)`
 .MuiButton-label{
@@ -22,9 +17,16 @@ line-height: 41px;
 letter-spacing: -0.05em;
 }
 `
+const Toolbar = styled.div`
+    height: 10vh;
+    flex-grow: 1;
+    background-color: black;
+    margin-top:1%;
+  `
+  
 const toolbar = (props) => {
     return (
-        <div className='toolBar'>
+        <Toolbar>
             <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
                 <Grid item xs={2}>
                     <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
@@ -49,7 +51,7 @@ const toolbar = (props) => {
                     <a href="http://localhost:3000/form"> <img className="small" src={small} alt="small" /> </a>
                 </Grid>
             </Grid>
-        </div>
+            </Toolbar>
     )
 }
 export default toolbar; 
