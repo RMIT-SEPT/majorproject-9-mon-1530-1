@@ -2,10 +2,9 @@ package sept.major.users.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.lov.UserType;
+import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.repository.UsersRepository;
 
 import java.util.List;
@@ -22,8 +21,25 @@ public class UserService extends CrudService<UserEntity, String> {
         this.repository = usersRepository;
     }
 
-    public ResponseEntity<List<UserEntity>> getBulkUsers(UserType userType) {
-        return null;
+    public List<UserEntity> readBulkUsers(String userType) throws RecordNotFoundException {
+        List<UserEntity> entityList;
+        if (userType == null) {
+            entityList = getRepository().findAll();
+        } else {
+            entityList = getRepository().findAllByUserType(userType);
+        }
+
+        if (entityList == null || entityList.size() == 0) {
+            String message;
+            if (userType == null) {
+                message = "No record was found";
+            } else {
+                message = String.format("No record with a userType of %s was found", userType);
+            }
+            throw new RecordNotFoundException(message);
+        } else {
+            return entityList;
+        }
     }
 
     public UserEntity updateUser(Map<String, Object> requestBody) {

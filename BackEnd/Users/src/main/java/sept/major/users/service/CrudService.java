@@ -23,7 +23,7 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         if (entity.isPresent()) {
             return entity.get();
         } else {
-            throw new RecordNotFoundException(String.format("No record with a username of %s was found", id));
+            throw new RecordNotFoundException(String.format("No record with a identifier of %s was found", id));
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         try {
             getRepository().deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new RecordNotFoundException(String.format("No record with a username of %s was found", id));
+            throw new RecordNotFoundException(String.format("No record with a identifier of %s was found", id));
         }
     }
 }

@@ -80,7 +80,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             if (!responseErrors.isEmpty()) {
                 return new ResponseEntity(responseErrors, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity(getService().create(entity), HttpStatus.OK);
+            E result = getService().create(entity);
+            return new ResponseEntity(result, HttpStatus.OK);
         }
     }
 
@@ -118,9 +119,9 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         try {
             return new ResponseEntity(getService().patch(id, patchValues), HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ResponseError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IdentifierUpdateException e) {
-            return new ResponseEntity(new ResponseError("Identifier field", "Cannot update field used for identifing entites"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
         }
     }
 

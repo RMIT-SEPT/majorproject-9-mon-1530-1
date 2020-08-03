@@ -6,12 +6,10 @@ import org.springframework.stereotype.Repository;
 import sept.major.users.entity.UserEntity;
 
 import javax.persistence.Table;
-import java.util.Optional;
+import java.util.List;
 
 @Table(name = "users", schema = "users")
 @Repository
 public interface UsersRepository extends JpaRepository<UserEntity, String> {
-    Optional<UserEntity> findByUsername(String username);
-
-    void deleteByUsername(String username);
+    List<UserEntity> findAllByUserType(String userType);
 }

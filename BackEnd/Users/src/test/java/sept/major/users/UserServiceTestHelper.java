@@ -12,18 +12,18 @@ import sept.major.users.service.UserService;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class UserServiceTestHelper {
+public abstract class UserServiceTestHelper {
 
     UserServiceController userServiceController;
     UserServiceControllerHelper userServiceControllerHelper;
     UserService userService;
 
     @Mock
-    UsersRepository mcokedUserRepository;
+    UsersRepository mockedUserRepository;
 
     @BeforeEach
     public void setUp() {
-        userService = new UserService(mcokedUserRepository);
+        userService = new UserService(mockedUserRepository);
         userServiceControllerHelper = new UserServiceControllerHelper(userService);
         userServiceController = new UserServiceController(userService, userServiceControllerHelper);
     }

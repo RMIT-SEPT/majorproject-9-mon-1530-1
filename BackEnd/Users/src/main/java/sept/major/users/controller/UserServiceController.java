@@ -1,10 +1,11 @@
 package sept.major.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.lov.UserType;
+import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.service.UserService;
 
 import java.util.List;
@@ -44,10 +45,13 @@ public class UserServiceController {
     }
 
     @GetMapping("/bulk")
-    public ResponseEntity<List<UserEntity>> getBulkUsers(@RequestParam(value = "userType", required = false) String userTypeString) {
-        return userService.getBulkUsers(
-                (userTypeString == null) ? null : UserType.valueOf(userTypeString.toUpperCase())
-        );
+    public ResponseEntity<List<UserEntity>> getBulkUsers(@RequestParam(required = false) String userType) {
+        try {
+            List<UserEntity> entityList = userService.readBulkUsers(userType);
+            return new ResponseEntity(entityList, HttpStatus.OK);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 

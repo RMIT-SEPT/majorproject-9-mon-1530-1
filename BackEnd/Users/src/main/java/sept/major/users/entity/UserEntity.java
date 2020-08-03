@@ -11,6 +11,7 @@ import javax.persistence.Table;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Table(name = "users", schema = "users")
 @Entity
 public class UserEntity extends AbstractEntity<String> {
@@ -28,5 +29,4 @@ public class UserEntity extends AbstractEntity<String> {
     public String getID() {
         return username;
     }
-
 }
