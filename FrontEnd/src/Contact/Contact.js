@@ -1,6 +1,6 @@
 import React from 'react'
 import './Contact.css'
-import {Button, Grid} from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
 import construction from '../media/contact.png';
@@ -8,7 +8,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 const ColorButton = withStyles((theme) => ({
   root: {
-    margin: '10px',
+    margin: '4px',
     color: theme.palette.getContrastText('#000000'),
     backgroundColor: '#5AC490',
     '&:hover': {
@@ -83,16 +83,15 @@ const contact = (props) => {
           <div className='topright'>
             Not a member? <a href="http://localhost:3000/form">Sign up</a>
           </div>
-          <Grid container direction="row">
-            <Grid container spacing={1}>
+          <Grid container direction="row" container spacing={1}>
               <Grid item xs={12}>
                 <div className='bold'></div>
               </Grid>
               <Grid item xs={12}>
-                <div className='bold'>Sign Up to Agem</div>
+                <div className='bold'>Send us a message </div>
               </Grid>
               <Grid item xs={12}>
-                <div className='heading'>UserName </div>
+                <div className='heading'>Name </div>
                 <CssTextFieldGreen
                   id="outlined-full-width"
                   // label="Surname"
@@ -106,11 +105,40 @@ const contact = (props) => {
                   variant="outlined"
                 />
               </Grid>
-              <div className='heading'>Password</div>
-              <CssTextField
+              <Grid item xs={12}>
+                <div className='heading'>Email </div>
+                <CssTextFieldGreen
+                  id="outlined-full-width"
+                  // label="Surname"
+                  style={{ margin: 8 }}
+                  helperText="Full width!"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <div className='heading'>Phone </div>
+                <CssTextFieldGreen
+                  id="outlined-full-width"
+                  // label="Surname"
+                  style={{ margin: 8 }}
+                  helperText="Full width!"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </Grid>
+              <div className='heading'>Message</div>
+                <CssTextFieldGreen
                 id="outlined-full-width"
-                type="password"
-                placeholder="6+ characters  "
+                // label="Surname"
                 style={{ margin: 8 }}
                 helperText="Full width!"
                 fullWidth
@@ -124,9 +152,8 @@ const contact = (props) => {
             <Grid item xs={12}>
               <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
             </Grid>
-          </Grid>
         </div>
-    </Grid>
+      </Grid>
     </Grid>
   )
 }

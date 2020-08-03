@@ -16,7 +16,7 @@ const GreenButton = styled(Button)`
   font-family:'Nunito sans';
   color:#5AC490;
 font-style: normal;
-// font-weight: bold;
+ font-weight: bold;
 font-size: 30px;
 line-height: 41px;
 letter-spacing: -0.05em;
@@ -30,14 +30,14 @@ const toolbar = (props) => {
                     <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
                 </Grid>
                 <Grid item xs={2}>
-                    <Link to="about" style={{ textDecoration: 'none' }}>
-                        <GreenButton variant="text" >About Agem</GreenButton>
-                    </Link>
+                    <a href="http://localhost:3000/contactus" style={{ textDecoration: 'none' }}>
+                        <GreenButton variant="text" >Contact-us</GreenButton>
+                    </a>
                 </Grid>
                 <Grid item xs={2}>
-                    <Link to="contactus" style={{ textDecoration: 'none' }}>
-                        <GreenButton variant="text" >Contact-us</GreenButton>
-                    </Link>
+                <a href="http://localhost:3000/about" style={{ textDecoration: 'none' }}>
+                        <GreenButton variant="text" >About-us</GreenButton>
+                    </a>
                 </Grid>
                 <Grid item xs={2}>
                     <GreenButton variant="text"> Lolols</GreenButton>

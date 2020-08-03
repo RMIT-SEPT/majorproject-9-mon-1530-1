@@ -20,11 +20,11 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route path="/main" component={Main} />
-        <Route path="/form" component={Form} />
-        <Route path="/login" component={Login} />
-        <Route path="/about" component={About} />
-        <Route path="/contactus" component={Contact} />
+        <Route exact path="/main" component={Main} />
+        <Route exact path="/form" component={Form} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/about" component={About} />
+        <Route exact path="/contactus" component={Contact} />
       </div>
     </Router>
   );

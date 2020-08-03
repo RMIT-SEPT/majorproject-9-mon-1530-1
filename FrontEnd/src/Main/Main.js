@@ -2,16 +2,11 @@ import React from 'react'
 import './Main.css'
 import styled from 'styled-components';
 import { Button, Grid } from '@material-ui/core';
-import logo from '../media/logo.png';
 import big from '../media/big.png';
 import book from '../media/book.png';
-import login from '../media/login.png';
 import hairdres from '../media/hairdres.png';
-import small from '../media/small.png';
-import construction from '../media/undraw_under_construction_46pa-2 1.png';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Toolbar from '../Toolbar/Toolbar.js';
-
+import TextLoop from "react-text-loop";
 
 const GreenButton = styled(Button)`
 .MuiButton-label{
@@ -39,13 +34,41 @@ letter-spacing: -0.05em;
 `
 const MainWrapper = styled.div`
   background-color:black!important;
+  height: 100vh;
+  flex-grow: 1;
+  background-color: black;
+  color: white;
+padding :1%;
 
 `
+const BigFont = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 40px;
+  line-height: 95px;
+  letter-spacing: -0.05em;
+  color: #FFFFFF;
+  margin: 1%;
+  margin-left: 5%;
 
+`
+const SmallerFont = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 35px;
+  letter-spacing: -0.05em;
+  color: white;
+  margin: 1%;
+  margin-left: 5%;
+}
 
+`
 const main = (props) => {
   return (
-    <MainWrapper className='main'>
+    <MainWrapper>
       <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
           <Toolbar />
@@ -53,11 +76,17 @@ const main = (props) => {
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
             <Grid item xs={6}>
-              <div className='bold'>Find Best Sevices</div>
-              <div className='bold'> Near You </div>
-              <div className='smaller'> All of our services are done by licenced experts in their fields.</div>
-              <div className='smaller'> Our services include, Barbers, Nail technicians,  Dentists, Fitness </div>
-              <div className='smaller'>coaches and much more  </div>
+              <BigFont>Find Best Sevices Near You</BigFont>
+              <SmallerFont> All of our services are done by licenced experts in their fields.</SmallerFont>
+              <SmallerFont> Our services{" "}                 
+              <TextLoop interval={350} >
+                <span> Barbers </span>
+                <span> Nail technicians </span>
+                <span> Dentists </span>
+                <span> Gyms </span>
+                <span> Fitness Coaches </span>
+              </TextLoop>{" "} And Much more .
+              </SmallerFont>
             </Grid>
             <Grid item xs={6}>
               <img className="hairdres" src={hairdres} alt="hairdres" />
@@ -78,15 +107,4 @@ const main = (props) => {
     </MainWrapper>
   )
 }
-
-
-{ }
-
-{/* <Grid container container direction="row" alignItems="center" justify="space-between" >
-<Grid item xs={6}>
-  <img className="small" src={small} alt="small" href="http://localhost:3000/form" />
-</Grid>
-<Grid item xs={6}>
-  <img className="small" src={small} alt="small" href="http://localhost:3000/form" />
-</Grid> */}
 export default main; 
