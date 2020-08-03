@@ -84,12 +84,13 @@ const Left = styled.div`
 `
 
 const Logo = styled.img`
-  width: 40%;
+  width: 50%;
   height: auto;
   background-repeat: no-repeat;
   background-size: contain;
   /* padding-left: 10%; */
 `
+
 const ColorButton = withStyles((theme) => ({
   root: {
     margin: '10px',

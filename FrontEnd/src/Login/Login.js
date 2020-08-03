@@ -111,7 +111,7 @@ const Construction = styled.img`
 `
 
 const Logo = styled.img`
-  width: 40%;
+  width: 50%;
   height: auto;
   background-repeat: no-repeat;
   background-size: contain;
