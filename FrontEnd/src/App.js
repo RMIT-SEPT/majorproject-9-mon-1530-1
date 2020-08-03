@@ -20,24 +20,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>
-          Working pages 
-        </h1>
-        <h2>
-        /main
-        </h2>
-        <h2>
-        /form
-        </h2>
-        <h2>
-        /Login
-        </h2>
-        <h2>
-        /contactus
-        </h2>
-        <h2>
-        /About
-        </h2>
         <Route path="/main" component={Main} />
         <Route path="/form" component={Form} />
         <Route path="/login" component={Login} />
