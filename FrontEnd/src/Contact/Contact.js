@@ -55,7 +55,7 @@ const Construction = styled.img`
 `
 
 const Logo = styled.img`
-  width: 50%;
+  width: 40%;
   height: auto;
   background-repeat: no-repeat;
   background-size: contain;
@@ -127,7 +127,6 @@ const CssTextField = withStyles({
 const contact = (props) => {
   return (
     <Grid container alignItems="center" justify="center" spacing={0}>
-
       <Grid item xs={7} >
         <Left>
           <Grid container direction="column" justify="center" alignItems="center">
