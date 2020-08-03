@@ -4,7 +4,7 @@ import { Button, Grid } from '@material-ui/core';
 import doctor from '../media/doc.png';
 import gym from '../media/gym.svg';
 import TextLoop from "react-text-loop";
-import Toolbar from '../Toolbar/Toolbar.js';
+import Toolbar from '../Components/Toolbar.js';
 
 const Doc = styled.img`
   width: 60%;

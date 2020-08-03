@@ -4,7 +4,7 @@ import { Button, Grid } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
-import Toolbar from '../Toolbar/Toolbar.js';
+import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
 
 const GreenButton = styled(Button)`

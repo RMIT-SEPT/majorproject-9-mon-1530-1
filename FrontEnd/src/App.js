@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import About from './About/About.js';
-import Form from './Form/Form.js';
-import Main from './Main/Main.js';
-import Login from './Login/Login.js';
-import Contact from './Contact/Contact.js';
+import About from './Components/About.js';
+import Form from './Components/Form.js';
+import Main from './Components/Main.js';
+import Login from './Components/Login.js';
+import Contact from './Components/Contact.js';
 import TextLoop from "react-text-loop";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
