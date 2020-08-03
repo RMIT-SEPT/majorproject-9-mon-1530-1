@@ -1,9 +1,19 @@
 package sept.major.users.response.error;
 
-import sept.major.users.response.ResponseObject;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-public interface ResponseError extends ResponseObject {
-    String getField();
+@Getter
+@EqualsAndHashCode
+@ToString
+public class ResponseError {
+    protected String field;
+    protected String message;
 
-    String getMessage();
+    public ResponseError(String field, String message) {
+        this.field = field;
+        this.message = message;
+    }
+
 }
