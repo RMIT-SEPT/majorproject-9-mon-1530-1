@@ -9,7 +9,7 @@ import login from '../media/login.png';
 import hairdres from '../media/hairdres.png';
 import small from '../media/small.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
-import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Toolbar from '../Toolbar/Toolbar.js';
 
 
@@ -67,7 +67,7 @@ const main = (props) => {
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
-              <a href="http://localhost:3000/form"> <img  className="big" src={big} alt="big" /> </a>
+              <a href="http://localhost:3000/form"> <img className="big" src={big} alt="big" /> </a>
             </Grid>
             <Grid item xs={3}>
               <img src={book} alt="big" href="http://localhost:3000/form" />
@@ -75,7 +75,7 @@ const main = (props) => {
           </Grid>
         </Grid>
       </Grid>
-</MainWrapper>
+    </MainWrapper>
   )
 }
 

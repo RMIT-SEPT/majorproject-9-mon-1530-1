@@ -35,8 +35,8 @@ const toolbar = (props) => {
                     </Link>
                 </Grid>
                 <Grid item xs={2}>
-                <Link to="contactus" style={{ textDecoration: 'none' }}>
-                <GreenButton variant="text" >Contact-us</GreenButton>
+                    <Link to="contactus" style={{ textDecoration: 'none' }}>
+                        <GreenButton variant="text" >Contact-us</GreenButton>
                     </Link>
                 </Grid>
                 <Grid item xs={2}>

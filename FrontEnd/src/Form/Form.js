@@ -1,6 +1,6 @@
 import React from 'react'
 import './Form.css'
-import {Grid, Button} from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
@@ -46,7 +46,7 @@ const form = (props) => {
         <div className="left">
           <Grid container direction="column" justify="center" alignItems="center">
             <Grid item xs={12}>
-            <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
+              <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
               <Grid item xs={12}>
                 <img className="construction" src={construction} alt="construction" />
               </Grid>
@@ -151,8 +151,8 @@ const form = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-              <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
-            </Grid>
+                <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
+              </Grid>
             </Grid>
           </Grid>
         </div>
