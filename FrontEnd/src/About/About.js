@@ -8,6 +8,8 @@ import doctor from '../media/doc.png';
 import gym from '../media/gym.svg';
 import small from '../media/small.png';
 import TextLoop from "react-text-loop";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Toolbar from '../Toolbar/Toolbar.js';
 
 const GreenButton = styled(Button)`
 .MuiButton-label{
@@ -25,37 +27,17 @@ const MainWrapper = styled.div`
 
 `
 const about = (props) => {
-  document.body.style ='background:black;'
+  document.body.style = 'background:black;'
   return (
     <MainWrapper className='main'>
-      <div className='toolBar'>
-        <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
-          <Grid item xs={2}>
-            <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
-          </Grid>
-          <Grid item xs={2}>
-            <GreenButton variant="text" >About Agem</GreenButton>
-          </Grid>
-          <Grid item xs={2}>
-            <GreenButton variant="text" >Contact-us</GreenButton>
-          </Grid>
-          <Grid item xs={2}>
-            <GreenButton variant="text"> Lolols</GreenButton>
-          </Grid>
-          <Grid item xs={1}>
-            <a href="http://localhost:3000/login"> <img className="login" src={login} alt="login" /> </a>
-          </Grid>
-          <Grid item xs={1}>
-            <a href="http://localhost:3000/form"> <img className="small" src={small} alt="small" /> </a>
-          </Grid>
+      <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
+        <Grid item xs={12}>
+          <Toolbar />
         </Grid>
-      </div>
-      <Grid container container direction="row" alignItems="center"  justify="space-between"spacing={5} >
-        
         <Grid item xs={5}>
-        <div className="Bold" style={{
-      'white-space': 'pre-wrap'
-      }}>{"Agem helps your find you best \nLocal services such as\n"}
+          <div className="Bold" style={{
+            'white-space': 'pre-wrap'
+          }}>{"Agem helps your find you best \nLocal services such as\n"}
             <TextLoop interval={350} >
               <span>Barbers </span>
               <span>Nail technicians</span>
@@ -72,9 +54,9 @@ const about = (props) => {
           <img className="doctor" src={doctor} alt="doctor" />
         </Grid>
         <Grid item xs={6}>
-        <div className="Bold" style={{
-      'white-space': 'pre-wrap'
-      }}>{"Agem helps your find you best \nLocal services such as\n"}
+          <div className="Bold" style={{
+            'white-space': 'pre-wrap'
+          }}>{"Agem helps your find you best \nLocal services such as\n"}
             <TextLoop interval={350} >
               <span>Barbers </span>
               <span>Nail technicians</span>
@@ -88,9 +70,9 @@ const about = (props) => {
           <img className="doctor" src={doctor} alt="doctor" />
         </Grid>
         <Grid item xs={6}>
-        <div className="Bold" style={{
-      'white-space': 'pre-wrap'
-      }}>{"Agem helps your find you best \nLocal services such as\n"}
+          <div className="Bold" style={{
+            'white-space': 'pre-wrap'
+          }}>{"Agem helps your find you best \nLocal services such as\n"}
             <TextLoop interval={350} >
               <span>Barbers </span>
               <span>Nail technicians</span>

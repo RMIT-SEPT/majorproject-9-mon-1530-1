@@ -1,11 +1,10 @@
 import React from 'react'
-import './Login.css'
-import { Button, Grid } from '@material-ui/core';
+import './Contact.css'
+import {Button, Grid} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
-import construction from '../media/undraw_under_construction_46pa-2 1.png';
+import construction from '../media/contact.png';
 import { withStyles } from "@material-ui/core/styles";
-
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -62,9 +61,7 @@ const CssTextField = withStyles({
   }
 })(TextField);
 
-
-
-const login = (props) => {
+const contact = (props) => {
   return (
     <Grid container className="mainGrid" alignItems="center" justify="center" spacing={0}>
 
@@ -74,7 +71,7 @@ const login = (props) => {
             <Grid item xs={12}>
               <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
               <Grid item xs={12}>
-                <img className="construction" src={construction} alt="construction" />
+                <img className="construction" src={construction} alt="contact" />
               </Grid>
             </Grid>
           </Grid>
@@ -86,26 +83,29 @@ const login = (props) => {
           <div className='topright'>
             Not a member? <a href="http://localhost:3000/form">Sign up</a>
           </div>
-          <Grid container direction="row" container spacing={1}>
-            <Grid item xs={12}>
-              <div className='bold'>Sign Up to Agem</div>
-            </Grid>
-            <Grid item xs={12}>
-              <div className='heading'>UserName </div>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                // label="Surname"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
+          <Grid container direction="row">
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <div className='bold'></div>
+              </Grid>
+              <Grid item xs={12}>
+                <div className='bold'>Sign Up to Agem</div>
+              </Grid>
+              <Grid item xs={12}>
+                <div className='heading'>UserName </div>
+                <CssTextFieldGreen
+                  id="outlined-full-width"
+                  // label="Surname"
+                  style={{ margin: 8 }}
+                  helperText="Full width!"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </Grid>
               <div className='heading'>Password</div>
               <CssTextField
                 id="outlined-full-width"
@@ -126,9 +126,9 @@ const login = (props) => {
             </Grid>
           </Grid>
         </div>
-      </Grid>
+    </Grid>
     </Grid>
   )
 }
 
-export default login; 
+export default contact; 

@@ -28,12 +28,9 @@ padding :1%;
   background-repeat: no-repeat;
   background-size: contain;
 }
-/* .big {
-  width: 60%;
-  height: auto;
-  background-repeat: no-repeat;
-  background-size: contain;
-} */
+.big {
+margin-left: 10%;
+}
 
 
 .bold {
@@ -56,4 +53,5 @@ padding :1%;
   letter-spacing: -0.05em;
   color: white;
   margin: 1%;
+  margin-left: 5%;
 }

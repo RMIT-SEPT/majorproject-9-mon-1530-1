@@ -9,6 +9,8 @@ import login from '../media/login.png';
 import hairdres from '../media/hairdres.png';
 import small from '../media/small.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
+import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import Toolbar from '../Toolbar/Toolbar.js';
 
 
 const GreenButton = styled(Button)`
@@ -35,34 +37,18 @@ letter-spacing: -0.05em;
 
 }
 `
+const MainWrapper = styled.div`
+  background-color:black!important;
+
+`
+
+
 const main = (props) => {
   return (
-    <div className='main'>
-      <Grid container container direction="row" className="main" alignItems="flex-start" justify="space-between" spacing={5} >
-
+    <MainWrapper className='main'>
+      <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
-          <div className='toolBar'>
-            <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
-              <Grid item xs={2}>
-            <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
-              </Grid>
-              <Grid item xs={2}>
-                <GreenButton variant="text" >About Agem</GreenButton>
-              </Grid>
-              <Grid item xs={2}>
-                <GreenButton variant="text" >Contact-us</GreenButton>
-              </Grid>
-              <Grid item xs={2}>
-                <GreenButton variant="text"> Lolols</GreenButton>
-              </Grid>
-              <Grid item xs={1}>
-              <a href="http://localhost:3000/login"> <img className="login" src={login} alt="login" /> </a>
-              </Grid>
-              <Grid item xs={1}>
-              <a href="http://localhost:3000/form"> <img className="small" src={small} alt="small" /> </a>
-              </Grid>
-            </Grid>
-          </div>
+          <Toolbar />
         </Grid>
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
@@ -81,16 +67,15 @@ const main = (props) => {
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
-              <a href="http://localhost:3000/form"> <img src={big} alt="big" /> </a>
+              <a href="http://localhost:3000/form"> <img  className="big" src={big} alt="big" /> </a>
             </Grid>
             <Grid item xs={3}>
-              <img  src={book} alt="big" href="http://localhost:3000/form" />
+              <img src={book} alt="big" href="http://localhost:3000/form" />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </div >
-
+</MainWrapper>
   )
 }
 

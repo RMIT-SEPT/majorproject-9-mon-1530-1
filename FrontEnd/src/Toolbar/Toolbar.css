@@ -1,0 +1,26 @@
+.toolBar {
+    height: 10vh;
+    flex-grow: 1;
+    background-color: black;
+  
+  }
+  
+  .logo {
+    width: 65%;
+    height: auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /* padding-left: 10%; */
+  }
+
+  .smaller {
+    font-family: Nunito Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 35px;
+    letter-spacing: -0.05em;
+    color: white;
+    margin: 1%;
+  }
+  
