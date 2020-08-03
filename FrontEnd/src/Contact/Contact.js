@@ -1,11 +1,74 @@
 import React from 'react'
-import './Contact.css'
 import { Button, Grid } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
 import construction from '../media/contact.png';
 import { withStyles } from "@material-ui/core/styles";
+import styled from 'styled-components';
 
+const Heading = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 34px;
+  letter-spacing: -0.05em;
+  color: #000000;
+  margin: 10px;
+`
+const Bold = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 35px;
+  line-height: 48px;
+  letter-spacing: -0.05em;
+  color: #000000;
+`
+const TopRight = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 27px;
+  letter-spacing: -0.05em;
+  position: absolute;
+  top: 2%;
+  right: 5%;
+  padding-top: 2%;
+`
+const Right = styled.div`
+  padding: 10px; 
+  margin: 80px;
+  flex-grow: 1;
+  color : black;
+  background-color: white;
+`
+
+const Construction = styled.img`
+  width: 100%;
+  height: auto;
+
+  padding-top: 10%;
+  background-repeat: no-repeat;
+  background-size: contain;
+`
+
+const Logo = styled.img`
+  width: 50%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /* padding-left: 10%; */
+`
+
+const Left = styled.div`
+  height:100vh;
+  padding-top: 3%;
+  /* flex-grow: 1 ; */
+  background-color: black;
+  color:white;
+`
 const ColorButton = withStyles((theme) => ({
   root: {
     margin: '4px',
@@ -63,96 +126,53 @@ const CssTextField = withStyles({
 
 const contact = (props) => {
   return (
-    <Grid container className="mainGrid" alignItems="center" justify="center" spacing={0}>
+    <Grid container alignItems="center" justify="center" spacing={0}>
 
       <Grid item xs={7} >
-        <div className="left">
+        <Left>
           <Grid container direction="column" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
+              <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
               <Grid item xs={12}>
-                <img className="construction" src={construction} alt="contact" />
+                <Construction src={construction} alt="contact" />
               </Grid>
             </Grid>
           </Grid>
-        </div>
+        </Left>
       </Grid>
 
       <Grid item xs={5} >
-        <div className='right'>
-          <div className='topright'>
-            Not a member? <a href="http://localhost:3000/form">Sign up</a>
-          </div>
+        <Right>
+          <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
           <Grid container direction="row" container spacing={1}>
-              <Grid item xs={12}>
-                <div className='bold'></div>
-              </Grid>
-              <Grid item xs={12}>
-                <div className='bold'>Send us a message </div>
-              </Grid>
-              <Grid item xs={12}>
-                <div className='heading'>Name </div>
-                <CssTextFieldGreen
-                  id="outlined-full-width"
-                  // label="Surname"
-                  style={{ margin: 8 }}
-                  helperText="Full width!"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <div className='heading'>Email </div>
-                <CssTextFieldGreen
-                  id="outlined-full-width"
-                  // label="Surname"
-                  style={{ margin: 8 }}
-                  helperText="Full width!"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <div className='heading'>Phone </div>
-                <CssTextFieldGreen
-                  id="outlined-full-width"
-                  // label="Surname"
-                  style={{ margin: 8 }}
-                  helperText="Full width!"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Grid>
-              <div className='heading'>Message</div>
-                <CssTextFieldGreen
-                id="outlined-full-width"
-                // label="Surname"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
+            <Grid item xs={12}>
+              <Bold>Send us a message </Bold>
+            </Grid>
+            <Grid item xs={12}>
+              <Heading>Name </Heading>
+              <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                InputLabelProps={{ shrink: true, }} variant="outlined" />
+            </Grid>
+            <Grid item xs={12}>
+              <Heading>Email </Heading>
+              <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                InputLabelProps={{ shrink: true, }} variant="outlined" />
+            </Grid>
+            <Grid item xs={12}>
+              <Heading>Phone </Heading>
+              <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                InputLabelProps={{ shrink: true, }} variant="outlined" />
+            </Grid>
+            <Grid item xs={12}>
+              <Heading>Message</Heading>
+              <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
             <Grid item xs={12}>
               <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
             </Grid>
-        </div>
+          </Grid>
+        </Right>
       </Grid>
     </Grid>
   )
