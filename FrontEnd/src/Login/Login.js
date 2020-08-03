@@ -146,7 +146,7 @@ const login = (props) => {
           <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
           <Grid container direction="row" container spacing={1}>
             <Grid item xs={12}>
-              <Bold> Sign Up to Agem </Bold>
+              <Bold> Log In to Agem </Bold>
             </Grid>
             <Grid item xs={12}>
               <Heading>User Name </Heading>

@@ -23,13 +23,19 @@ const Toolbar = styled.div`
     background-color: black;
     margin-top:1%;
   `
-  
+  const Logo = styled.img`
+    width: 51%;
+    height: auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+`
 const toolbar = (props) => {
     return (
         <Toolbar>
             <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
                 <Grid item xs={2}>
-                    <a href="http://localhost:3000/main"> <img className="logo" src={logo} alt="logo" /> </a>
+                    <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
                 </Grid>
                 <Grid item xs={2}>
                     <a href="http://localhost:3000/contactus" style={{ textDecoration: 'none' }}>
