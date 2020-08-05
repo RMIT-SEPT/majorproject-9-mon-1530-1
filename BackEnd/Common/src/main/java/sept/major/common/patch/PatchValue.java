@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.lang.reflect.Method;
 
+
+/*
+    A simple POJO used for transferring data between ControllerHelper and CrudService.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
