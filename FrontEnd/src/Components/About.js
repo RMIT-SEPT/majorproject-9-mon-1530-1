@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Grid } from '@material-ui/core';
+import {Grid}  from '@material-ui/core';
 import doctor from '../media/doc.png';
 import gym from '../media/gym.svg';
 import TextLoop from "react-text-loop";
@@ -31,17 +31,6 @@ const Bold = styled.div`
   white-space: 'pre-wrap';
 `
 
-const GreenButton = styled(Button)`
-.MuiButton-label{
-  font-family:'Nunito sans';
-  color:#5AC490;
-font-style: normal;
-// font-weight: bold;
-font-size: 30px;
-line-height: 41px;
-letter-spacing: -0.05em;
-}
-`
 const MainWrapper = styled.div`
   background-color:black!important;
   height: 100vh;

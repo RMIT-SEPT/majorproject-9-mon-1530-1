@@ -1,36 +1,12 @@
 import React from 'react'
 import styled from 'styled-components';
-import { Button, Grid } from '@material-ui/core';
+import {Grid } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
 
-const GreenButton = styled(Button)`
-.MuiButton-label{
-  font-family:'Nunito sans';
-  color:#5AC490;
-font-style: normal;
-// font-weight: bold;
-font-size: 30px;
-line-height: 41px;
-letter-spacing: -0.05em;
-}
-`
-const WhiteButton = styled(Button)`
-
-.MuiButton-label{
-  font-family:'Nunito sans';
-  color:#fff;
-font-style: normal;
-font-weight: bold;
-font-size: 28px;
-line-height: 41px;
-letter-spacing: -0.05em;
-
-}
-`
 const MainWrapper = styled.div`
   background-color:black!important;
   height: 100vh;

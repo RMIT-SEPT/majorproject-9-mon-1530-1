@@ -53,6 +53,13 @@ const Construction = styled.img`
   background-repeat: no-repeat;
   background-size: contain;
 `
+const Left = styled.div`
+  height:100vh;
+  padding-top: 3%;
+  /* flex-grow: 1 ; */
+  background-color: black;
+  color:white;
+`
 
 const Logo = styled.img`
   width: 40%;
@@ -62,13 +69,7 @@ const Logo = styled.img`
   /* padding-left: 10%; */
 `
 
-const Left = styled.div`
-  height:100vh;
-  padding-top: 3%;
-  /* flex-grow: 1 ; */
-  background-color: black;
-  color:white;
-`
+
 const ColorButton = withStyles((theme) => ({
   root: {
     margin: '4px',
@@ -91,28 +92,6 @@ const CssTextFieldGreen = withStyles({
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
         borderColor: "green"
-      },
-      "&:hover fieldset": {
-        borderColor: "light green"
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "green"
-      }
-    }
-  }
-})(TextField);
-
-const CssTextField = withStyles({
-  root: {
-    "& label.Mui-focused": {
-      color: "green"
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "green"
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "red"
       },
       "&:hover fieldset": {
         borderColor: "light green"
