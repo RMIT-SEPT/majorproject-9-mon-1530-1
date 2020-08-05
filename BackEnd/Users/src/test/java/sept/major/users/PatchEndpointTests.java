@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sept.major.common.response.FieldIncorrectTypeError;
+import sept.major.common.response.ResponseError;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.response.error.FieldIncorrectTypeError;
-import sept.major.users.response.error.ResponseError;
 
 import java.util.*;
 

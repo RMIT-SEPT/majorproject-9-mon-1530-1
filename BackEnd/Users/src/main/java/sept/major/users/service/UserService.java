@@ -3,8 +3,9 @@ package sept.major.users.service;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.service.CrudService;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.repository.UsersRepository;
 
 import java.util.List;
@@ -42,9 +43,6 @@ public class UserService extends CrudService<UserEntity, String> {
         }
     }
 
-    public UserEntity updateUser(Map<String, Object> requestBody) {
-        return null;
-    }
 
     public void updatePassword(String username, Map<String, Object> requestBody) {
 

@@ -1,7 +1,10 @@
-package sept.major.users.response.error;
+package sept.major.common.response;
 
 import lombok.Getter;
 
+/*
+    A field is missing from the API input
+ */
 @Getter
 public class FieldMissingError extends ResponseError {
     public FieldMissingError(String field) {

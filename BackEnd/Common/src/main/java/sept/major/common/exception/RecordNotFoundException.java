@@ -1,7 +1,10 @@
-package sept.major.users.exception;
+package sept.major.common.exception;
 
 import lombok.Getter;
 
+/*
+    Occurs in GET and PATCH when there is not a saved record with the identifier provided.
+ */
 public class RecordNotFoundException extends Exception {
 
     @Getter

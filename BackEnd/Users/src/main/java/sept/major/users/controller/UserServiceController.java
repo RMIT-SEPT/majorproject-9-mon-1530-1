@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.exception.RecordNotFoundException;
 import sept.major.users.service.UserService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class UserServiceController {
 
     @PostMapping
     public ResponseEntity createUser(@RequestBody Map<String, Object> requestBody) {
-        return userControllerHelper.createEntity(UserEntity.class, requestBody);
+        return userControllerHelper.validateInputAndPost(UserEntity.class, requestBody);
     }
 
     @DeleteMapping
@@ -41,7 +41,7 @@ public class UserServiceController {
 
     @PatchMapping
     public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, Object> requestBody) {
-        return userControllerHelper.updateEntity(UserEntity.class, username, requestBody);
+        return userControllerHelper.validateInputAndPatch(UserEntity.class, username, requestBody);
     }
 
     @GetMapping("/bulk")
