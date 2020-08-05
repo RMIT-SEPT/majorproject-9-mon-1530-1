@@ -16,5 +16,6 @@ public class ReponseErrorException extends Exception {
 
     public ReponseErrorException(Set<ResponseError> responseErrors) {
         super("Found errors in API input which were unhandled");
+        this.responseErrors = responseErrors;
     }
 }
