@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 @Table(name = "users", schema = "users")
 @Entity
-public class UserEntity extends AbstractEntity<String> {
+public class UserEntity implements AbstractEntity<String> {
 
     @Id
     @Setter(onMethod = @__(@Id))
