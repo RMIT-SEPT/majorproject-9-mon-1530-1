@@ -1,12 +1,19 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styled from 'styled-components';
-import {Grid } from '@material-ui/core';
+import { TextField, Grid, InputLabel, Box, FormControl, Select } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
+import DateTimePicker from 'react-datetime-picker';
 
+const defaultProps = {
+  borderColor: '#5AC490',
+  m: 5,
+  border: 3,
+  style: { width: '95%', height: '16rem' },
+};
 const MainWrapper = styled.div`
   background-color:black!important;
   height: 100vh;
@@ -17,6 +24,18 @@ padding :1%;
 
 `
 const BigFont = styled.div`
+  font-family: Nunito Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 70px;
+  line-height: 95px;
+  letter-spacing: -0.05em;
+  color: #FFFFFF;
+  margin: 1%;
+  margin-left: 5%;
+
+`
+const MidFont = styled.div`
   font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
@@ -47,27 +66,103 @@ const Hairdresser = styled.img`
   background-size: contain;
 
 `
+const Input = styled(InputLabel)`
+  font-family:'Nunito sans';
+  margin-left: 5%;
+  color:'#5AC490';
+  width: 300%;
+  font-size: 40px;
+`
+const ElementSelect = styled(Select)`
 
-const main = (props) => {
+  font-family:'Nunito sans';
+  border-radius: 3px;
+  background: White;
+  width: 300%;
+  margin-left: 5%;
+`
+
+
+const DatePicker = styled(DateTimePicker)`
+ .react-datetime-picker__wrapper{
+  background-color:white!important;
+  width:120%;
+  height: 60px;
+  border-radius: 8px;
+  padding:8%
+ 
+}
+
+.react-datetime-picker__inputGroup__divider {
+    padding: 1px 0;
+    white-space: pre;
+    color: black;
+}
+ 
+`
+
+
+function Main(props) {
+  document.body.style = 'background:White;'
+
+  const [date,setDate]= useState(new Date())
+
+  const onChange = date => setDate(date)
   return (
     <MainWrapper>
-      <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
+      <Grid container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
           <Toolbar />
         </Grid>
         <Grid item xs={12}>
+          <Box display="flex" justifyContent="center">
+            <Box borderRadius={70} {...defaultProps}>
+              <Grid container direction="row" alignItems="flex-end" justify="space-between" spacing={5} >
+                <Grid item xs={6}>
+                  <MidFont>Choose a service</MidFont>
+                </Grid>
+                <Grid item xs={6}>
+                <div>
+                    <DatePicker
+                      onChange={onChange}
+                      value={date}
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl variant="outlined">
+                  <Input htmlFor="grouped-native-select"></Input>
+                  <ElementSelect native defaultValue="" id="grouped-native-select">Choose a service
+                  <option value={0}>Choose a service</option>
+                    <optgroup label="Mark's cleaning">
+                      <option value={1}>Mark</option>
+                      <option value={2}>Sandra</option>
+                    </optgroup>
+                    <optgroup label="Category 2">
+                      <option value={3}>Option 3</option>
+                      <option value={4}>Option 4</option>
+                    </optgroup>
+                  </ElementSelect>
+                </FormControl>
+              </Grid>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
           <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
             <Grid item xs={6}>
-              <BigFont>Find Best Sevices Near You</BigFont>
+              <BigFont>Find Best Sevices </BigFont>
+              <BigFont>Near You</BigFont>
               <SmallerFont> All of our services are done by licenced experts in their fields.</SmallerFont>
-              <SmallerFont> Our services{" "}                 
-              <TextLoop interval={350} >
-                <span> Barbers </span>
-                <span> Nail technicians </span>
-                <span> Dentists </span>
-                <span> Gyms </span>
-                <span> Fitness Coaches </span>
-              </TextLoop>{" "} And Much more .
+              <SmallerFont> Our services{" "}
+                <TextLoop interval={350} >
+                  <span> Barbers </span>
+                  <span> Nail technicians </span>
+                  <span> Dentists </span>
+                  <span> Gyms </span>
+                  <span> Fitness Coaches </span>
+                </TextLoop>{" "} And Much more .
               </SmallerFont>
             </Grid>
             <Grid item xs={6}>
@@ -78,7 +173,7 @@ const main = (props) => {
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
-              <a href="http://localhost:3000/form"> <img style={{marginLeft:"10%"}} src={big} alt="big" /> </a>
+              <a href="http://localhost:3000/form"> <img style={{ marginLeft: "10%" }} src={big} alt="big" /> </a>
             </Grid>
             <Grid item xs={3}>
               <img src={book} alt="big" href="http://localhost:3000/form" />
@@ -89,4 +184,4 @@ const main = (props) => {
     </MainWrapper>
   )
 }
-export default main; 
+export default Main; 
