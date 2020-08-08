@@ -12,7 +12,7 @@ const defaultProps = {
   borderColor: '#5AC490',
   m: 5,
   border: 3,
-  style: { width: '95%', height: '16rem' },
+  style: { width: '95%', height: '14rem' },
 };
 const MainWrapper = styled.div`
   background-color:black!important;
@@ -44,7 +44,7 @@ const MidFont = styled.div`
   letter-spacing: -0.05em;
   color: #FFFFFF;
   margin: 1%;
-  margin-left: 5%;
+  margin-left: 10%;
 
 `
 const SmallerFont = styled.div`
@@ -79,31 +79,34 @@ const ElementSelect = styled(Select)`
   border-radius: 3px;
   background: White;
   width: 300%;
-  margin-left: 5%;
+  margin-left: 50%;
 `
 
 
 const DatePicker = styled(DateTimePicker)`
  .react-datetime-picker__wrapper{
   background-color:white!important;
-  width:120%;
+  width:200%;
   height: 60px;
   border-radius: 8px;
   padding:8%
+  
  
 }
 
 .react-datetime-picker__inputGroup__divider {
-    padding: 1px 0;
+    padding: 1px ;
     white-space: pre;
     color: black;
+    
 }
  
 `
 
 
+
 function Main(props) {
-  document.body.style = 'background:White;'
+  document.body.style = 'background:black;'
 
   const [date,setDate]= useState(new Date())
 
@@ -117,11 +120,11 @@ function Main(props) {
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center">
             <Box borderRadius={70} {...defaultProps}>
-              <Grid container direction="row" alignItems="flex-end" justify="space-between" spacing={5} >
+              <Grid container direction="row" alignItems="flex-end" justify="space-between" spacing={9} >
                 <Grid item xs={6}>
                   <MidFont>Choose a service</MidFont>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                 <div>
                     <DatePicker
                       onChange={onChange}
@@ -129,7 +132,7 @@ function Main(props) {
                     />
                   </div>
                 </Grid>
-              </Grid>
+                </Grid>
               <Grid item xs={12}>
                 <FormControl variant="outlined">
                   <Input htmlFor="grouped-native-select"></Input>
@@ -145,6 +148,7 @@ function Main(props) {
                     </optgroup>
                   </ElementSelect>
                 </FormControl>
+
               </Grid>
             </Box>
           </Box>
