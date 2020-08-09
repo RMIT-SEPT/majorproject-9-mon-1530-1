@@ -54,14 +54,25 @@ public class UserServiceController {
         }
     }
 
-
+    
     /**
      * Endpoint for changing user password
+     * @param username
+     * @param oldPassword
+     * @param newPassword
+     * @return
      */
-    @PutMapping("/password")
-    public void updatePassword() {
-    	
-    }
+	@GetMapping("/password") //TODO change to put
+	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
+		try {
+			userService.updatePassword(username, oldPassword, newPassword);
+			return new ResponseEntity("place holder message: password updated" + " username:" + username
+					+ " oldPassword:" + oldPassword, HttpStatus.ACCEPTED);
+		} catch (RuntimeException e) {
+			return new ResponseEntity("place holder message: provided input is incorrect" + " username:" + username
+					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
+		}
+	}
 
     /**
      * Endpoint to receive user password compare calls
@@ -69,7 +80,7 @@ public class UserServiceController {
      * @param password
      * @return
      */
-    @GetMapping("/password/compare")
+    @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
     	boolean result = userService.comparePassword(username, password);
