@@ -18,11 +18,11 @@ class GetBulkEndpointTests extends UserServiceTestHelper {
     @Test
     void valid() {
         String userType = randomAlphanumericString(20);
-
+        
         List<UserEntity> expected = Arrays.asList(
-                new UserEntity(randomAlphanumericString(20), userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
-                new UserEntity(randomAlphanumericString(20), userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
-                new UserEntity(randomAlphanumericString(20), userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20))
+                new UserEntity(randomAlphanumericString(20), "pass123", userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
+                new UserEntity(randomAlphanumericString(20), "pass123", userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
+                new UserEntity(randomAlphanumericString(20), "pass123", userType, randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20))
         );
 
         when(mockedUserRepository.findAllByUserType(userType)).thenReturn(expected);
@@ -36,9 +36,9 @@ class GetBulkEndpointTests extends UserServiceTestHelper {
     @Test
     void validNoUserType() {
         List<UserEntity> expected = Arrays.asList(
-                new UserEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
-                new UserEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
-                new UserEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20))
+                new UserEntity(randomAlphanumericString(20), "pass123", randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
+                new UserEntity(randomAlphanumericString(20), "pass123", randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20)),
+                new UserEntity(randomAlphanumericString(20), "pass123", randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20))
         );
 
         when(mockedUserRepository.findAll()).thenReturn(expected);

@@ -20,6 +20,7 @@ class GetEndpointTests extends UserServiceTestHelper {
 
         UserEntity expected = new UserEntity(
                 username,
+                "pass123",
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),

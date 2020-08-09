@@ -343,6 +343,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
     private UserEntity createUserEntity(Map<String, Object> entityMap) {
         return new UserEntity(
                 (String) entityMap.get("username"),
+                "pass123",
                 (String) entityMap.get("userType"),
                 (String) entityMap.get("name"),
                 (String) entityMap.get("phone"),
