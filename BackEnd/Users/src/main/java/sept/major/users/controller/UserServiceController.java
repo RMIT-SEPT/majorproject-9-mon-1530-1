@@ -57,11 +57,14 @@ public class UserServiceController {
 
     @PutMapping("/password")
     public void updatePassword() {
-
+    	
     }
 
-    @PostMapping("/password/compare")
-    public void comparePassword() {
-
+    @GetMapping("/password/compare")
+    public ResponseEntity comparePassword(@RequestParam String username , String password) {
+    	System.out.println("my love Hadi:"+ username +password );
+    	boolean result = userService.comparePassword(username, password);
+    	
+        return new ResponseEntity("test" + result, HttpStatus.ACCEPTED);
     }
 }
