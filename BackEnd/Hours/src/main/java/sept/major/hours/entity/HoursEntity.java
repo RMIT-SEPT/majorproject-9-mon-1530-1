@@ -22,6 +22,7 @@ public class HoursEntity implements AbstractEntity<String> {
     private String hoursId;
 
     private String workerUsername;
+    private String customerUsername;
     private String createdBy;
     private String date;
     private String startTime;
