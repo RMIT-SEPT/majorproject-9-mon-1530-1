@@ -62,9 +62,9 @@ public class UserServiceController {
 
     @GetMapping("/password/compare")
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
-    	System.out.println("my love Hadi:"+ username +password );
+    	System.out.println("username:"+ username + " password:" + password);
     	boolean result = userService.comparePassword(username, password);
     	
-        return new ResponseEntity("test" + result, HttpStatus.ACCEPTED);
+        return new ResponseEntity("inpput," + "username:"+ username + " password:" + password + ", password compare:" + result, HttpStatus.ACCEPTED);
     }
 }
