@@ -10,6 +10,7 @@ import sept.major.hours.repository.HoursRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HoursService extends CrudService<HoursEntity, String> {
@@ -43,19 +44,28 @@ public class HoursService extends CrudService<HoursEntity, String> {
     }
 
     private List<HoursEntity> filterUsernames(List<HoursEntity> hoursList, String workerUsername, String customerUsername) throws RecordNotFoundException {
+        List<HoursEntity> result;
+
         if (workerUsername != null && customerUsername != null) {
-            hoursList.removeIf(hoursEntity -> (!workerUsername.equals(hoursEntity.getWorkerUsername())
-                    || !customerUsername.equals(hoursEntity.getCustomerUsername())));
+            result = hoursList.stream()
+                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()) && customerUsername.equals(hoursEntity.getCustomerUsername()))
+                    .collect(Collectors.toList());
         } else if (workerUsername != null) {
-            hoursList.removeIf(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()));
+            result = hoursList.stream()
+                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()))
+                    .collect(Collectors.toList());
         } else if (customerUsername != null) {
-            hoursList.removeIf(hoursEntity -> customerUsername.equals(hoursEntity.getCustomerUsername()));
+            result = hoursList.stream()
+                    .filter(hoursEntity -> customerUsername.equals(hoursEntity.getCustomerUsername()))
+                    .collect(Collectors.toList());
+        } else {
+            result = hoursList;
         }
 
-        if(hoursList.size() == 0) {
+        if (result.size() == 0) {
             throw new RecordNotFoundException(String.format("No records within provided bounds were found"));
         }
 
-        return hoursList;
+        return result;
     }
 }

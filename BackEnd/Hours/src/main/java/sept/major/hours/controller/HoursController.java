@@ -23,7 +23,7 @@ public class HoursController {
     private HoursService hoursService;
 
     @Autowired
-    public HoursController(HoursControllerHelper hoursControllerHelper, HoursService hoursService) {
+    public HoursController(HoursService hoursService, HoursControllerHelper hoursControllerHelper) {
         this.hoursControllerHelper = hoursControllerHelper;
         this.hoursService = hoursService;
     }

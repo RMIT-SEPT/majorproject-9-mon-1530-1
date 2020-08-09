@@ -4,6 +4,7 @@ import lombok.*;
 import sept.major.common.entity.AbstractEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -14,16 +15,16 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "hours", schema = "hours")
+@Table(name = "hours")
 public class HoursEntity implements AbstractEntity<String> {
 
     @Id
     @Setter(onMethod = @__(@Id))
+    @GeneratedValue
     private String hoursId;
 
     private String workerUsername;
     private String customerUsername;
-    private String createdBy;
     private String date;
     private String startTime;
     private String endTime;
