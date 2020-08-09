@@ -55,11 +55,20 @@ public class UserServiceController {
     }
 
 
+    /**
+     * Endpoint for changing user password
+     */
     @PutMapping("/password")
     public void updatePassword() {
     	
     }
 
+    /**
+     * Endpoint to receive user password compare calls
+     * @param username
+     * @param password
+     * @return
+     */
     @GetMapping("/password/compare")
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
