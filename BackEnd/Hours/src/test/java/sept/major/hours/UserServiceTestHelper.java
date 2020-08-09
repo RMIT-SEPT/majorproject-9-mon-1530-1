@@ -69,4 +69,22 @@ public abstract class UserServiceTestHelper {
                 LocalDateTime.now().toString()
         );
     }
+
+    protected HoursEntity randomEntityWithDate(String id, LocalDate date) {
+        return new HoursEntity(
+                id,
+                randomAlphanumericString(20),
+                randomAlphanumericString(20),
+                date.toString(),
+                LocalDateTime.now().toString(),
+                LocalDateTime.now().toString()
+        );
+    }
+
+    protected LocalDate pastDate(int years, int months, int days) {
+        LocalDate date = LocalDate.now();
+        date = date.minusYears(years);
+        date = date.minusMonths(months);
+        return date.minusDays(days);
+    }
 }

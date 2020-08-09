@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
-@Table(name = "hours", schema = "hours")
+@Table(name = "hours")
 @Repository
 public interface HoursRepository extends JpaRepository<HoursEntity, String> {
     List<HoursEntity> findAllByDate(LocalDate date);

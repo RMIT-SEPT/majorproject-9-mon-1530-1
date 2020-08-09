@@ -35,16 +35,22 @@ public class HoursController {
                                           @RequestParam(required = false) String customerUsername) {
         LocalDate startDate;
         try {
-            startDate = LocalDate.parse(startDateString);
+            startDate = (startDateString == null ? null : LocalDate.parse(startDateString));
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ResponseError("startDate", "Provided date no formatted correctly"), HttpStatus.BAD_REQUEST);
         }
 
         LocalDate endDate;
         try {
-            endDate = LocalDate.parse(endDateString);
+            endDate = (endDateString == null ? null : LocalDate.parse(endDateString));
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ResponseError("endDate", "Provided date no formatted correctly"), HttpStatus.BAD_REQUEST);
+        }
+
+        if(startDate == null && endDate == null) {
+            return new ResponseEntity(
+                    new ResponseError("date range", "You must provide at least one date in the range"),
+                    HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -62,7 +68,7 @@ public class HoursController {
                                          @RequestParam(required = false) String customerUsername) {
 
         try {
-            List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(date), workerUsername, customerUsername);
+            List<HoursEntity> hours = hoursService.getHoursInDate((date == null ? null : LocalDate.parse(date)), workerUsername, customerUsername);
             return new ResponseEntity(hours, HttpStatus.ACCEPTED);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
