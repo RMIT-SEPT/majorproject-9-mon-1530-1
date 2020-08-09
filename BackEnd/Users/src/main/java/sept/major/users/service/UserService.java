@@ -1,7 +1,7 @@
 package sept.major.users.service;
 
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,17 @@ public class UserService extends CrudService<UserEntity, String> {
     }
 
 
-    public void updatePassword(String username, Map<String, Object> requestBody) {
-
+    public void updatePassword(String username, String oldPassword,String newPassword) {
+		Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username,oldPassword); 
+		
+		try {
+			UserEntity user = optionalUser.get();
+			user.setPassword(newPassword);
+			repository.save(user);
+		} catch (NoSuchElementException e) {
+			System.out.println("not matched");
+			throw new RuntimeException("Error, User not found", e) ;
+		}
     }
 
 	public boolean comparePassword(String username, String password) {
