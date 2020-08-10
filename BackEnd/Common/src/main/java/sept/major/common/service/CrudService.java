@@ -51,11 +51,16 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
      */
     public E create(E entity) throws ResponseErrorException, RecordAlreadyExistsException {
         validateEntity(entity); // Validate entity and return responseErrorException
-        try {
-            read(entity.getID());
-        } catch (RecordNotFoundException e) {
+        if(entity.getID() != null) {
+            try {
+                read(entity.getID());
+            } catch (RecordNotFoundException e) {
+                return getRepository().save(entity);
+            }
+        } else {
             return getRepository().save(entity);
         }
+
         throw new RecordAlreadyExistsException();
     }
 
