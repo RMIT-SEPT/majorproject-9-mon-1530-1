@@ -3,10 +3,8 @@ package sept.major.bookings.entity;
 import lombok.*;
 import sept.major.common.entity.AbstractEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -20,12 +18,17 @@ public class BookingEntity implements AbstractEntity<String> {
 
     @Id
     @Setter(onMethod = @__(@Id))
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String bookingId;
 
+    @NotBlank
     private String workerId;
+    @NotBlank
     private String customerId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @NotBlank
+    private String startTime;
+    @NotBlank
+    private String endTime;
 
     @Override
     public String getID() {
