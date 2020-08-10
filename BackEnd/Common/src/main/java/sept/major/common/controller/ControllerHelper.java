@@ -2,12 +2,10 @@ package sept.major.common.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import sept.major.common.entity.AbstractEntity;
 import sept.major.common.exception.*;
 import sept.major.common.patch.PatchValue;
 import sept.major.common.response.FieldIncorrectTypeError;
-import sept.major.common.response.FieldMissingError;
 import sept.major.common.response.ResponseError;
 import sept.major.common.service.CrudService;
 
@@ -55,7 +53,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             * RecordAlreadyExistsException: Record already exists with the same identifying field provided in the map
             * ResponseErrorException: A field is missing or an incorrect type.
      */
-    public E validatePostInput(Class<E> entityClass, Map<String, Object> responseBody) throws RecordAlreadyExistsException, ReponseErrorException {
+    public E validatePostInput(Class<E> entityClass, Map<String, Object> responseBody) throws RecordAlreadyExistsException, ResponseErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
@@ -95,25 +93,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new InvalidEntityException("Received method that is invokable. Only invokable methods should be here");
                 }
-            } else {
-                responseErrors.add(new FieldMissingError(entry.getKey())); // TODO Remove this and replace with validation annotations. Keep in mind the identifier field
             }
         }
 
-        try {
-            /*
-                Checks if a record with provided id already exists.
-                This check is done at the end because we do not know what value in the provided map is the identifier field,
-                we only know what the identifier field is once the entity has been fully constructed.
-             */
-            getService().read(entity.getID());
-            throw new RecordAlreadyExistsException();
-        } catch (RecordNotFoundException e) {
-            if (!responseErrors.isEmpty()) {
-                throw new ReponseErrorException(responseErrors);
-            }
-            return entity;
+        if (!responseErrors.isEmpty()) {
+            throw new ResponseErrorException(responseErrors);
         }
+        return entity;
     }
 
 
@@ -132,7 +118,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
 
         } catch (RecordAlreadyExistsException e) {
             return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
-        } catch (ReponseErrorException e) {
+        } catch (ResponseErrorException e) {
             return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -147,7 +133,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
          Throws:
             * ResponseErrorException: A field is an incorrect type.
      */
-   public HashMap<String, PatchValue> validatePatchInput(Class<E> entityClass, ID id, Map<String, Object> responseBody) throws ReponseErrorException {
+   public HashMap<String, PatchValue> validatePatchInput(Class<E> entityClass, ID id, Map<String, Object> responseBody) throws ResponseErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
@@ -188,7 +174,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
        }
 
        if (!responseErrors.isEmpty()) {
-           throw new ReponseErrorException(responseErrors);
+           throw new ResponseErrorException(responseErrors);
        }
 
        return patchValues;
@@ -209,7 +195,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             E patchedEntity = getService().patch(id, patchValues);
             return new ResponseEntity(patchedEntity, HttpStatus.OK);
 
-        } catch (ReponseErrorException e) {
+        } catch (ResponseErrorException e) {
             return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(new ResponseError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
