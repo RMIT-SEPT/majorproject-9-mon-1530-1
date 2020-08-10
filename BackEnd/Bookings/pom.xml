@@ -73,7 +73,7 @@
         <dependency>
             <groupId>sept.major</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api &ndash;&gt;-->

@@ -1,6 +1,7 @@
 package sept.major.bookings.entity;
 
 import lombok.*;
+import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.common.entity.AbstractEntity;
 
 import javax.persistence.*;
@@ -25,9 +26,13 @@ public class BookingEntity implements AbstractEntity<String> {
     private String workerId;
     @NotBlank
     private String customerId;
+
     @NotBlank
+    @Convert(converter = StringToTimestampConverter.class)
     private String startTime;
+
     @NotBlank
+    @Convert(converter = StringToTimestampConverter.class)
     private String endTime;
 
     @Override
