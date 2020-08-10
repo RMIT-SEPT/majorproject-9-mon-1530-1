@@ -75,7 +75,7 @@ public abstract class UserServiceTestHelper {
                 id,
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
-                date.toString(),
+                (date == null ? null : date.toString()),
                 LocalDateTime.now().toString(),
                 LocalDateTime.now().toString()
         );

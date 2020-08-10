@@ -26,14 +26,14 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
                 randomEntity(randomAlphanumericString(4))
         );
 
-        runTest(new ResponseEntity(expected, HttpStatus.ACCEPTED),
-                expected,null, null, null);
+        runTestsWithUsernameFilters(new ResponseEntity(expected, HttpStatus.ACCEPTED),
+                expected,null);
     }
 
     @Test
     void noDateMissingResult() {
-        runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
-                Arrays.asList(), null, null, randomAlphanumericString(4));
+        runTestsWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
+                Arrays.asList(), null);
     }
 
     @Test
@@ -42,22 +42,71 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
 
         HoursEntity expected = randomEntityWithDate(randomAlphanumericString(4), date);
 
-        runTest(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
-                Arrays.asList(expected), date, null, null);
+        runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
+                Arrays.asList(expected), date);
     }
 
     @Test
     void dateMissingResult() {
-        runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
-                Arrays.asList(), LocalDate.now(), null, randomAlphanumericString(4));
+        runTestsWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
+                Arrays.asList(), LocalDate.now());
+    }
+
+
+    private void runTestsWithUsernameFilters(ResponseEntity expected, List<HoursEntity> returned, LocalDate date) {
+        testWorkerUsernameFilter(expected,returned,date);
+        testCustomerUsernameFilter(expected,returned,date);
+        testCustomerAndWorkerUsernameFilter(expected,returned,date);
+    }
+
+    private void testWorkerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, LocalDate date) {
+        String workerUsername = randomAlphanumericString(20);
+
+        List<HoursEntity> workerUsernameEntities = new ArrayList<>(returned);
+        workerUsernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
+
+        workerUsernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+
+        runTest(expected, returned, date);
+    }
+
+    private void testCustomerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, LocalDate date) {
+        String customerUsername = randomAlphanumericString(20);
+
+        List<HoursEntity> customerUsernameEntities = new ArrayList<>(returned);
+        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+
+        customerUsernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+
+        runTest(expected, returned, date);
+    }
+
+    private void testCustomerAndWorkerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, LocalDate date) {
+        String customerUsername = randomAlphanumericString(20);
+        String workerUsername = randomAlphanumericString(20);
+
+        List<HoursEntity> usernameEntities = new ArrayList<>(returned);
+        usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+        usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
+
+        HoursEntity customerUsernameEntity = randomEntityWithDate(randomAlphanumericString(4), date);
+        customerUsernameEntity.setCustomerUsername(customerUsername);
+        usernameEntities.add(customerUsernameEntity);
+
+        HoursEntity workerUsernameEntity = randomEntityWithDate(randomAlphanumericString(4), date);
+        workerUsernameEntity.setWorkerUsername(workerUsername);
+        usernameEntities.add(workerUsernameEntity);
+
+        usernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+
+        runTest(expected, returned, date);
     }
 
 
 
-
-    private void runTest(ResponseEntity expected, List<HoursEntity> returned, LocalDate date, String workerUsername, String customerUsername) {
+    private void runTest(ResponseEntity expected, List<HoursEntity> returned, LocalDate date) {
         when(mockedUserRepository.findAllByDate(date)).thenReturn(returned);
-        ResponseEntity result = hoursController.getHoursInDate((date == null ? null: date.toString()), workerUsername, customerUsername);
+        ResponseEntity result = hoursController.getHoursInDate((date == null ? null: date.toString()), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(expected.getStatusCode());
