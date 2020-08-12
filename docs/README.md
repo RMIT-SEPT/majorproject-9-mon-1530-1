@@ -5,6 +5,9 @@
 
 # Setting up database docker image 
 For our project we currently use a docker image for our database.
+
+The following sets assume you have docker installed on your system. Visit https://www.docker.com/products/docker-desktop for the installation
+
 To set it up do the following:
 
 Open a command prompt (power shell for windows) in setup/docker/db and run
