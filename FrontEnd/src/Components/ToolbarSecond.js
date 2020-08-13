@@ -20,7 +20,7 @@ letter-spacing: -0.05em;
 const Toolbar = styled.div`
     height: 10vh;
     flex-grow: 1;
-    background-color: black;
+    background-color: white;
     margin-top:1%;
   `
 const Logo = styled.img`
@@ -40,7 +40,7 @@ const toolbar = (props) => {
         <Toolbar>
             <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
                 <Grid item xs={2}>
-                    <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
+                    <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
                 </Grid>
                 <Grid item xs={2}>
                     <a href="http://localhost:3000/contactus" style={{ textDecoration: 'none' }}>

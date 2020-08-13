@@ -133,7 +133,7 @@ const login = (props) => {
         <Left>
           <Grid container direction="column" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
+              <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
               <Grid item xs={12}>
                 <Construction src={construction} alt="contact" />
               </Grid>

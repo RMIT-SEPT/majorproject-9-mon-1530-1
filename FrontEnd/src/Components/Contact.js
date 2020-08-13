@@ -104,6 +104,9 @@ const CssTextFieldGreen = withStyles({
     }
   }
 })(TextField);
+// this is a conrtact us page where a user can send contact us and leaves a message 
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
 
 const contact = (props) => {
   return (
@@ -112,7 +115,7 @@ const contact = (props) => {
         <Left>
           <Grid container direction="column" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
+              <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
               <Grid item xs={12}>
                 <Construction src={construction} alt="contact" />
               </Grid>
