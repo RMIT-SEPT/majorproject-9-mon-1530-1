@@ -23,13 +23,18 @@ const Toolbar = styled.div`
     background-color: black;
     margin-top:1%;
   `
-  const Logo = styled.img`
+const Logo = styled.img`
     width: 51%;
     height: auto;
     background-repeat: no-repeat;
     background-size: contain;
 
 `
+
+// this is the toolbar for the guest user 
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
+
 const toolbar = (props) => {
     return (
         <Toolbar>
@@ -43,7 +48,7 @@ const toolbar = (props) => {
                     </a>
                 </Grid>
                 <Grid item xs={2}>
-                <a href="http://localhost:3000/about" style={{ textDecoration: 'none' }}>
+                    <a href="http://localhost:3000/about" style={{ textDecoration: 'none' }}>
                         <GreenButton variant="text" >About-us</GreenButton>
                     </a>
                 </Grid>
@@ -57,7 +62,7 @@ const toolbar = (props) => {
                     <a href="http://localhost:3000/form"> <img className="small" src={small} alt="small" /> </a>
                 </Grid>
             </Grid>
-            </Toolbar>
+        </Toolbar>
     )
 }
 export default toolbar; 

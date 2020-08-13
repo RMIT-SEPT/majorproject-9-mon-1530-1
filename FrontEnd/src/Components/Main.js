@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import { TextField, Grid, InputLabel, Box, FormControl, Select } from '@material-ui/core';
 import big from '../media/big.png';
@@ -102,13 +102,15 @@ const DatePicker = styled(DateTimePicker)`
 }
  
 `
-
-
+//this is the main page, it contains a tool bar 
+//and it contains the search for a service feature
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
 
 function Main(props) {
   document.body.style = 'background:black;'
 
-  const [date,setDate]= useState(new Date())
+  const [date, setDate] = useState(new Date())
 
   const onChange = date => setDate(date)
   return (
@@ -125,14 +127,14 @@ function Main(props) {
                   <MidFont>Choose a service</MidFont>
                 </Grid>
                 <Grid item xs={5}>
-                <div>
+                  <div>
                     <DatePicker
                       onChange={onChange}
                       value={date}
                     />
                   </div>
                 </Grid>
-                </Grid>
+              </Grid>
               <Grid item xs={12}>
                 <FormControl variant="outlined">
                   <Input htmlFor="grouped-native-select"></Input>

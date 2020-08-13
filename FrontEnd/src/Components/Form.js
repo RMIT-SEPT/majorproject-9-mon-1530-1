@@ -124,6 +124,10 @@ const CssTextField = withStyles({
   }
 })(TextField);
 
+// this is the signup page, 
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
+
 const form = (props) => {
   return (
     <Grid container alignItems="center" justify="center" spacing={0}>
@@ -153,19 +157,19 @@ const form = (props) => {
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
             <Grid item xs={6}>
-            <Heading>Username  </Heading>
+              <Heading>Username  </Heading>
               <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
 
             <Grid item xs={12}>
-            <Heading>Full Address </Heading>
+              <Heading>Full Address </Heading>
               <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
 
             <Grid item xs={12}>
-            <Heading>Contact Number </Heading>
+              <Heading>Contact Number </Heading>
               <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>

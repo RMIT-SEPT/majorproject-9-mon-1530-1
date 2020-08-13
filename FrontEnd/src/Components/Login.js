@@ -1,13 +1,10 @@
 import React from 'react'
-
 import { Button, Grid } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
-
-
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -125,6 +122,10 @@ const Left = styled.div`
   background-color: black;
   color:white;
 `
+
+// this is a login page, a user can log in
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
 const login = (props) => {
   return (
     <Grid container alignItems="center" justify="center" spacing={0}>
@@ -152,7 +153,7 @@ const login = (props) => {
               <Heading>User Name </Heading>
               <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
-            </Grid>            
+            </Grid>
             <Grid item xs={12}>
               <Heading>Password</Heading>
               <CssTextField id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"

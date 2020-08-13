@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Grid}  from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import doctor from '../media/doc.png';
 import gym from '../media/gym.svg';
 import TextLoop from "react-text-loop";
@@ -40,6 +40,10 @@ const MainWrapper = styled.div`
 padding :1%;
 
 `
+//this is the about us  page, it contains a tool bar 
+// items are allocated evenly using a Grid function in material ui library 
+// we use normal routing in order to move between pages 
+
 const about = (props) => {
   document.body.style = 'background:black;'
   return (
