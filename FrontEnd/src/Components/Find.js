@@ -90,7 +90,7 @@ function Find(props) {
                         {/* this is the select service elemet where we can group all the services we have and output all the workers  */}
                         <FormControl variant="outlined">
                             <Input htmlFor="grouped-native-select"></Input>
-                            <ElementSelect native defaultValue="" id="grouped-native-select">Choose a service<option value={0}>Choose a service</option>
+                            <ElementSelect native defaultValue="" id="grouped-native-select">Choose a service
                                 <optgroup label="Mark's cleaning">
                                     <option value={1}>Mark</option>
                                     <option value={2}>Sandra</option>
