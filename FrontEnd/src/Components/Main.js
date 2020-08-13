@@ -69,14 +69,18 @@ function Main(props) {
   const onChange = date => setDate(date)
   return (
     <MainWrapper>
+      {/* this is the main grid that holds every element */}
       <Grid container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
+          {/* implemented toolbar */}
           <Toolbar />
         </Grid>
         <Grid item xs={12}>
-         <Find></Find>
+          {/* implemented  search  for a service  */}
+          <Find></Find>
         </Grid>
         <Grid item xs={12}>
+          {/* img and the rolling text  */}
           <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
             <Grid item xs={6}>
               <BigFont>Find Best Sevices </BigFont>
@@ -100,6 +104,7 @@ function Main(props) {
         <Grid item xs={12}>
           <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
+              {/* signup and book pages  */}
               <a href="http://localhost:3000/form"> <img style={{ marginLeft: "10%" }} src={big} alt="big" /> </a>
             </Grid>
             <Grid item xs={3}>

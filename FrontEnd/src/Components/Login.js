@@ -128,8 +128,10 @@ const Left = styled.div`
 // we use normal routing in order to move between pages 
 const login = (props) => {
   return (
+    //this is the main grid that holds every element
     <Grid container alignItems="center" justify="center" spacing={0}>
       <Grid item xs={7} >
+        {/* the logo and the img on the left  */}
         <Left>
           <Grid container direction="column" justify="center" alignItems="center">
             <Grid item xs={12}>
@@ -144,6 +146,7 @@ const login = (props) => {
 
       <Grid item xs={5} >
         <Right>
+          {/* link to sign up  */}
           <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
           <Grid container direction="row" container spacing={1}>
             <Grid item xs={12}>
@@ -159,6 +162,7 @@ const login = (props) => {
               <CssTextField id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
+            {/* submit button */}
             <Grid item xs={12}>
               <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
             </Grid>

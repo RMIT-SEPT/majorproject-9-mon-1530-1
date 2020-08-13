@@ -37,10 +37,8 @@ const ElementSelect = styled(Select)`
     background: White;
     width: 300%;
     margin-left: 50%;
-\
+
   `
-
-
 const DatePicker = styled(DateTimePicker)`
    .react-datetime-picker__wrapper{
     background-color:white!important;
@@ -49,7 +47,6 @@ const DatePicker = styled(DateTimePicker)`
     border-radius: 8px;
     padding:8%
     
-   
   }
   .react-datetime-picker__inputGroup__divider {
       padding: 1px ;
@@ -74,7 +71,7 @@ function Find(props) {
 
     const onChange = date => setDate(date)
     return (
-
+        // this is the main box that holds every element
         <Box display="flex" justifyContent="center">
             <Box borderRadius={70} {...defaultProps}>
                 <Grid container direction="row" alignItems="flex-end" justify="space-between" spacing={5} >
@@ -83,13 +80,14 @@ function Find(props) {
                     </Grid>
                     <Grid item xs={5}>
                         <div>
+                            {/* the calender element  */}
                             <DatePicker
                                 onChange={onChange}
-                                value={date}
-                            />
+                                value={date} />
                         </div>
                     </Grid>
                     <Grid item xs={6}>
+                        {/* this is the select service elemet where we can group all the services we have and output all the workers  */}
                         <FormControl variant="outlined">
                             <Input htmlFor="grouped-native-select"></Input>
                             <ElementSelect native defaultValue="" id="grouped-native-select">Choose a service<option value={0}>Choose a service</option>
@@ -104,6 +102,7 @@ function Find(props) {
                             </ElementSelect>
                         </FormControl>
                     </Grid>
+                    {/* submit button  */}
                     <Grid item xs={5}>
                         <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
                     </Grid>

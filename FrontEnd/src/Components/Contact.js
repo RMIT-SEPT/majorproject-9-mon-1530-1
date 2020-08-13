@@ -110,7 +110,9 @@ const CssTextFieldGreen = withStyles({
 
 const contact = (props) => {
   return (
+    // this is the main grid that holds every element 
     <Grid container alignItems="center" justify="center" spacing={0}>
+      {/* the logo and the img on the left  */}
       <Grid item xs={7} >
         <Left>
           <Grid container direction="column" justify="center" alignItems="center">
@@ -123,7 +125,7 @@ const contact = (props) => {
           </Grid>
         </Left>
       </Grid>
-
+      {/* a link to the signup page   */}
       <Grid item xs={5} >
         <Right>
           <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
@@ -131,6 +133,7 @@ const contact = (props) => {
             <Grid item xs={12}>
               <Bold>Send us a message </Bold>
             </Grid>
+            {/* form to sign up   */}
             <Grid item xs={12}>
               <Heading>Name </Heading>
               <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"

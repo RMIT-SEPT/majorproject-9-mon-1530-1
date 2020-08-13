@@ -48,12 +48,15 @@ const about = (props) => {
   document.body.style = 'background:black;'
   return (
     <MainWrapper>
+      {/* this is the main grid that holds every element */}
       <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
+          {/* made a toolbar component that i use throughout the project*/}
           <Toolbar />
         </Grid>
         <Grid item xs={5}>
           <Bold>{"Agem helps your find you best \nLocal services such as\n"}
+            {/* moving words in loop */}
             <TextLoop interval={350} >
               <span>Barbers </span>
               <span>Nail technicians</span>
@@ -64,6 +67,7 @@ const about = (props) => {
             </Bold>
         </Grid>
         <Grid item xs={5} justify="flex-end" >
+          {/*this is the img of the gym*/}
           <Gym src={gym} alt="gym" />
         </Grid>
         <Grid item xs={6}>
