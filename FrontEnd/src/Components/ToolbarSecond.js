@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components';
 import { Button, Grid } from '@material-ui/core';
-import logo from '../media/logo.png';
+import logo from '../media/seclogo.png';
 import login from '../media/login.png';
 import small from '../media/small.png';
 
@@ -40,7 +40,7 @@ const toolbar = (props) => {
         <Toolbar>
             <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
                 <Grid item xs={2}>
-                    <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
+                    <a href="http://localhost:3000/main"> <Logo src={logo} alt="logo" /> </a>
                 </Grid>
                 <Grid item xs={2}>
                     <a href="http://localhost:3000/contactus" style={{ textDecoration: 'none' }}>
@@ -53,7 +53,7 @@ const toolbar = (props) => {
                     </a>
                 </Grid>
                 <Grid item xs={2}>
-                    <GreenButton variant="text"> Lolols</GreenButton>
+                    <GreenButton variant="text"> New Booking</GreenButton>
                 </Grid>
                 <Grid item xs={1}>
                     <a href="http://localhost:3000/login"> <img className="login" src={login} alt="login" /> </a>

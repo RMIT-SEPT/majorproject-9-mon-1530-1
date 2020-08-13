@@ -37,6 +37,7 @@ const ElementSelect = styled(Select)`
     background: White;
     width: 300%;
     margin-left: 50%;
+\
   `
 
 
