@@ -7,7 +7,6 @@ import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
 
 const Heading = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 20px;
@@ -17,7 +16,6 @@ const Heading = styled.div`
   margin: 10px;
 `
 const Bold = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: 800;
   font-size: 35px;
@@ -26,7 +24,6 @@ const Bold = styled.div`
   color: #000000;
 `
 const TopRight = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: 600;
   font-size: 20px;

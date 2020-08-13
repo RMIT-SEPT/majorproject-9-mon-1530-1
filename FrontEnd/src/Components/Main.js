@@ -18,7 +18,6 @@ padding :1%;
 
 `
 const BigFont = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 70px;
@@ -30,7 +29,6 @@ const BigFont = styled.div`
 
 `
 const SmallerFont = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 26px;

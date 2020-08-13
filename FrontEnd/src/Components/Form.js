@@ -31,7 +31,6 @@ const CssTextFieldGreen = withStyles({
 })(TextField);
 
 const Heading = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 20px;

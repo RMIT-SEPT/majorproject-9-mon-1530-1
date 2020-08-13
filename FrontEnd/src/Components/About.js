@@ -20,7 +20,6 @@ const Gym = styled.img`
   background-size: contain;
 `
 const Bold = styled.div`
-  font-family: Nunito Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 35px;
