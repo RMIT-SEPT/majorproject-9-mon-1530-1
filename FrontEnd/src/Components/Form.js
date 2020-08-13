@@ -150,7 +150,7 @@ const form = (props) => {
         <Right>
           {/* a link to the log in page  */}
           <TopRight>Already  a member? <a href="http://localhost:3000/login"> Log-in</a> </TopRight>
-          <Grid container direction="row" container spacing={1}>
+          <Grid container spacing={1}>
             {/* the form to login  */}
             <Grid item xs={12}>
               <Bold> Sign Up to Agem </Bold>

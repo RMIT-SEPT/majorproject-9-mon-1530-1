@@ -49,7 +49,7 @@ const about = (props) => {
   return (
     <MainWrapper>
       {/* this is the main grid that holds every element */}
-      <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
+      <Grid container direction="row" alignItems="center" justify="space-between" spacing={5} >
         <Grid item xs={12}>
           {/* made a toolbar component that i use throughout the project*/}
           <Toolbar />

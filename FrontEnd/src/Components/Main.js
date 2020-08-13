@@ -72,7 +72,7 @@ function Main(props) {
         </Grid>
         <Grid item xs={12}>
           {/* img and the rolling text  */}
-          <Grid container container direction="row" alignItems="center" justify="space-between" spacing={5} >
+          <Grid container direction="row" alignItems="center" justify="space-between" spacing={5} >
             <Grid item xs={6}>
               <BigFont>Find Best Sevices </BigFont>
               <BigFont>Near You</BigFont>
@@ -93,7 +93,7 @@ function Main(props) {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
+          <Grid container direction="row" alignItems="baseline" justify="flex-start" spacing={5} >
             <Grid item xs={3}>
               {/* signup and book pages  */}
               <a href="http://localhost:3000/form"> <img style={{ marginLeft: "10%" }} src={big} alt="big" /> </a>

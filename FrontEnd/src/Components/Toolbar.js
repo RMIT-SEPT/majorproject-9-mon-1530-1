@@ -39,7 +39,7 @@ const toolbar = (props) => {
     return (
         <Toolbar>
             {/* this is the main grid that holds every element */}
-            <Grid container container direction="row" alignItems="flex-start" justify="space-between" >
+            <Grid container  direction="row" alignItems="flex-start" justify="space-between" >
                 <Grid item xs={2}>
                     <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
                 </Grid>

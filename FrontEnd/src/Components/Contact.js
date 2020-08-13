@@ -129,7 +129,7 @@ const contact = (props) => {
       <Grid item xs={5} >
         <Right>
           <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
-          <Grid container direction="row" container spacing={1}>
+          <Grid container spacing={1}>
             <Grid item xs={12}>
               <Bold>Send us a message </Bold>
             </Grid>
