@@ -19,7 +19,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route exact path="/main" component={Main} />
+        <Route exact path="/" component={Main} />
         <Route exact path="/form" component={Form} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/about" component={About} />
