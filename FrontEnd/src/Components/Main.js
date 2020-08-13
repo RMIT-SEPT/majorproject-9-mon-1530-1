@@ -1,21 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components';
-import { Button, Grid, InputLabel, Box, FormControl, Select } from '@material-ui/core';
+import {  Grid } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
-import DateTimePicker from 'react-datetime-picker';
-import { withStyles } from "@material-ui/core/styles";
 import Find from '../Components/Find.js'
 
-const defaultProps = {
-  borderColor: '#5AC490',
-  m: 5,
-  border: 3,
-  style: { width: '95%', height: '14rem' },
-};
 const MainWrapper = styled.div`
   background-color:black!important;
   height: 100vh;
@@ -65,8 +57,7 @@ const Hairdresser = styled.img`
 
 function Main(props) {
   document.body.style = 'background:black;'
-  const [date, setDate] = useState(new Date())
-  const onChange = date => setDate(date)
+
   return (
     <MainWrapper>
       {/* this is the main grid that holds every element */}
