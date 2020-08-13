@@ -53,7 +53,7 @@ const toolbar = (props) => {
                     </a>
                 </Grid>
                 <Grid item xs={2}>
-                    <GreenButton variant="text"> Lolols</GreenButton>
+                    <GreenButton variant="text"> Make a booking</GreenButton>
                 </Grid>
                 <Grid item xs={1}>
                     <a href="http://localhost:3000/login"> <img className="login" src={login} alt="login" /> </a>
