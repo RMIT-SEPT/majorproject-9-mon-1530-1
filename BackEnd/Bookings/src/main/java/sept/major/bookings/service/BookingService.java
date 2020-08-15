@@ -26,7 +26,7 @@ public class BookingService extends CrudService<BookingEntity, String> {
     }
 
     public List<BookingEntity> getBookingsInRange(LocalDateTime startTime) throws IllegalArgumentException, RecordNotFoundException {
-        return getBookingsInRange(startTime, LocalDateTime.MAX);
+        return getBookingsInRange(startTime, startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1));
     }
 
     public List<BookingEntity> getBookingsInRange(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException, RecordNotFoundException {
@@ -35,7 +35,7 @@ public class BookingService extends CrudService<BookingEntity, String> {
         if (startTime == null) {
             throw new IllegalArgumentException("No start time was defined");
         } else {
-            entityList = getRepository().findAllByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(startTime, endTime);
+            entityList = getRepository().findAllBetweenDates(startTime, endTime);
         }
 
         if (entityList == null || entityList.size() == 0) {

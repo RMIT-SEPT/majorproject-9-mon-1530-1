@@ -2,6 +2,7 @@ package sept.major.bookings.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sept.major.bookings.entity.BookingEntity;
 
@@ -12,6 +13,6 @@ import java.util.List;
 @Table(name = "bookings", schema = "bookings")
 @Repository
 public interface BookingsRepository extends JpaRepository<BookingEntity, String> {
-    //List<BookingEntity> findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(Date endDate, Date startDate);
-    List<BookingEntity> findAllByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(LocalDateTime startTime, LocalDateTime endTime);
+    @Query("select b from BookingEntity b where b.startTime >= :startTime and b.endTime <= :endTime")
+    List<BookingEntity> findAllBetweenDates(LocalDateTime startTime, LocalDateTime endTime);
 }
