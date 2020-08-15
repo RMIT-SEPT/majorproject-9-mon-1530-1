@@ -94,6 +94,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
         String username = randomAlphanumericString(20);
 
         Map<String, Object> input = new HashMap<String, Object>() {{
+            put("username", username);
             put("userType", null);
             put("name", null);
             put("phone", null);
@@ -343,6 +344,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
     private UserEntity createUserEntity(Map<String, Object> entityMap) {
         return new UserEntity(
                 (String) entityMap.get("username"),
+                "pass123",
                 (String) entityMap.get("userType"),
                 (String) entityMap.get("name"),
                 (String) entityMap.get("phone"),

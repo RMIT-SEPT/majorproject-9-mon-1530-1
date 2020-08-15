@@ -3,22 +3,30 @@ package sept.major.common.service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import sept.major.common.entity.AbstractEntity;
-import sept.major.common.exception.IdentifierUpdateException;
-import sept.major.common.exception.InvalidEntityException;
-import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.exception.*;
 import sept.major.common.patch.PatchValue;
+import sept.major.common.response.ResponseError;
 
 import javax.persistence.Id;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
     A abstract implementation of generic service functionality.
     This service will satisfy the requirements of a simple CRUD service.
  */
 public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
+
+    private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private Validator validator = factory.getValidator();
 
     /*
         Method for retrieving the linked repository in a generic fashion.
@@ -41,9 +49,19 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
     /*
         Generic create entity functionality
      */
-    public E create(E entity) {
-        // TODO Entity validation goes here
-        return getRepository().save(entity);
+    public E create(E entity) throws ResponseErrorException, RecordAlreadyExistsException {
+        validateEntity(entity); // Validate entity and return responseErrorException
+        if(entity.getID() != null) {
+            try {
+                read(entity.getID());
+            } catch (RecordNotFoundException e) {
+                return getRepository().save(entity);
+            }
+        } else {
+            return getRepository().save(entity);
+        }
+
+        throw new RecordAlreadyExistsException();
     }
 
     /*
@@ -56,7 +74,7 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             * RecordNotFoundException: No record with the given id exists. Cannot update a record if there is no record.
             * IdentifierUpdateException: Occurs when the user attempts to update the identifying field. This would break database logic.
      */
-    public E patch(ID id, HashMap<String, PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException {
+    public E patch(ID id, HashMap<String, PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ResponseErrorException {
 
         // Gets the existing record by calling the generic read method implemented in this class. Returns RecordNotFoundException if record doesn't exist.
         E existingEntity = read(id);
@@ -95,8 +113,10 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             }
         }
 
+        validateEntity(existingEntity);
+
         // Use the generic create entity logic implemented in this class. Done so there is no repeated logic.
-        return create(existingEntity);
+        return getRepository().save(existingEntity);
     }
 
     /*
@@ -107,6 +127,26 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             getRepository().deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new RecordNotFoundException(String.format("No record with a identifier of %s was found", id));
+        }
+    }
+
+    private void validateEntity(E entity) throws ResponseErrorException {
+        /*
+            Validates the provided entity with JSR 380/Bean Validation 2.0
+            Allows developers to annotate fields with validation such as NotBlank for convenient field validation.
+         */
+        Set<ConstraintViolation<E>> violations = validator.validate(entity); // Validate the entity and record violations
+
+        /*
+            Go through all the violations and translate the violations into ResponseErrors.
+            Done so that the API returns the standard error response, allowing for automatic analysis and higher human readability.
+         */
+        Set<ResponseError> responseErrors = violations.stream()
+                .map(violation -> new ResponseError(violation.getPropertyPath().toString(), violation.getMessage()))
+                .collect(Collectors.toSet());
+
+        if(!responseErrors.isEmpty()) {
+            throw new ResponseErrorException(responseErrors);
         }
     }
 }

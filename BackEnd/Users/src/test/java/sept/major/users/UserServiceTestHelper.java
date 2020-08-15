@@ -18,6 +18,10 @@ public abstract class UserServiceTestHelper {
     UserServiceControllerHelper userServiceControllerHelper;
     UserService userService;
 
+    public UserService getUserService() {
+    	return userService;
+    }
+    
     @Mock
     UsersRepository mockedUserRepository;
 
