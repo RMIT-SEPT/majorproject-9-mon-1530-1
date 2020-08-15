@@ -4,16 +4,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.controller.HoursControllerHelper;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 import sept.major.hours.service.HoursService;
 
+import javax.persistence.Convert;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,6 +93,26 @@ public abstract class UserServiceTestHelper {
                 randomAlphanumericString(20),
                 startDateTime,
                 endDateTime
+        );
+    }
+
+    protected Map<String, Object> randomEntityMap() {
+        return new HashMap<String, Object>() {{
+            put("hoursId", randomAlphanumericString(4));
+            put("workerUsername", randomAlphanumericString(20));
+            put("customerUsername", randomAlphanumericString(20));
+            put("startDateTime", LocalDateTime.now().toString());
+            put("endDateTime", LocalDateTime.now().toString());
+        }};
+    }
+
+    protected HoursEntity entityMapToEntity(Map<String, Object> map) {
+        return new HoursEntity(
+                (map.get("hoursId") == null) ? null : map.get("hoursId").toString(),
+                (map.get("workerUsername") == null) ? null : map.get("workerUsername").toString(),
+                (map.get("customerUsername") == null) ? null : map.get("customerUsername").toString(),
+                (map.get("startDateTime") == null) ? null : map.get("startDateTime").toString(),
+                (map.get("endDateTime") == null) ? null : map.get("endDateTime").toString()
         );
     }
 
