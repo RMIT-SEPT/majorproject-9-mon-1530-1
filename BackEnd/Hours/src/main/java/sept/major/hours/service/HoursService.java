@@ -4,11 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.exception.ResponseErrorException;
+import sept.major.common.response.ResponseError;
 import sept.major.common.service.CrudService;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +37,16 @@ public class HoursService extends CrudService<HoursEntity, String> {
         return filterUsernames(allEntity, workerUsername, customerUsername);
     }
 
-    public List<HoursEntity> getHoursInDate(LocalDate date, String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<HoursEntity> hoursInDate = hoursRepository.findAllByDate(date);
+    public List<HoursEntity> getHoursInDate(LocalDate date, String workerUsername, String customerUsername) throws RecordNotFoundException, ResponseErrorException {
+        if(date == null) {
+            throw new ResponseErrorException(new HashSet<>(Arrays.asList(new ResponseError("date", "Must be provided"))));
+        }
+        List<HoursEntity> hoursInDate = hoursRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
         return filterUsernames(hoursInDate, workerUsername, customerUsername);
     }
 
-    public List<HoursEntity> getHoursBetweenDates(LocalDate startDate, LocalDate endDate, String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllByDateGreaterThanEqualAndDateLessThanEqual(startDate, endDate);
+    public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String customerUsername) throws RecordNotFoundException {
+        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(startDate, endDate);
         return filterUsernames(hoursBetweenDates, workerUsername, customerUsername);
 
     }

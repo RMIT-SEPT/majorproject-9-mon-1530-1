@@ -12,6 +12,8 @@ import sept.major.hours.service.HoursService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,20 +66,28 @@ public abstract class UserServiceTestHelper {
                 id,
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
-                LocalDate.now().toString(),
                 LocalDateTime.now().toString(),
                 LocalDateTime.now().toString()
         );
     }
 
-    protected HoursEntity randomEntityWithDate(String id, LocalDate date) {
+    protected HoursEntity randomEntityWithDate(String id, String date) {
         return new HoursEntity(
                 id,
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
-                (date == null ? null : date.toString()),
-                LocalDateTime.now().toString(),
-                LocalDateTime.now().toString()
+                date,
+                date
+        );
+    }
+
+    protected HoursEntity randomEntityWithDateRange(String id, String startDateTime, String endDateTime) {
+        return new HoursEntity(
+                id,
+                randomAlphanumericString(20),
+                randomAlphanumericString(20),
+                startDateTime,
+                endDateTime
         );
     }
 
@@ -86,5 +96,19 @@ public abstract class UserServiceTestHelper {
         date = date.minusYears(years);
         date = date.minusMonths(months);
         return date.minusDays(days);
+    }
+
+    protected List<HoursEntity> deepCopy(List<HoursEntity> toCopy) {
+        List<HoursEntity> copiedList = new ArrayList<>();
+        toCopy.forEach(hoursEntity -> {
+            HoursEntity copiedEntity = new HoursEntity(hoursEntity.getHoursId(),
+                    hoursEntity.getWorkerUsername(),
+                    hoursEntity.getCustomerUsername(),
+                    hoursEntity.getStartDateTime(),
+                    hoursEntity.getEndDateTime());
+            copiedList.add(copiedEntity);
+        });
+
+        return copiedList;
     }
 }

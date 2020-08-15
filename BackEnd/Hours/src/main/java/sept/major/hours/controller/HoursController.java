@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.exception.ResponseErrorException;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.service.HoursService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,10 @@ public class HoursController {
 
     private HoursControllerHelper hoursControllerHelper;
     private HoursService hoursService;
+
+    public static final String INCORRECT_DATE_FORMAT_ERROR_MESSAGE = "Date must be formatted as yyyy-mm-dd";
+    public static final String INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE = "Date time must be formatted as yyyy-mm-dd hh:mm:ss[.fffffffff]";
+
 
     @Autowired
     public HoursController(HoursService hoursService, HoursControllerHelper hoursControllerHelper) {
@@ -33,18 +39,18 @@ public class HoursController {
                                           @RequestParam(required = false) String endDateString,
                                           @RequestParam(required = false) String workerUsename,
                                           @RequestParam(required = false) String customerUsername) {
-        LocalDate startDate;
+        LocalDateTime startDate;
         try {
-            startDate = (startDateString == null ? null : LocalDate.parse(startDateString));
+            startDate = (startDateString == null ? null : LocalDateTime.parse(startDateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("startDate", "Provided date no formatted correctly"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
-        LocalDate endDate;
+        LocalDateTime endDate;
         try {
-            endDate = (endDateString == null ? null : LocalDate.parse(endDateString));
+            endDate = (endDateString == null ? null : LocalDateTime.parse(endDateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("endDate", "Provided date no formatted correctly"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseError("endDate",INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         if(startDate == null && endDate == null) {
@@ -67,13 +73,19 @@ public class HoursController {
                                          @RequestParam(required = false) String workerUsername,
                                          @RequestParam(required = false) String customerUsername) {
 
+        if(date == null) {
+            throw new RuntimeException("Received null date when the field is required by the endpoint");
+        }
+
         try {
-            List<HoursEntity> hours = hoursService.getHoursInDate((date == null ? null : LocalDate.parse(date)), workerUsername, customerUsername);
+            List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(date), workerUsername, customerUsername);
             return new ResponseEntity(hours, HttpStatus.ACCEPTED);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("date", "Provided date no formatted correctly"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+        } catch (ResponseErrorException e) {
+            throw new RuntimeException("Received null date when the field is required by the endpoint");
         }
     }
 

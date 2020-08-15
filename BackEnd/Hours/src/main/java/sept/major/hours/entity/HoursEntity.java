@@ -1,12 +1,11 @@
 package sept.major.hours.entity;
 
 import lombok.*;
+import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.common.entity.AbstractEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -20,14 +19,22 @@ public class HoursEntity implements AbstractEntity<String> {
 
     @Id
     @Setter(onMethod = @__(@Id))
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String hoursId;
 
+    @NotBlank
     private String workerUsername;
+
+    @NotBlank
     private String customerUsername;
-    private String date;
-    private String startTime;
-    private String endTime;
+
+    @NotBlank
+    @Convert(converter = StringToTimestampConverter.class)
+    private String startDateTime;
+
+    @NotBlank
+    @Convert(converter = StringToTimestampConverter.class)
+    private String endDateTime;
 
     @Override
     public String getID() {
