@@ -106,6 +106,16 @@ public abstract class UserServiceTestHelper {
         }};
     }
 
+    protected Map<String, Object> randomEntityMap(String id) {
+        return new HashMap<String, Object>() {{
+            put("hoursId", id);
+            put("workerUsername", randomAlphanumericString(20));
+            put("customerUsername", randomAlphanumericString(20));
+            put("startDateTime", LocalDateTime.now().toString());
+            put("endDateTime", LocalDateTime.now().toString());
+        }};
+    }
+
     protected HoursEntity entityMapToEntity(Map<String, Object> map) {
         return new HoursEntity(
                 (map.get("hoursId") == null) ? null : map.get("hoursId").toString(),
