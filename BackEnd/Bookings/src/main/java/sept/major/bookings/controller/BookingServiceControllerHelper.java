@@ -19,6 +19,5 @@ public class BookingServiceControllerHelper extends ControllerHelper<BookingEnti
     @Autowired
     public BookingServiceControllerHelper(BookingService bookingService) {
         this.service = bookingService;
-//        sept.major.common.entity.BrodeyTestClass brodeyTestClass = new sept.major.common.entity.BrodeyTestClass();
     }
 }
