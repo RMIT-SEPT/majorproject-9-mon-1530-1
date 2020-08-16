@@ -59,6 +59,7 @@ public class BookingServiceTestHelper {
 
     protected Map<String, Object> randomEntityMap() {
         return new HashMap<String, Object>() {{
+            put("bookingId", randomAlphanumericString(4));
             put("workerId", randomAlphanumericString(20));
             put("customerId", randomAlphanumericString(20));
             put("startTime", randomAlphanumericString(20));

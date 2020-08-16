@@ -48,26 +48,6 @@ public class PostEndpointTests extends BookingServiceTestHelper {
     }
 
     @Test
-    void missingBookingId() {
-        String workerId = randomAlphanumericString(5);
-        String customerId = randomAlphanumericString(5);
-        String startTime = randomAlphanumericString(5);
-        String endTime = randomAlphanumericString(5);
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("workerId", workerId);
-            put("customerId", customerId);
-            put("startTime", startTime);
-            put("endTime", endTime);
-        }};
-
-        ResponseEntity result = bookingServiceController.createBooking(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     void missingCustomerId() {
         String bookingId = randomAlphanumericString(5);
         String workerId = randomAlphanumericString(5);
