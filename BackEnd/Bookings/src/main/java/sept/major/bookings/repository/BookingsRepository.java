@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Table(name = "bookings", schema = "bookings")
+@Table(name = "bookings")
 @Repository
 public interface BookingsRepository extends JpaRepository<BookingEntity, String> {
     @Query("select b from BookingEntity b where b.startTime >= :startTime and b.endTime <= :endTime")
