@@ -1,0 +1,245 @@
+swagger: '2.0'
+info:
+  description: API for creating, cancelling and retrieving bookings. 
+  version: 1.0.0
+  title: Bookings API
+  # put the contact info for your development or API team
+  contact:
+    email: s3718834@student.rmit.edu.au
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+paths:
+  /booking/range:
+    get:
+      summary: Get bookings in date range
+      operationId: getTimeFrameBookings
+      description: |
+        Gets bookings within date range filtered to customers you provided.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: customerUsername
+        description: Limit bookings to only those attended by customers represented by these username
+        required: false
+        type: array
+        items:
+          type: string
+      - in: query
+        name: workerUsername
+        description: Limit bookings to only those provided by workers represented by these username
+        required: false
+        type: array
+        items:
+          type: string
+      - in: query
+        name: startDateTime
+        description: The lower bound of timeframe being filter to 
+        required: false
+        type: string
+        pattern: 'DD/MM/YYYY:HH/MM/SS'
+      - in: query
+        name: endDateTime
+        description: The lower upper of timeframe being filter to 
+        required: false
+        type: string
+        pattern: 'DD/MM/YYYY:HH/MM/SS'
+      responses:
+        200:
+          description: bookings based on query parameters provided
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/bookingList'
+        400:
+          description: bad input parameter
+  /booking/date:
+    get:
+      summary: Get bookings for date
+      operationId: getDateBookings
+      description: |
+        Gets bookings on date filtered to customers you provided.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: customerUsername
+        description: Limit bookings to only those attended by customer represented by this username
+        required: false
+        type: array
+        items:
+          type: string
+      - in: query
+        name: workerUsername
+        description: Limit bookings to only those provided by worker represented by this username
+        required: false
+        type: array
+        items:
+          type: string
+      - in: query
+        name: bookingDate
+        description: The date to look for bookings for
+        required: true
+        type: string
+        pattern: 'DD/MM/YYYY'
+      responses:
+        200:
+          description: bookings based on query parameters provided
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/bookingList'
+        400:
+          description: bad input parameter       
+  /booking/all:
+    get:
+      summary: Get all bookings
+      operationId: getAllBookings
+      description: |
+        Gets bookings for customers you provided.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: customerUsername
+        description: Limit bookings to only those attended by customers represented by these username
+        required: false
+        type: array
+        items:
+          type: string
+      - in: query
+        name: workerUsername
+        description: Limit bookings to only those provided by workers represented by these username
+        required: false
+        type: array
+        items:
+          type: string
+      responses:
+        200:
+          description: bookings based on query parameters provided
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/bookingList'
+        400:
+          description: bad input parameter           
+  /booking:
+    post:
+      summary: Create a booking
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: booking
+          description: The booking to create
+          schema:
+            type: object
+            required:
+              - customerUsername
+              - employeeUsername
+            properties:
+              customerUsername:
+                type: string
+                description: The username for the customer who is making the booking
+                example: 00001
+              employeeUsername:
+                type: string
+                description: The username for the employee who is providing the booking
+                example: 00002
+              date:
+                type: string
+                description: The date of the booking
+                example: 24/07/2020
+                pattern: 'DD/MM/YYYY'
+              time:
+                type: string
+                description: The time of the booking
+                example: 15:02
+                pattern: 'HH:MM'
+              duration:
+                type: integer
+                description: The duration of the booking in hours 
+                example: 1.5
+      responses:
+        201:
+          description: Booking created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: Confliction with current booking
+        200:
+          description: bookings based on query parameters provided
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/validBooking'
+    delete:
+      summary: Cancel a booking
+      operationId: cancelBooking
+      description: |
+        Cancels provided booking or bookings that match the critia.Either customerUsername or workerUsername may be provided, resulting an appointments linked to provided username to be cancelled. 
+      parameters:
+      - in: query
+        name: bookingId
+        type: string
+        required: false
+        description: username of the booking to be cancelled
+      - in: query
+        name: customerUsername
+        type: string
+        required: false
+        description: username of the customer or admin who booked the  appointment
+      - in: query
+        name: wokerUsername
+        type: string
+        required: false
+        description: username of worker providing the appointment
+      responses:
+        200:
+          description: booking successfully cancelled
+        400:
+          description: bad input parameter 
+      
+
+definitions:
+  bookingList:
+    type: array
+    items:
+      $ref: '#/definitions/validBooking'
+            
+  validBooking:
+    properties:
+      bookingId:
+        type: string 
+        description: The username for the booking 
+        example: '00003'
+      customerUsername:
+        type: string
+        description: The username for the customer who is making the booking
+        example: '00001'
+      employeeUsername:
+        type: string
+        description: The username for the employee who is providing the booking
+        example: '00002'
+      date:
+        type: string
+        description: The date of the booking
+        example: 24/07/2020
+        pattern: 'DD/MM/YYYY'
+      time:
+        type: string
+        description: The time of the booking
+        example: 15:02
+        pattern: 'HH:MM'
+      duration:
+        type: integer
+        description: The duration of the booking in hours 
+        example: 1.5
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /SEPT-Assignment-One/Bookings/1.0.0
+schemes:
+ - https

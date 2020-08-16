@@ -23,7 +23,7 @@ public abstract class UserServiceTestHelper {
     }
     
     @Mock
-    UsersRepository mockedUserRepository;
+    public UsersRepository mockedUserRepository;
 
     @BeforeEach
     public void setUp() {

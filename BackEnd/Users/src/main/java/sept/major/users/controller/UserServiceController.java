@@ -1,5 +1,6 @@
 package sept.major.users.controller;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class UserServiceController {
 	@GetMapping("/password") //TODO change to put
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
 		try {
-			userService.updatePassword(username, oldPassword, newPassword);
+			userService.updatePassword(username,hashPassword( oldPassword),hashPassword( newPassword));
 			return new ResponseEntity("place holder message: password updated" + " username:" + username
 					+ " oldPassword:" + oldPassword, HttpStatus.ACCEPTED);
 		} catch (RuntimeException e) {
@@ -73,7 +74,9 @@ public class UserServiceController {
 					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
 		}
 	}
-
+	private String hashPassword(String plainTextPassword){
+		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+	}
     /**
      * Endpoint to receive user password compare calls
      * @param username
@@ -83,7 +86,7 @@ public class UserServiceController {
     @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
-    	boolean result = userService.comparePassword(username, password);
+    	boolean result = userService.comparePassword(username,hashPassword( password));
     	
         return new ResponseEntity("inpput," + "username:"+ username + " password:" + password + ", password compare:" + result, HttpStatus.ACCEPTED);
     }
