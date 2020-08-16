@@ -1,21 +1,17 @@
 package sept.major.users.repository;
 
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.Table;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import sept.major.users.entity.User;
 
-import sept.major.users.entity.UserEntity;
+import javax.persistence.Table;
+import java.util.Optional;
 
-@Table(name = "users"/* , schema = "users" */)
+@Table(name = "users", schema = "users")
 @Repository
-public interface UsersRepository extends JpaRepository<UserEntity, String> {
-    List<UserEntity> findAllByUserType(String userType);
+public interface UsersRepository extends JpaRepository<User, String> {
+    Optional<User> findByUsername(String username);
 
-    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
-    
+    void deleteByUsername(String username);
 }

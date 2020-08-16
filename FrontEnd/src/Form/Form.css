@@ -1,0 +1,99 @@
+
+
+  .root {
+    /* display: flex; */
+    /* flex-grow: 4; */
+    /* justify-content:center;
+    align-items: center;; */
+
+  }
+
+  .right{
+      /* height:100vh;
+      display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center; 
+    
+    text-align: center; */
+    padding: 10px; 
+    margin: 80px;
+    flex-grow: 1;
+    color : black;
+    background-color: white;
+
+  }
+  .left{
+
+    height:100vh;
+    /* flex-grow: 1 ; */
+    background-color: black;
+    color:white;
+
+  }
+  .logo{
+    width: 50%;
+    height: auto;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /* padding-left: 10%; */
+
+    
+  }
+  .construction{
+    width: 100%;
+    height: auto;
+
+    padding-top: 10%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    
+
+    
+  }
+.topright{
+font-family: Nunito Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 27px;
+letter-spacing: -0.05em;
+position: absolute;
+top: 2%;
+right: 5%;
+padding-top: 2%;
+
+}
+.bold{
+    font-family: Nunito Sans;
+    font-style: normal;
+
+
+    font-weight: 800;
+    font-size: 35px;
+    line-height: 48px;
+    /* identical to box height */
+
+    
+    letter-spacing: -0.05em;
+    
+    color: #000000;
+}
+
+.heading{
+    font-family: Nunito Sans;
+    font-style: normal;
+    font-weight: bold;
+font-size: 20px;
+line-height: 34px;
+/* identical to box height */
+
+letter-spacing: -0.05em;
+
+color: #000000;
+
+    margin: 10px;
+
+
+}
+
