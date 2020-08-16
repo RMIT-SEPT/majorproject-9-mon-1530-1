@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
-import About from './Components/About.js';
-import Form from './Components/Form.js';
-import Main from './Components/Main.js';
-import Login from './Components/Login.js';
-import Contact from './Components/Contact.js';
+import About from './Components/About';
+import Form from './Components/Form';
+import Main from './Components/Main';
+import Login from './Components/Login';
+import Contact from './Components/Contact';
+import Worker from './Components/Worker';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/about" component={About} />
           <Route exact path="/contactus" component={Contact} />
+          <Route exact path="/worker" component={Worker} />
         </div>
       </Router>
     </>
