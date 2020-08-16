@@ -41,12 +41,12 @@ public class HoursService extends CrudService<HoursEntity, String> {
         if(date == null) {
             throw new ResponseErrorException(new HashSet<>(Arrays.asList(new ResponseError("date", "Must be provided"))));
         }
-        List<HoursEntity> hoursInDate = hoursRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+        List<HoursEntity> hoursInDate = hoursRepository.findAllBetweenDates(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
         return filterUsernames(hoursInDate, workerUsername, customerUsername);
     }
 
     public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(startDate, endDate);
+        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllBetweenDates(startDate, endDate);
         return filterUsernames(hoursBetweenDates, workerUsername, customerUsername);
 
     }

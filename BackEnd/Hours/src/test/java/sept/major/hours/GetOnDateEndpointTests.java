@@ -1,19 +1,15 @@
 package sept.major.hours;
 
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.exception.ResponseErrorException;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,7 +109,7 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
         try {
             if (date != null) {
                 LocalDate parsedDate = LocalDate.parse(date);
-                when(mockedUserRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
+                when(mockedUserRepository.findAllBetweenDates(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
             }
         } catch (DateTimeParseException e) {
 
