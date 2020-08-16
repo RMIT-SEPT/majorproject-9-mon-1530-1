@@ -4,15 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.controller.HoursControllerHelper;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 import sept.major.hours.service.HoursService;
 
-import javax.persistence.Convert;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -134,6 +131,9 @@ public abstract class UserServiceTestHelper {
     }
 
     protected List<HoursEntity> deepCopy(List<HoursEntity> toCopy) {
+        if (toCopy == null || toCopy.contains(null)) {
+            return null;
+        }
         List<HoursEntity> copiedList = new ArrayList<>();
         toCopy.forEach(hoursEntity -> {
             HoursEntity copiedEntity = new HoursEntity(hoursEntity.getHoursId(),

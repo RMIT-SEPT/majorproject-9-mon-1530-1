@@ -1,6 +1,5 @@
 package sept.major.hours.controller;
 
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +56,10 @@ public class HoursController {
             return new ResponseEntity(
                     new ResponseError("date range", "You must provide at least one date in the range"),
                     HttpStatus.BAD_REQUEST);
+        }
+
+        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+            return new ResponseEntity(new ResponseError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST);
         }
 
         try {
