@@ -3,6 +3,12 @@ import styled from 'styled-components';
 import seclogo from '../media/seclogo.png';
 import chevronDown from '../media/chevron-down-28px.svg';
 
+// This is a wrapper component to use for dashboard views for the front-end. The
+// idea is to allow for cohesive re-use of the same component, simply by provid-
+// ing the values for the navigation bar through React props. Note that a minim-
+// um screen width of 1304px is used to align the navigation bar and body eleme-
+// nt
+
 const StyledNavBar = styled.nav`
   display: flex;
   align-items: center;
@@ -26,6 +32,7 @@ const GreenNavLink = styled.div`
 
 const StyledUserTag = styled.div`
   margin: 0px 0px 4px auto;
+  padding-left: 30px;
   display: flex;
   align-items: center;
 `;
@@ -59,7 +66,11 @@ const Role = styled.div`
 
 const StyledDashboardNav = styled.div`
   background-color: white;
+  min-width: 1304px;
 `;
+
+// props gets passed in to the DashboardWrapper component to access dynaic elem-
+// ents such as the userName and role
 
 const DashboardWrapper = (props) => {
   return (
@@ -75,8 +86,8 @@ const DashboardWrapper = (props) => {
           <GreenNavLink>About</GreenNavLink>
           <StyledUserTag>
             <StyledUserTagName>
-              <UserName>{props.userName}</UserName>
-              <Role>{props.role}</Role>
+              <UserName>{props.userName || 'empty'}</UserName>
+              <Role>{props.role || 'empty'}</Role>
             </StyledUserTagName>
             <Logo></Logo>
             <img src={chevronDown} alt="Chevron drop down button" />
