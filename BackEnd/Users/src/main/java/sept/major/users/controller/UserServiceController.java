@@ -77,6 +77,8 @@ public class UserServiceController {
 	private String hashPassword(String plainTextPassword){
 		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
 	}
+	
+	
     /**
      * Endpoint to receive user password compare calls
      * @param username
