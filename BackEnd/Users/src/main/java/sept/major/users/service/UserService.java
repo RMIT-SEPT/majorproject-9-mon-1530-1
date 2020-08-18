@@ -59,12 +59,16 @@ public class UserService extends CrudService<UserEntity, String> {
 		}
     }
 
-	public boolean comparePassword(String username, String password) {
+	public boolean comparePassword(String username, String plainTextPassword) {
 		boolean matchFound;
 		
-		Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username, password); 
+//		Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username,
+//				hashedPassword);
+		
+		Optional<UserEntity> optionalUser = repository.findByUsername(username); 
+
 		if ( optionalUser.isPresent())
-			matchFound = true;
+			return optionalUser.get().checkPassword(plainTextPassword);
 		else
 			matchFound = false;
 

@@ -66,17 +66,17 @@ public class UserServiceController {
 	@GetMapping("/password") //TODO change to put
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
 		try {
-			userService.updatePassword(username,hashPassword( oldPassword),hashPassword( newPassword));
+			userService.updatePassword(username, oldPassword, newPassword);
 			return new ResponseEntity("place holder message: password updated" + " username:" + username
 					+ " oldPassword:" + oldPassword, HttpStatus.ACCEPTED);
 		} catch (RuntimeException e) {
 			return new ResponseEntity("place holder message: provided input is incorrect" + " username:" + username
 					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
 		}
+	
 	}
-	private String hashPassword(String plainTextPassword){
-		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
-	}
+	
+
 	
 	
     /**
@@ -88,7 +88,7 @@ public class UserServiceController {
     @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
-    	boolean result = userService.comparePassword(username,hashPassword( password));
+    	boolean result = userService.comparePassword(username,password);
     	
         return new ResponseEntity("inpput," + "username:"+ username + " password:" + password + ", password compare:" + result, HttpStatus.ACCEPTED);
     }
