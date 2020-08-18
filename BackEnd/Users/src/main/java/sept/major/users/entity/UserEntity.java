@@ -72,6 +72,11 @@ public class UserEntity implements AbstractEntity<String> {
 		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
 	}
 
+	
+	public boolean checkPassword(String plainTextPassword){
+		return BCrypt.checkpw(plainTextPassword, this.password);
+	}
+
 	public UserEntity(@NotBlank String username, @NotBlank String password, @NotBlank String userType,
 			@NotBlank String name, @NotBlank String phone, @NotBlank String address) {
 		super();
