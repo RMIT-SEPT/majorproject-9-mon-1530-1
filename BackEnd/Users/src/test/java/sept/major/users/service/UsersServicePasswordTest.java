@@ -38,8 +38,8 @@ public class UsersServicePasswordTest extends UserServiceTestHelper {
                 randomAlphanumericString(20),
                 randomAlphanumericString(20)
         );
-
-		when(mockedUserRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(expected));
+        
+		when(mockedUserRepository.findByUsername(username)).thenReturn(Optional.of(expected));
 
 		boolean result = getUserService().comparePassword(username, password);
 
