@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import seclogo from '../media/seclogo.png';
+import logout from '../media/log-out-40px.svg';
 import chevronDown from '../media/chevron-down-28px.svg';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
@@ -8,6 +9,44 @@ import chevronDown from '../media/chevron-down-28px.svg';
 // ing the values for the navigation bar through React props. Note that a minim-
 // um screen width of 1304px is used to align the navigation bar and body eleme-
 // nt
+
+// Below are common components/styles used in all dashboard views, so they are
+// provided here and exported for common use
+
+const StyledPageWrapper = styled.div`
+  background-color: #f5f5f5;
+  height: 100vh;
+  min-width: 1304px;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+`;
+
+export const MenuBar = styled.div`
+  flex: none;
+  width: 106px;
+  height: calc(100vh - 100px);
+  background-color: white;
+  box-shadow: 2px 0px #cccccc;
+  margin-right: 2px;
+`;
+
+const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0px;
+  height: calc(100% - 40px);
+`;
+
+export const MenuIcon = styled.img`
+  margin: 20px 0px;
+`;
+
+const LogOutIcon = styled.img`
+  margin: auto 0px 20px 0px;
+  padding-top: 20px;
+`;
 
 const StyledNavBar = styled.nav`
   display: flex;
@@ -72,9 +111,9 @@ const StyledDashboardNav = styled.div`
 // props gets passed in to the DashboardWrapper component to access dynaic elem-
 // ents such as the userName and role
 
-const DashboardWrapper = (props) => {
+export const DashboardWrapper = (props) => {
   return (
-    <>
+    <StyledPageWrapper>
       <StyledDashboardNav>
         <StyledNavBar>
           <StyledLogoLink href="/">
@@ -94,8 +133,18 @@ const DashboardWrapper = (props) => {
           </StyledUserTag>
         </StyledNavBar>
       </StyledDashboardNav>
-    </>
+      <FlexContainer>{props.children}</FlexContainer>
+    </StyledPageWrapper>
   );
 };
 
-export default DashboardWrapper;
+export const MenuBarComponent = (props) => {
+  return (
+    <MenuBar>
+      <MenuContainer>
+        {props.children}
+        <LogOutIcon src={logout} alt="Log out icon" />
+      </MenuContainer>
+    </MenuBar>
+  );
+};
