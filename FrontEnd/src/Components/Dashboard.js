@@ -111,7 +111,7 @@ const StyledDashboardNav = styled.div`
 // props gets passed in to the DashboardWrapper component to access dynaic elem-
 // ents such as the userName and role
 
-export const DashboardWrapper = (props) => {
+export const DashboardWrapper = ({ children, userName, role }) => {
   return (
     <StyledPageWrapper>
       <StyledDashboardNav>
@@ -125,24 +125,24 @@ export const DashboardWrapper = (props) => {
           <GreenNavLink>About</GreenNavLink>
           <StyledUserTag>
             <StyledUserTagName>
-              <UserName>{props.userName || 'empty'}</UserName>
-              <Role>{props.role || 'empty'}</Role>
+              <UserName>{userName || 'empty'}</UserName>
+              <Role>{role || 'empty'}</Role>
             </StyledUserTagName>
             <Logo></Logo>
             <img src={chevronDown} alt="Chevron drop down button" />
           </StyledUserTag>
         </StyledNavBar>
       </StyledDashboardNav>
-      <FlexContainer>{props.children}</FlexContainer>
+      <FlexContainer>{children}</FlexContainer>
     </StyledPageWrapper>
   );
 };
 
-export const MenuBarComponent = (props) => {
+export const MenuBarComponent = ({ children }) => {
   return (
     <MenuBar>
       <MenuContainer>
-        {props.children}
+        {children}
         <LogOutIcon src={logout} alt="Log out icon" />
       </MenuContainer>
     </MenuBar>
