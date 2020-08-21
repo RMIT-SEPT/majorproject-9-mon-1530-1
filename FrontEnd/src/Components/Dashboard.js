@@ -13,15 +13,7 @@ import chevronDown from '../media/chevron-down-28px.svg';
 // Below are common components/styles used in all dashboard views, so they are
 // provided here and exported for common use
 
-const StyledPageWrapper = styled.div`
-  background-color: #f5f5f5;
-  height: 100vh;
-  min-width: 1304px;
-`;
-
-const FlexContainer = styled.div`
-  display: flex;
-`;
+// Moving exported styles up to top
 
 export const MenuBar = styled.div`
   flex: none;
@@ -32,15 +24,25 @@ export const MenuBar = styled.div`
   margin-right: 2px;
 `;
 
+export const MenuIcon = styled.img`
+  margin: 20px 0px;
+`;
+
+const StyledPageWrapper = styled.div`
+  background-color: #f5f5f5;
+  height: 100vh;
+  min-width: 1304px;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+`;
+
 const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 20px 0px;
   height: calc(100% - 40px);
-`;
-
-export const MenuIcon = styled.img`
-  margin: 20px 0px;
 `;
 
 const LogOutIcon = styled.img`

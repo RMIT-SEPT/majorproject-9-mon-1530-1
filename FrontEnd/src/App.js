@@ -6,7 +6,6 @@ import Main from './Components/Main';
 import Login from './Components/Login';
 import Contact from './Components/Contact';
 import Worker from './Components/Worker';
-import Bookings from './Components/Bookings';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
@@ -28,7 +27,6 @@ function App() {
           <Route exact path="/about" component={About} />
           <Route exact path="/contactus" component={Contact} />
           <Route exact path="/worker" component={Worker} />
-          <Route exact path="/bookings" component={Bookings} />
         </div>
       </Router>
     </>
