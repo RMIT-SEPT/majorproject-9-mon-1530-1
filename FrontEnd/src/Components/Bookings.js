@@ -10,6 +10,7 @@ import home from '../media/home-40px.svg';
 import book from '../media/book-40px.svg';
 import calendar from '../media/calendar-40px.svg';
 import phone from '../media/phone-40px.svg';
+import circleAdd from '../media/plus-circle-20px.svg';
 
 const Heading = styled.div`
   font-weight: bold;
@@ -35,13 +36,10 @@ const DashboardGrid = styled.div`
   margin: 24px 0px;
 `;
 
-const GridItem = styled.div`
-  grid-column: span 6;
-  background-color: #add8e6;
-`;
-
-const Grid = styled.div`
+const AppointmentsGrid = styled.div`
   display: grid;
+  grid-template-columns: repeat(3, 280px);
+  gap: 24px;
 `;
 
 const tempBookings = [
@@ -61,6 +59,38 @@ const tempBookings = [
     time: 1000,
     duration: 1.5,
   },
+  // {
+  //   bookingId: '00005',
+  //   customerUsername: 'rw22448',
+  //   employeeUsername: 'jeffOak',
+  //   date: '24/07/2020',
+  //   time: 1000,
+  //   duration: 1.5,
+  // },
+  // {
+  //   bookingId: '00006',
+  //   customerUsername: 'rw22448',
+  //   employeeUsername: 'jeffOak',
+  //   date: '24/07/2020',
+  //   time: 1000,
+  //   duration: 1.5,
+  // },
+  // {
+  //   bookingId: '00007',
+  //   customerUsername: 'rw22448',
+  //   employeeUsername: 'jeffOak',
+  //   date: '24/07/2020',
+  //   time: 1000,
+  //   duration: 1.5,
+  // },
+  // {
+  //   bookingId: '00008',
+  //   customerUsername: 'rw22448',
+  //   employeeUsername: 'jeffOak',
+  //   date: '24/07/2020',
+  //   time: 1000,
+  //   duration: 1.5,
+  // },
 ];
 
 const Bookings = ({ userId }) => {
@@ -72,6 +102,10 @@ const Bookings = ({ userId }) => {
     });
 
     return result.json();
+  };
+
+  const bookAppointment = () => {
+    console.log('Booking appointment...');
   };
 
   const { data, isSuccess, isLoading, isError } = useQuery(
@@ -87,12 +121,14 @@ const Bookings = ({ userId }) => {
   const [userName, setUserName] = useState(userId);
   const [role, setRole] = useState('User');
   const [date, setDate] = useState(new Date());
+  const [main, setMain] = useState(true);
+  // const [booking]
 
   return (
     <>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error...</div>}
-      {isSuccess && (
+      {isSuccess && main && (
         <DashboardWrapper userName={data.name} role={role}>
           <MenuBarComponent>
             <MenuIcon src={home} alt="Home icon" />
@@ -104,18 +140,22 @@ const Bookings = ({ userId }) => {
             <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
             <SubHeading>Today is {date.toLocaleDateString()}.</SubHeading>
             <DashboardGrid>
-              <DashboardModule title="Upcoming appointments">
+              <DashboardModule
+                title="Upcoming appointments"
+                icon={circleAdd}
+                action={bookAppointment}
+              >
                 {/* content of Upcoming appointments DashboardModule will change depending on how many appointments for the user */}
-                <Grid>
+                <AppointmentsGrid>
                   {tempBookings.map((booking) => (
                     <UpcomingAppointmentCard key={booking.bookingId}>
-                      {booking.employeeUsername}
+                      {booking}
                     </UpcomingAppointmentCard>
                   ))}
-                </Grid>
+                </AppointmentsGrid>
               </DashboardModule>
-              <GridItem>Service</GridItem>
-              <GridItem>Service</GridItem>
+              <DashboardModule title="Service">Service</DashboardModule>
+              <DashboardModule title="Service">Service</DashboardModule>
             </DashboardGrid>
           </Content>
         </DashboardWrapper>
@@ -125,7 +165,7 @@ const Bookings = ({ userId }) => {
 };
 
 Bookings.defaultProps = {
-  userId: 'rw22448',
+  userId: 'jeffOak',
 };
 
 export default Bookings;
