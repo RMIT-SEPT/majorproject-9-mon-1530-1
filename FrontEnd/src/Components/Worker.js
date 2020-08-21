@@ -6,6 +6,7 @@ import {
   DashboardModule,
   UpcomingAppointmentCard,
 } from './DashboardComponents';
+import { BackButton } from './Bookings';
 import home from '../media/home-40px.svg';
 import book from '../media/book-40px.svg';
 import calendar from '../media/calendar-40px.svg';
@@ -106,6 +107,14 @@ const Worker = ({ userId }) => {
 
   const bookAppointment = () => {
     console.log('Booking appointment...');
+    setMain(false);
+    setBooking(true);
+  };
+
+  const cancelBooking = () => {
+    console.log('Cancelling booking...');
+    setBooking(false);
+    setMain(true);
   };
 
   const { data, isSuccess, isLoading, isError } = useQuery(
@@ -118,46 +127,65 @@ const Worker = ({ userId }) => {
       },
     }
   );
+
   const [userName, setUserName] = useState(userId);
   const [role, setRole] = useState('User');
   const [date, setDate] = useState(new Date());
+
+  // Page states for updating current view
   const [main, setMain] = useState(true);
-  // const [booking]
+  const [booking, setBooking] = useState(false);
 
   return (
     <>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error...</div>}
-      {isSuccess && main && (
-        <DashboardWrapper userName={data.name} role={role}>
+      {isSuccess && (
+        <DashboardWrapper
+          userName={data.name}
+          role={role}
+          actions={{ bookingLink: bookAppointment }}
+        >
           <MenuBarComponent>
             <MenuIcon src={home} alt="Home icon" />
             <MenuIcon src={book} alt="Book icon" />
             <MenuIcon src={phone} alt="Phone icon" />
             <MenuIcon src={calendar} alt="Calendar icon" />
           </MenuBarComponent>
-          <Content>
-            <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
-            <SubHeading>Today is {date.toLocaleDateString()}.</SubHeading>
-            <DashboardGrid>
-              <DashboardModule
-                title="Upcoming appointments"
-                icon={circleAdd}
-                action={bookAppointment}
-              >
-                {/* content of Upcoming appointments DashboardModule will change depending on how many appointments for the user */}
-                <AppointmentsGrid>
-                  {tempBookings.map((booking) => (
-                    <UpcomingAppointmentCard key={booking.bookingId}>
-                      {booking}
-                    </UpcomingAppointmentCard>
-                  ))}
-                </AppointmentsGrid>
-              </DashboardModule>
-              <DashboardModule title="Service">Service</DashboardModule>
-              <DashboardModule title="Service">Service</DashboardModule>
-            </DashboardGrid>
-          </Content>
+          {main && (
+            <Content>
+              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <DashboardGrid>
+                <DashboardModule
+                  title="Upcoming appointments"
+                  icon={circleAdd}
+                  action={bookAppointment}
+                >
+                  {/* content of Upcoming appointments DashboardModule will change depending on how many appointments for the user */}
+                  <AppointmentsGrid>
+                    {tempBookings.map((booking) => (
+                      <UpcomingAppointmentCard key={booking.bookingId}>
+                        {booking}
+                      </UpcomingAppointmentCard>
+                    ))}
+                  </AppointmentsGrid>
+                </DashboardModule>
+                <DashboardModule title="Service">Service</DashboardModule>
+                <DashboardModule title="Service">Service</DashboardModule>
+              </DashboardGrid>
+            </Content>
+          )}
+          {booking && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <BackButton onClick={cancelBooking}>back</BackButton>
+              <DashboardGrid>
+                <DashboardModule title="Choose a service"></DashboardModule>
+              </DashboardGrid>
+            </Content>
+          )}
         </DashboardWrapper>
       )}
     </>
@@ -165,7 +193,7 @@ const Worker = ({ userId }) => {
 };
 
 Worker.defaultProps = {
-  userId: 'jeffOak',
+  userId: 'rw22448',
 };
 
 export default Worker;

@@ -4,15 +4,15 @@ import hairdresserImage from '../media/hairdresser-card.png';
 
 const StyledDashboardModule = styled.div`
   grid-column: span 12;
-  ${'' /* background-color: #90ee90; */}
 `;
 
 const ClickableSpan = styled.span`
-  transition: color 0.15s;
+  transition: color ${(props) => props.theme.transition.short};
 
   &:hover {
     cursor: pointer;
-    color: #5ac490;
+    text-decoration: underline;
+    color: ${(props) => props.theme.colours.greenPrimary};
   }
 `;
 
@@ -29,15 +29,9 @@ const TitleIcon = styled.img`
   position: relative;
   top: 2px;
   left: 8px;
-
-  ${'' /* &:hover {
-    cursor: pointer;
-  } */}
 `;
 
 const CardImage = styled.img`
-  ${'' /* width: 300px;
-  height: 100px; */}
   border-radius: 4px 4px 0px 0px;
 `;
 
@@ -55,7 +49,7 @@ const CardContent = styled.div`
   padding: 0px 12px 12px 12px;
 `;
 
-export const DashboardModule = ({ children, title, icon, action }) => {
+const DashboardModule = ({ children, title, icon, action }) => {
   return (
     <StyledDashboardModule>
       {action && (
@@ -75,7 +69,7 @@ export const DashboardModule = ({ children, title, icon, action }) => {
   );
 };
 
-export const UpcomingAppointmentCard = ({ children }) => {
+const UpcomingAppointmentCard = ({ children }) => {
   return (
     // TODO: Solve responsive grid layout for these components when there are many elements in a single row
     <StyledAppointmentCard>
@@ -84,3 +78,5 @@ export const UpcomingAppointmentCard = ({ children }) => {
     </StyledAppointmentCard>
   );
 };
+
+export { DashboardModule, UpcomingAppointmentCard };

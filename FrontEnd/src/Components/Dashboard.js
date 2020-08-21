@@ -15,7 +15,7 @@ import chevronDown from '../media/chevron-down-28px.svg';
 
 // Moving exported styles up to top
 
-export const MenuBar = styled.div`
+const MenuBar = styled.div`
   flex: none;
   width: 106px;
   height: calc(100vh - 100px);
@@ -24,14 +24,14 @@ export const MenuBar = styled.div`
   margin-right: 2px;
 `;
 
-export const MenuIcon = styled.img`
+const MenuIcon = styled.img`
   margin: 20px 0px;
 `;
 
 const StyledPageWrapper = styled.div`
   background-color: #f5f5f5;
   height: 100vh;
-  min-width: 1304px;
+  min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
 const FlexContainer = styled.div`
@@ -65,10 +65,23 @@ const StyledLogoLink = styled.a`
 
 const GreenNavLink = styled.div`
   flex: none;
-  color: #5ac490;
+  color: ${(props) => props.theme.colours.greenPrimary};
   font-weight: 550;
   font-size: 28px;
   margin: 0px 30px 4px 30px;
+  transition: color ${(props) => props.theme.transition.short};
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.colours.greenSecondary};
+  }
+
+  &:active {
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.colours.greenTertiary};
+  }
 `;
 
 const StyledUserTag = styled.div`
@@ -82,7 +95,7 @@ const Logo = styled.div`
   flex: none;
   width: 56px;
   height: 56px;
-  background-color: #5ac490;
+  background-color: ${(props) => props.theme.colours.greenPrimary};
   border-radius: 28px;
   margin: 0px 12px 0px 24px;
 `;
@@ -99,7 +112,7 @@ const UserName = styled.div`
 
 const Role = styled.div`
   text-align: right;
-  color: #5ac490;
+  color: ${(props) => props.theme.colours.greenPrimary};
   font-size: 16px;
   font-weight: 550;
   text-transform: capitalize;
@@ -107,13 +120,13 @@ const Role = styled.div`
 
 const StyledDashboardNav = styled.div`
   background-color: white;
-  min-width: 1304px;
+  min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
 // props gets passed in to the DashboardWrapper component to access dynaic elem-
 // ents such as the userName and role
 
-export const DashboardWrapper = ({ children, userName, role }) => {
+const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
     <StyledPageWrapper>
       <StyledDashboardNav>
@@ -121,7 +134,7 @@ export const DashboardWrapper = ({ children, userName, role }) => {
           <StyledLogoLink href="/">
             <img src={seclogo} alt="logo" />
           </StyledLogoLink>
-          <GreenNavLink>New Booking</GreenNavLink>
+          <GreenNavLink onClick={actions.bookingLink}>New Booking</GreenNavLink>
           <GreenNavLink>Appointments</GreenNavLink>
           <GreenNavLink>Contact-us</GreenNavLink>
           <GreenNavLink>About</GreenNavLink>
@@ -140,7 +153,7 @@ export const DashboardWrapper = ({ children, userName, role }) => {
   );
 };
 
-export const MenuBarComponent = ({ children }) => {
+const MenuBarComponent = ({ children }) => {
   return (
     <MenuBar>
       <MenuContainer>
@@ -150,3 +163,5 @@ export const MenuBarComponent = ({ children }) => {
     </MenuBar>
   );
 };
+
+export { MenuBar, MenuIcon, DashboardWrapper, MenuBarComponent };
