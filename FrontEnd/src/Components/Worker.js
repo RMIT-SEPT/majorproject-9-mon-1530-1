@@ -5,6 +5,7 @@ import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
+  ServiceCard,
 } from './DashboardComponents';
 import { BackButton } from './Bookings';
 import home from '../media/home-40px.svg';
@@ -42,6 +43,23 @@ const AppointmentsGrid = styled.div`
   grid-template-columns: repeat(3, 280px);
   gap: 24px;
 `;
+
+const ServicesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(1, 840px);
+  gap: 24px;
+`;
+
+const services = [
+  {
+    serviceName: "Jim's Cleaning",
+    address: '48 Edinburgh Road, Mooroolbark, Victoria 3138',
+    phoneNumber: '131 546',
+  },
+  { serviceName: 'Man Oh Man' },
+  { serviceName: 'Nail Lisa' },
+  { serviceName: 'Bob the Builder' },
+];
 
 const tempBookings = [
   {
@@ -133,8 +151,8 @@ const Worker = ({ userId }) => {
   const [date, setDate] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(true);
-  const [booking, setBooking] = useState(false);
+  const [main, setMain] = useState(false);
+  const [booking, setBooking] = useState(true);
 
   return (
     <>
@@ -162,7 +180,8 @@ const Worker = ({ userId }) => {
                   icon={circleAdd}
                   action={bookAppointment}
                 >
-                  {/* content of Upcoming appointments DashboardModule will change depending on how many appointments for the user */}
+                  {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
+                  Potentially update to use flex container for wrapping? */}
                   <AppointmentsGrid>
                     {tempBookings.map((booking) => (
                       <UpcomingAppointmentCard key={booking.bookingId}>
@@ -180,9 +199,17 @@ const Worker = ({ userId }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <BackButton onClick={cancelBooking}>back</BackButton>
+              <BackButton onClick={cancelBooking}>Back</BackButton>
               <DashboardGrid>
-                <DashboardModule title="Choose a service"></DashboardModule>
+                <DashboardModule title="Choose a service">
+                  <ServicesGrid>
+                    {services.map((service) => (
+                      <ServiceCard key={service.serviceName}>
+                        {service}
+                      </ServiceCard>
+                    ))}
+                  </ServicesGrid>
+                </DashboardModule>
               </DashboardGrid>
             </Content>
           )}

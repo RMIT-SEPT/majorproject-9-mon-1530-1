@@ -6,6 +6,31 @@ const StyledDashboardModule = styled.div`
   grid-column: span 12;
 `;
 
+const StyledServiceCard = styled.div`
+  width: 100%;
+  height: 106px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+`;
+
+const ServiceCardContents = styled.div`
+  display: flex;
+  margin: 16px 24px;
+`;
+
+const TempServiceIcon = styled.div`
+  width: 74px;
+  height: 74px;
+  background-color: ${(props) => props.theme.colours.greenPrimary};
+  border-radius: 37px;
+`;
+
+const ServiceCardContentsText = styled.div`
+  flex: none;
+  margin-left: 20px;
+`;
+
 const ClickableSpan = styled.span`
   transition: color ${(props) => props.theme.transition.short};
 
@@ -79,4 +104,19 @@ const UpcomingAppointmentCard = ({ children }) => {
   );
 };
 
-export { DashboardModule, UpcomingAppointmentCard };
+const ServiceCard = ({ children }) => {
+  return (
+    <StyledServiceCard>
+      <ServiceCardContents>
+        <TempServiceIcon></TempServiceIcon>
+        <ServiceCardContentsText>
+          <Title>{children.serviceName}</Title>
+          <div>{children.address}</div>
+          <div>{children.phoneNumber}</div>
+        </ServiceCardContentsText>
+      </ServiceCardContents>
+    </StyledServiceCard>
+  );
+};
+
+export { DashboardModule, UpcomingAppointmentCard, ServiceCard };
