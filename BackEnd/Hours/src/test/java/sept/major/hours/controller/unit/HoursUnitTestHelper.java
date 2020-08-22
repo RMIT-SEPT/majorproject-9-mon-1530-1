@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import sept.major.hours.HoursTestHelper;
+import sept.major.hours.controller.HoursController;
+import sept.major.hours.controller.HoursControllerHelper;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 import sept.major.hours.service.HoursService;
@@ -12,6 +14,8 @@ import sept.major.hours.service.HoursService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public abstract class HoursUnitTestHelper extends HoursTestHelper {
