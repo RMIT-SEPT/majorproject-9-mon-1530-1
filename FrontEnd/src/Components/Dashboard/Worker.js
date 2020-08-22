@@ -1,54 +1,23 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
-  ServiceCard,
+  Heading,
+  SubHeading,
+  Content,
+  DashboardGrid,
+  AppointmentsGrid,
+  ServicesGrid,
 } from './DashboardComponents';
-import { BackButton } from './Bookings';
-import home from '../media/home-40px.svg';
-import book from '../media/book-40px.svg';
-import calendar from '../media/calendar-40px.svg';
-import phone from '../media/phone-40px.svg';
-import circleAdd from '../media/plus-circle-20px.svg';
-
-const Heading = styled.div`
-  font-weight: bold;
-  font-size: 56px;
-  margin-bottom: -8px;
-`;
-
-const SubHeading = styled.div`
-  font-size: 24px;
-  color: #707070;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  margin: 40px;
-`;
-
-const DashboardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: 24px;
-  row-gap: 24px;
-  margin: 24px 0px;
-`;
-
-const AppointmentsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 280px);
-  gap: 24px;
-`;
-
-const ServicesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(1, 840px);
-  gap: 24px;
-`;
+import { BackButton, ServiceCard } from './BookingComponents';
+import home from '../../media/home-40px.svg';
+import book from '../../media/book-40px.svg';
+import calendar from '../../media/calendar-40px.svg';
+import phone from '../../media/phone-40px.svg';
+import circleAdd from '../../media/plus-circle-20px.svg';
 
 const services = [
   {
@@ -151,8 +120,8 @@ const Worker = ({ userId }) => {
   const [date, setDate] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(false);
-  const [booking, setBooking] = useState(true);
+  const [main, setMain] = useState(true);
+  const [booking, setBooking] = useState(false);
 
   return (
     <>

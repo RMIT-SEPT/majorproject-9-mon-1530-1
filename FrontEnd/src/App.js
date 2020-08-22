@@ -5,7 +5,7 @@ import Form from './Components/Form';
 import Main from './Components/Main';
 import Login from './Components/Login';
 import Contact from './Components/Contact';
-import Worker from './Components/Worker';
+import Worker from './Components/Dashboard/Worker';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 

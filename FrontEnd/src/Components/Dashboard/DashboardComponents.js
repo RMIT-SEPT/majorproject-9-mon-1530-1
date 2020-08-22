@@ -1,34 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
-import hairdresserImage from '../media/hairdresser-card.png';
+import hairdresserImage from '../../media/hairdresser-card.png';
+
+const Heading = styled.div`
+  font-weight: bold;
+  font-size: 56px;
+  margin-bottom: -8px;
+`;
+
+const SubHeading = styled.div`
+  font-size: 24px;
+  color: #707070;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  margin: 40px;
+`;
+
+const DashboardGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+  row-gap: 24px;
+  margin: 24px 0px;
+`;
+
+const AppointmentsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 280px);
+  gap: 24px;
+`;
+
+const ServicesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(1, 840px);
+  gap: 24px;
+`;
 
 const StyledDashboardModule = styled.div`
   grid-column: span 12;
-`;
-
-const StyledServiceCard = styled.div`
-  width: 100%;
-  height: 106px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-`;
-
-const ServiceCardContents = styled.div`
-  display: flex;
-  margin: 16px 24px;
-`;
-
-const TempServiceIcon = styled.div`
-  width: 74px;
-  height: 74px;
-  background-color: ${(props) => props.theme.colours.greenPrimary};
-  border-radius: 37px;
-`;
-
-const ServiceCardContentsText = styled.div`
-  flex: none;
-  margin-left: 20px;
 `;
 
 const ClickableSpan = styled.span`
@@ -104,19 +115,14 @@ const UpcomingAppointmentCard = ({ children }) => {
   );
 };
 
-const ServiceCard = ({ children }) => {
-  return (
-    <StyledServiceCard>
-      <ServiceCardContents>
-        <TempServiceIcon></TempServiceIcon>
-        <ServiceCardContentsText>
-          <Title>{children.serviceName}</Title>
-          <div>{children.address}</div>
-          <div>{children.phoneNumber}</div>
-        </ServiceCardContentsText>
-      </ServiceCardContents>
-    </StyledServiceCard>
-  );
+export {
+  DashboardModule,
+  UpcomingAppointmentCard,
+  Heading,
+  SubHeading,
+  Content,
+  DashboardGrid,
+  AppointmentsGrid,
+  ServicesGrid,
+  Title,
 };
-
-export { DashboardModule, UpcomingAppointmentCard, ServiceCard };

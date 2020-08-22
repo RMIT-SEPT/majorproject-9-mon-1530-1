@@ -1,19 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import seclogo from '../media/seclogo.png';
-import logout from '../media/log-out-40px.svg';
-import chevronDown from '../media/chevron-down-28px.svg';
+import seclogo from '../../media/seclogo.png';
+import logout from '../../media/log-out-40px.svg';
+import chevronDown from '../../media/chevron-down-28px.svg';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
 // idea is to allow for cohesive re-use of the same component, simply by provid-
 // ing the values for the navigation bar through React props. Note that a minim-
 // um screen width of 1304px is used to align the navigation bar and body eleme-
 // nt
-
-// Below are common components/styles used in all dashboard views, so they are
-// provided here and exported for common use
-
-// Moving exported styles up to top
 
 const MenuBar = styled.div`
   flex: none;
