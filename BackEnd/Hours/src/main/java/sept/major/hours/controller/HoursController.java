@@ -105,7 +105,7 @@ public class HoursController {
     }
 
     @GetMapping()
-    public ResponseEntity getHours(@RequestParam(required = false) String hoursId) {
+    public ResponseEntity getHours(@RequestParam String hoursId) {
         return hoursControllerHelper.getEntity(hoursId);
     }
 

@@ -3,6 +3,7 @@ package sept.major.hours.entity;
 import lombok.*;
 import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.common.entity.AbstractEntity;
+import sept.major.hours.StringToIntegerConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class HoursEntity implements AbstractEntity<String> {
     @Id
     @Setter(onMethod = @__(@Id))
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Convert(converter = StringToIntegerConverter.class)
     private String hoursId;
 
     @NotBlank

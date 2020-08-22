@@ -1,33 +1,27 @@
-package sept.major.hours;
+package sept.major.hours.controller.unit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import sept.major.hours.controller.HoursController;
-import sept.major.hours.controller.HoursControllerHelper;
+import sept.major.hours.HoursTestHelper;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 import sept.major.hours.service.HoursService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public abstract class UserServiceTestHelper {
+public abstract class HoursUnitTestHelper extends HoursTestHelper {
 
-    HoursController hoursController;
-    HoursControllerHelper hoursControllerHelper;
-    HoursService hoursService;
+    protected HoursController hoursController;
+    protected HoursControllerHelper hoursControllerHelper;
+    protected HoursService hoursService;
 
     @Mock
-    HoursRepository mockedUserRepository;
+    protected HoursRepository mockedUserRepository;
 
     @BeforeEach
     public void setUp() {
@@ -91,43 +85,6 @@ public abstract class UserServiceTestHelper {
                 startDateTime,
                 endDateTime
         );
-    }
-
-    protected Map<String, Object> randomEntityMap() {
-        return new HashMap<String, Object>() {{
-            put("hoursId", randomAlphanumericString(4));
-            put("workerUsername", randomAlphanumericString(20));
-            put("customerUsername", randomAlphanumericString(20));
-            put("startDateTime", LocalDateTime.now().toString());
-            put("endDateTime", LocalDateTime.now().toString());
-        }};
-    }
-
-    protected Map<String, Object> randomEntityMap(String id) {
-        return new HashMap<String, Object>() {{
-            put("hoursId", id);
-            put("workerUsername", randomAlphanumericString(20));
-            put("customerUsername", randomAlphanumericString(20));
-            put("startDateTime", LocalDateTime.now().toString());
-            put("endDateTime", LocalDateTime.now().toString());
-        }};
-    }
-
-    protected HoursEntity entityMapToEntity(Map<String, Object> map) {
-        return new HoursEntity(
-                (map.get("hoursId") == null) ? null : map.get("hoursId").toString(),
-                (map.get("workerUsername") == null) ? null : map.get("workerUsername").toString(),
-                (map.get("customerUsername") == null) ? null : map.get("customerUsername").toString(),
-                (map.get("startDateTime") == null) ? null : map.get("startDateTime").toString(),
-                (map.get("endDateTime") == null) ? null : map.get("endDateTime").toString()
-        );
-    }
-
-    protected LocalDate pastDate(int years, int months, int days) {
-        LocalDate date = LocalDate.now();
-        date = date.minusYears(years);
-        date = date.minusMonths(months);
-        return date.minusDays(days);
     }
 
     protected List<HoursEntity> deepCopy(List<HoursEntity> toCopy) {

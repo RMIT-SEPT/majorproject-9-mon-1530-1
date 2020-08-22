@@ -1,23 +1,20 @@
-package sept.major.hours;
+package sept.major.hours.controller.unit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.FieldIncorrectTypeError;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.entity.HoursEntity;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class PostEndpointTests extends UserServiceTestHelper {
+class PostEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void valid() {

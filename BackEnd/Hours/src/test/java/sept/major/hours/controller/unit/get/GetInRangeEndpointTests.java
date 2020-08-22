@@ -1,11 +1,12 @@
-package sept.major.hours;
+package sept.major.hours.controller.unit.get;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.response.ResponseError;
-import sept.major.hours.controller.HoursController;
+import sept.major.hours.controller.unit.HoursController;
+import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class GetInRangeEndpointTests extends UserServiceTestHelper {
+class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void noDatesProvided() {
