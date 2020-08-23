@@ -36,7 +36,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         Code for a generic get entity by identifier endpoint.
         Provide value of the identifying field and a API response will be provided.
      */
-    public ResponseEntity getEntity(ID id) {
+    public ResponseEntity getEntity(String identifierString, Class<ID> identifierClass) {
+        ID id;
+        try {
+            id = convertIdentifier(identifierFieldName, identifierClass);
+        } catch (ResponseErrorException e) {
+            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        }
         try {
             E entity = getService().read(id); // Call the service's implementation of retrieving a record.
             return new ResponseEntity(entity, HttpStatus.OK);
@@ -219,7 +225,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
          Calls validatePatchInput() to validate the input and calls the generic patch method in the provided service.
          Handles all exceptions and returns an appropriate API response
       */
-    public ResponseEntity validateInputAndPatch(Class<E> entityClass, ID id, Map<String, String> responseBody) {
+    public ResponseEntity validateInputAndPatch(Class<E> entityClass, String identifierString, Class<ID> identifierType, Map<String, String> responseBody) {
+        ID id = null;
+        try {
+            id = convertIdentifier(identifierString, identifierType);
+        } catch (ResponseErrorException e) {
+            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        }
 
         try {
             List<PatchValue> patchValues = validatePatchInput(entityClass, responseBody);
@@ -242,7 +254,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         Code for a generic delete entity by identifier endpoint.
         Provide value of the identifying field and a API response will be provided.
      */
-    public ResponseEntity deleteEntity(ID id) {
+    public ResponseEntity deleteEntity(String identifierString, Class<ID> identifierType) {
+        ID id = null;
+        try {
+            id = convertIdentifier(identifierString, identifierType);
+        } catch (ResponseErrorException e) {
+            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        }
         try {
             getService().delete(id);
             return new ResponseEntity("Record successfully deleted", HttpStatus.OK);
@@ -270,7 +288,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                 }
             }
 
-            for (Field field : entityClass.getFields()) {
+            for (Field field : entityClass.getDeclaredFields()) {
                 String fieldName = field.getName();
                 if (field.getAnnotation(Id.class) != null) {
                     if (identifierFieldName == null) {
@@ -322,5 +340,17 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             }
         }
         return new FailedConversionException(String.format("Conversion to %s has not been implemented", classToConvertTo));
+    }
+
+    private ID convertIdentifier(String identifierString, Class<ID> identifierType) throws ResponseErrorException {
+        if(identifierType.equals(String.class)) {
+            return (ID)identifierString;
+        } else {
+            try {
+                return (ID) convertString(identifierType, identifierString);
+            } catch (FailedConversionException e) {
+                throw new ResponseErrorException(new HashSet<>(Arrays.asList(new ResponseError("id", e.getMessage()))));
+            }
+        }
     }
 }
