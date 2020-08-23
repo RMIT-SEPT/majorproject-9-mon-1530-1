@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import auth from '../Components/auth.js'
 
+
 const ColorButton = withStyles((theme) => ({
   root: {
     margin: '10px',
@@ -131,7 +132,7 @@ const Left = styled.div`
 function Login(props) {
   const { register, handleSubmit, errors } = useForm()
   return (
-    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
+    <form >
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7} >
           {/* the logo and the img on the left  */}
@@ -173,7 +174,15 @@ function Login(props) {
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>
-                <ColorButton 
+                <ColorButton onClick ={
+                  () => {
+                   auth.login(() => {
+                     this.props.history.push ("/user")
+
+                   })
+                  }
+
+                }
                 type="submit" variant="contained" color="#ffffff" > Submit
                 
                 

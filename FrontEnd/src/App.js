@@ -8,6 +8,7 @@ import Contact from './Components/Contact';
 import User from './Components/Dashboard/User';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { ProtectedRoute } from './Components/protected.route.js'
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -41,7 +42,7 @@ function App() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/about" component={About} />
             <Route exact path="/contactus" component={Contact} />
-            <Route exact path="/user" component={User} />
+            <ProtectedRoute exact path="/user" component={User} />
           </div>
         </Router>
       </ThemeProvider>
