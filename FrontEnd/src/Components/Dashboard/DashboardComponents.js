@@ -32,7 +32,7 @@ const AppointmentsGrid = styled.div`
   gap: 24px;
 `;
 
-const ServicesGrid = styled.div`
+const PanelGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 840px);
   gap: 24px;
@@ -123,6 +123,6 @@ export {
   Content,
   DashboardGrid,
   AppointmentsGrid,
-  ServicesGrid,
+  PanelGrid,
   Title,
 };

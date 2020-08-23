@@ -5,7 +5,7 @@ import Form from './Components/Form';
 import Main from './Components/Main';
 import Login from './Components/Login';
 import Contact from './Components/Contact';
-import Worker from './Components/Dashboard/Worker';
+import User from './Components/Dashboard/User';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 
@@ -41,7 +41,7 @@ function App() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/about" component={About} />
             <Route exact path="/contactus" component={Contact} />
-            <Route exact path="/worker" component={Worker} />
+            <Route exact path="/user" component={User} />
           </div>
         </Router>
       </ThemeProvider>
