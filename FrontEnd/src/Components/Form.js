@@ -172,7 +172,7 @@ function Form() {
                         message: 'fist name must be more than 1 character '
                       },
                       pattern: {
-                        value: /^[a-z ,.'-]+$/,
+                        value: /^[A-Za-z ,.'-]+$/,
                         message: 'fist name must be only alphabet '
                       }
 
