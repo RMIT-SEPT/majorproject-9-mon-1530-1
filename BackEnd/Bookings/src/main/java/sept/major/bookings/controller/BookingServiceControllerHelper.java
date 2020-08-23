@@ -11,7 +11,7 @@ import sept.major.bookings.service.BookingService;
 import java.sql.Date;
 
 @Service
-public class BookingServiceControllerHelper extends ControllerHelper<BookingEntity, String> {
+public class BookingServiceControllerHelper extends ControllerHelper<BookingEntity, Integer> {
 
     @Getter
     BookingService service;

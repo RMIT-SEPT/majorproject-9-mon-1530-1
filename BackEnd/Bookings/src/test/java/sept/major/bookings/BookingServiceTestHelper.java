@@ -10,6 +10,8 @@ import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.repository.BookingsRepository;
 import sept.major.bookings.service.BookingService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,23 +59,21 @@ public class BookingServiceTestHelper {
         return stringBuilder.toString();
     }
 
-    protected Map<String, Object> randomEntityMap() {
-        return new HashMap<String, Object>() {{
-            put("bookingId", randomAlphanumericString(4));
+    protected Map<String, String> randomEntityMap() {
+        return new HashMap<String, String>() {{
             put("workerId", randomAlphanumericString(20));
             put("customerId", randomAlphanumericString(20));
-            put("startTime", randomAlphanumericString(20));
-            put("endTime", randomAlphanumericString(20));
+            put("startDateTime", LocalDateTime.now().toString());
+            put("endDateTime", LocalDateTime.now().plusHours(4).toString());
         }};
     }
 
-    protected BookingEntity createBookingEntity(Map<String, Object> entityMap) {
+    protected BookingEntity createBookingEntity(Map<String, String> entityMap) {
         return new BookingEntity(
-                (String) entityMap.get("bookingId"),
                 (String) entityMap.get("workerId"),
                 (String) entityMap.get("customerId"),
-                (String) entityMap.get("startTime"),
-                (String) entityMap.get("endTime")
+                LocalDateTime.parse(entityMap.get("startDateTime")),
+                LocalDateTime.parse(entityMap.get("endDateTime"))
         );
     }
 }

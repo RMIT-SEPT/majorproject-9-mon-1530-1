@@ -9,6 +9,7 @@ import sept.major.bookings.entity.BookingEntity;
 import sept.major.common.response.FieldIncorrectTypeError;
 import org.mockito.Mock.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +20,7 @@ public class PostEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void valid() {
-        Map<String, Object> input = randomEntityMap();
+        Map<String, String> input = randomEntityMap();
         BookingEntity inputEntity = createBookingEntity(input);
 
         when(mockedBookingRepository.findById(inputEntity.getBookingId())).thenReturn(Optional.empty());
@@ -34,7 +35,7 @@ public class PostEndpointTests extends BookingServiceTestHelper {
     @Ignore
     @Test
     void existing() {
-        Map<String, Object> input = randomEntityMap();
+        Map<String, String> input = randomEntityMap();
         BookingEntity inputEntity = createBookingEntity(input);
 
         when(mockedBookingRepository.findById(inputEntity.getBookingId())).thenReturn(Optional.of(inputEntity));
@@ -51,14 +52,14 @@ public class PostEndpointTests extends BookingServiceTestHelper {
     void missingCustomerId() {
         String bookingId = randomAlphanumericString(5);
         String workerId = randomAlphanumericString(5);
-        String startTime = randomAlphanumericString(5);
-        String endTime = randomAlphanumericString(5);
+        String startTime = LocalDateTime.now().toString();
+        String endTime = LocalDateTime.now().plusHours(4).toString();
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
             put("workerId", workerId);
-            put("startTime", startTime);
-            put("endTime", endTime);
+            put("startDateTime", startTime);
+            put("endDateTime", endTime);
         }};
 
         ResponseEntity result = bookingServiceController.createBooking(input);
@@ -71,14 +72,14 @@ public class PostEndpointTests extends BookingServiceTestHelper {
     void missingWorkerId() {
         String bookingId = randomAlphanumericString(5);
         String customerId = randomAlphanumericString(5);
-        String startTime = randomAlphanumericString(5);
-        String endTime = randomAlphanumericString(5);
+        String startTime = LocalDateTime.now().toString();
+        String endTime = LocalDateTime.now().plusHours(4).toString();
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
             put("customerId", customerId);
-            put("startTime", startTime);
-            put("endTime", endTime);
+            put("startDateTime", startTime);
+            put("endDateTime", endTime);
         }};
 
         ResponseEntity result = bookingServiceController.createBooking(input);
@@ -92,13 +93,13 @@ public class PostEndpointTests extends BookingServiceTestHelper {
         String bookingId = randomAlphanumericString(5);
         String workerId = randomAlphanumericString(5);
         String customerId = randomAlphanumericString(5);
-        String endTime = randomAlphanumericString(5);
+        String endTime = LocalDateTime.now().plusHours(4).toString();
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
             put("workerId", workerId);
             put("customerId", customerId);
-            put("endTime", endTime);
+            put("endDateTime", endTime);
         }};
 
         ResponseEntity result = bookingServiceController.createBooking(input);
@@ -112,13 +113,13 @@ public class PostEndpointTests extends BookingServiceTestHelper {
         String bookingId = randomAlphanumericString(5);
         String workerId = randomAlphanumericString(5);
         String customerId = randomAlphanumericString(5);
-        String startTime = randomAlphanumericString(5);
+        String startTime = LocalDateTime.now().toString();
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
             put("workerId", workerId);
             put("customerId", customerId);
-            put("startTime", startTime);
+            put("startDateTime", startTime);
         }};
 
         ResponseEntity result = bookingServiceController.createBooking(input);
