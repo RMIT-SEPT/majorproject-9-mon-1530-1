@@ -5,6 +5,7 @@ import logo from '../media/logo.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -126,9 +127,10 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
-const login = (props) => {
+function Login(){
+  const { register, handleSubmit, errors } = useForm()
   return (
-    //this is the main grid that holds every element
+    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
     <Grid container alignItems="center" justify="center" spacing={0}>
       <Grid item xs={7} >
         {/* the logo and the img on the left  */}
@@ -148,31 +150,38 @@ const login = (props) => {
         <Right>
           {/* link to sign up  */}
           <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
-          <Grid  container spacing={1}>
+          <Grid container spacing={1}>
             <Grid item xs={12}>
               <Bold> Log In to Agem </Bold>
             </Grid>
             <Grid item xs={12}>
               <Heading>User Name </Heading>
-              <CssTextFieldGreen id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+              <CssTextFieldGreen required name= 'username' inputRef={
+                register({
+                  required: 'First Name Required'
+                })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
             <Grid item xs={12}>
               <Heading>Password</Heading>
-              <CssTextField id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+              <CssTextField required type="password" name= 'password' inputRef={
+                register({
+                  required: 'First Name Required'
+                })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                 InputLabelProps={{ shrink: true, }} variant="outlined" />
             </Grid>
             {/* submit button */}
             <Grid item xs={12}>
-              <ColorButton variant="contained" color="#ffffff" > Submit</ColorButton>
+              <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
             </Grid>
           </Grid>
         </Right>
       </Grid>
     </Grid>
+    </form>
 
 
   )
 }
 
-export default login; 
+export default Login; 
