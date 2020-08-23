@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-// import styled from 'styled-components';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
 import {
   DashboardModule,
@@ -10,9 +9,20 @@ import {
   Content,
   DashboardGrid,
   AppointmentsGrid,
-  ServicesGrid,
+  PanelGrid,
 } from './DashboardComponents';
-import { BackButton, ServiceCard } from './BookingComponents';
+import {
+  BackButton,
+  ServiceCard,
+  WorkerCard,
+  TimeSelector,
+  SubmitButton,
+} from './BookingComponents';
+import {
+  setBookingSelectedWorker,
+  setBookingStartTime,
+  setBookingEndTime,
+} from './Booking';
 import home from '../../media/home-40px.svg';
 import book from '../../media/book-40px.svg';
 import calendar from '../../media/calendar-40px.svg';
@@ -25,9 +35,33 @@ const services = [
     address: '48 Edinburgh Road, Mooroolbark, Victoria 3138',
     phoneNumber: '131 546',
   },
-  { serviceName: 'Man Oh Man' },
+  {
+    serviceName: 'Man Oh Man',
+    address: '137 Chapel Street Windsor, VIC 3181 Melbourne',
+    phoneNumber: '03 9530 2393',
+  },
+
   { serviceName: 'Nail Lisa' },
   { serviceName: 'Bob the Builder' },
+];
+
+const workers = [
+  {
+    workerUserName: 'kath123',
+    workerFullName: 'Kathreen McDonald',
+  },
+  {
+    workerUserName: 'markTheMark',
+    workerFullName: 'Mark Falley',
+  },
+  {
+    workerUserName: 'realSarahX',
+    workerFullName: 'Sarah Mickey',
+  },
+  {
+    workerUserName: 'JohnLeLemon',
+    workerFullName: 'John Lim Le',
+  },
 ];
 
 const tempBookings = [
@@ -81,7 +115,11 @@ const tempBookings = [
   // },
 ];
 
-const Worker = ({ userId }) => {
+const handleSelectWorker = (worker) => {
+  setBookingSelectedWorker(worker.workerUserName);
+};
+
+const User = ({ userId }) => {
   const fetchUserData = async (key, userId) => {
     const result = await fetch(
       `http://localhost:8080/users?username=${userId}`
@@ -92,21 +130,38 @@ const Worker = ({ userId }) => {
     return result.json();
   };
 
+  const fetchOfflineData = (key, userId) => {
+    return {
+      name: 'Richard Offline',
+      userType: 'Offline',
+    };
+  };
+
+  // State changing functions for updating page view
   const bookAppointment = () => {
-    console.log('Booking appointment...');
     setMain(false);
+    setService(false);
     setBooking(true);
   };
 
   const cancelBooking = () => {
-    console.log('Cancelling booking...');
     setBooking(false);
+    setMain(true);
+  };
+
+  const selectService = () => {
+    setBooking(false);
+    setService(true);
+  };
+
+  const cancelService = () => {
+    setService(false);
     setMain(true);
   };
 
   const { data, isSuccess, isLoading, isError } = useQuery(
     ['userData', userId],
-    fetchUserData,
+    fetchOfflineData,
     {
       onSuccess: (data) => {
         setUserName(data.name);
@@ -120,8 +175,9 @@ const Worker = ({ userId }) => {
   const [date, setDate] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(true);
+  const [main, setMain] = useState(false);
   const [booking, setBooking] = useState(false);
+  const [service, setService] = useState(true);
 
   return (
     <>
@@ -169,17 +225,59 @@ const Worker = ({ userId }) => {
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
               <BackButton onClick={cancelBooking}>Back</BackButton>
-              <DashboardGrid>
-                <DashboardModule title="Choose a service">
-                  <ServicesGrid>
-                    {services.map((service) => (
-                      <ServiceCard key={service.serviceName}>
-                        {service}
-                      </ServiceCard>
-                    ))}
-                  </ServicesGrid>
+              <form>
+                <DashboardGrid>
+                  <DashboardModule title="Choose a service">
+                    <PanelGrid>
+                      {services.map((service) => (
+                        <ServiceCard
+                          key={service.serviceName}
+                          onClick={selectService}
+                        >
+                          {service}
+                        </ServiceCard>
+                      ))}
+                    </PanelGrid>
+                  </DashboardModule>
+                </DashboardGrid>
+              </form>
+            </Content>
+          )}
+          {service && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <form>
+                <BackButton onClick={cancelService}>Back</BackButton>
+                <DashboardGrid>
+                  <DashboardModule title="Choose a worker">
+                    <PanelGrid>
+                      {workers.map((worker) => (
+                        <WorkerCard
+                          key={worker.workerUserName}
+                          worker={worker}
+                          onClick={() => {
+                            handleSelectWorker(worker);
+                          }}
+                        >
+                          {worker}
+                        </WorkerCard>
+                      ))}
+                    </PanelGrid>
+                  </DashboardModule>
+                </DashboardGrid>
+                <DashboardModule title="Select times">
+                  <TimeSelector
+                    label="Start time"
+                    onChange={setBookingStartTime}
+                  ></TimeSelector>
+                  <TimeSelector
+                    label="End time"
+                    onChange={setBookingEndTime}
+                  ></TimeSelector>
                 </DashboardModule>
-              </DashboardGrid>
+                <SubmitButton>Submit</SubmitButton>
+              </form>
             </Content>
           )}
         </DashboardWrapper>
@@ -188,8 +286,8 @@ const Worker = ({ userId }) => {
   );
 };
 
-Worker.defaultProps = {
+User.defaultProps = {
   userId: 'rw22448',
 };
 
-export default Worker;
+export default User;

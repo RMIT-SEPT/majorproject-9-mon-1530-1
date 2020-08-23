@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Title } from './DashboardComponents';
+import { setBookingSelectedWorker } from './Booking';
 
 const StyledServiceCard = styled.div`
   width: 100%;
@@ -29,6 +30,10 @@ const ServiceCardContentsText = styled.div`
   margin-left: 20px;
 `;
 
+const TimeSelectorWrapper = styled.span`
+  margin-right: 20px;
+`;
+
 const BackButton = withStyles((theme) => ({
   root: {
     margin: '24px 0px 0px 0px',
@@ -41,9 +46,27 @@ const BackButton = withStyles((theme) => ({
   },
 }))(Button);
 
-const ServiceCard = ({ children }) => {
+const SubmitButton = withStyles((theme) => ({
+  root: {
+    margin: '24px 0px 0px 0px',
+    color: theme.palette.getContrastText('#000000'),
+    backgroundColor: '#5ac490',
+
+    '&:hover': {
+      backgroundColor: '#369668',
+    },
+  },
+}))(Button);
+
+const StyledDateTimePicker = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText('#000000'),
+  },
+}))(TextField);
+
+const ServiceCard = ({ children, onClick }) => {
   return (
-    <StyledServiceCard>
+    <StyledServiceCard onClick={onClick}>
       <ServiceCardContents>
         <TempServiceIcon></TempServiceIcon>
         <ServiceCardContentsText>
@@ -56,4 +79,39 @@ const ServiceCard = ({ children }) => {
   );
 };
 
-export { BackButton, ServiceCard };
+const WorkerCard = ({ children, worker }) => {
+  return (
+    <StyledServiceCard
+      onClick={() => {
+        setBookingSelectedWorker(worker);
+      }}
+    >
+      <ServiceCardContents>
+        <TempServiceIcon></TempServiceIcon>
+        <ServiceCardContentsText>
+          <Title>{children.workerFullName}</Title>
+        </ServiceCardContentsText>
+      </ServiceCardContents>
+    </StyledServiceCard>
+  );
+};
+
+const TimeSelector = ({ label, onChange }) => {
+  return (
+    <TimeSelectorWrapper>
+      <StyledDateTimePicker
+        id="datetime-local"
+        label={label}
+        type="datetime-local"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+    </TimeSelectorWrapper>
+  );
+};
+
+export { BackButton, ServiceCard, WorkerCard, TimeSelector, SubmitButton };
