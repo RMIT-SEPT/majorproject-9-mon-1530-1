@@ -10,6 +10,7 @@
     "react": "^16.13.1",
     "react-datetime-picker": "^3.0.2",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.5.0",
     "react-query": "^2.5.14",
     "react-query-devtools": "^2.4.3",
     "react-router-dom": "^5.2.0",

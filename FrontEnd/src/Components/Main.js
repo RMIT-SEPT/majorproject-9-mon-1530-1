@@ -6,7 +6,7 @@ import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
-import Find from '../Components/Find.js'
+
 
 const MainWrapper = styled.div`
   background-color:black!important;
@@ -66,7 +66,6 @@ function Main(props) {
         </Grid>
         <Grid item xs={12}>
           {/* implemented  search  for a service  */}
-          <Find></Find>
         </Grid>
         <Grid item xs={12}>
           {/* img and the rolling text  */}
