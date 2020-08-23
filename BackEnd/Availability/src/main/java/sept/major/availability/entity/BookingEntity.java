@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 @Table(name = "bookings")
 @Entity
-public class BookingEntity implements AbstractEntity<String> {
+public class BookingEntity implements AbstractEntity<String> { //TODO This class is a duplicate and should move to the common project instead 
 
     @Id
     @Setter(onMethod = @__(@Id))

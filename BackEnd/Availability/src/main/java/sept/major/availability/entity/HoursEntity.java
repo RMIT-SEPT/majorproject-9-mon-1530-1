@@ -25,7 +25,7 @@ import sept.major.common.entity.AbstractEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "hours")
-public class HoursEntity implements AbstractEntity<String> {
+public class HoursEntity implements AbstractEntity<String> { //TODO This class is a duplicate and should move to the common project instead
 
     @Id
     @Setter(onMethod = @__(@Id))
