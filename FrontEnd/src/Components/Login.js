@@ -127,57 +127,57 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
-function Login(){
+function Login() {
   const { register, handleSubmit, errors } = useForm()
   return (
     <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
-    <Grid container alignItems="center" justify="center" spacing={0}>
-      <Grid item xs={7} >
-        {/* the logo and the img on the left  */}
-        <Left>
-          <Grid container direction="column" justify="center" alignItems="center">
-            <Grid item xs={12}>
-              <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
+      <Grid container alignItems="center" justify="center" spacing={0}>
+        <Grid item xs={7} >
+          {/* the logo and the img on the left  */}
+          <Left>
+            <Grid container direction="column" justify="center" alignItems="center">
               <Grid item xs={12}>
-                <Construction src={construction} alt="contact" />
+                <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
+                <Grid item xs={12}>
+                  <Construction src={construction} alt="contact" />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Left>
-      </Grid>
+          </Left>
+        </Grid>
 
-      <Grid item xs={5} >
-        <Right>
-          {/* link to sign up  */}
-          <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Bold> Log In to Agem </Bold>
+        <Grid item xs={5} >
+          <Right>
+            {/* link to sign up  */}
+            <TopRight>Not a member? <a href="http://localhost:3000/form">Sign up</a> </TopRight>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Bold> Log In to Agem </Bold>
+              </Grid>
+              <Grid item xs={12}>
+                <Heading>User Name </Heading>
+                <CssTextFieldGreen required name='username' inputRef={
+                  register({
+                    required: 'First Name Required'
+                  })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  InputLabelProps={{ shrink: true, }} variant="outlined" />
+              </Grid>
+              <Grid item xs={12}>
+                <Heading>Password</Heading>
+                <CssTextField required type="password" name='password' inputRef={
+                  register({
+                    required: 'First Name Required'
+                  })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  InputLabelProps={{ shrink: true, }} variant="outlined" />
+              </Grid>
+              {/* submit button */}
+              <Grid item xs={12}>
+                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Heading>User Name </Heading>
-              <CssTextFieldGreen required name= 'username' inputRef={
-                register({
-                  required: 'First Name Required'
-                })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
-                InputLabelProps={{ shrink: true, }} variant="outlined" />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Password</Heading>
-              <CssTextField required type="password" name= 'password' inputRef={
-                register({
-                  required: 'First Name Required'
-                })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
-                InputLabelProps={{ shrink: true, }} variant="outlined" />
-            </Grid>
-            {/* submit button */}
-            <Grid item xs={12}>
-              <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
-            </Grid>
-          </Grid>
-        </Right>
+          </Right>
+        </Grid>
       </Grid>
-    </Grid>
     </form>
 
 
