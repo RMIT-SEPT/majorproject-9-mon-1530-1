@@ -132,7 +132,7 @@ const Left = styled.div`
 function Login(props) {
   const { register, handleSubmit, errors } = useForm()
   return (
-    <form >
+    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7} >
           {/* the logo and the img on the left  */}
