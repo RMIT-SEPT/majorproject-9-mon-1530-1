@@ -12,6 +12,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static sept.major.hours.HoursTestHelper.randomAlphanumericString;
+import static sept.major.hours.HoursTestHelper.randomEntity;
 
 @SpringBootTest
 class GetAllEndpointTests extends HoursUnitTestHelper {
