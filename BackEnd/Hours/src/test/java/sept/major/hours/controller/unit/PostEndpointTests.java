@@ -7,10 +7,13 @@ import org.springframework.http.ResponseEntity;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.entity.HoursEntity;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -18,65 +21,24 @@ class PostEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void valid() {
-        Map<String, Object> input = randomEntityMap();
+        Map<String, String> input = randomEntityMap(null);
         HoursEntity inputEntity = entityMapToEntity(input);
 
         runTest(input, new ResponseEntity(inputEntity, HttpStatus.OK), Optional.empty());
     }
 
     @Test
-    void existing() {
-        Map<String, Object> input = randomEntityMap();
-        HoursEntity inputEntity = entityMapToEntity(input);
-
-        runTest(input, new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT), Optional.of(inputEntity));
-    }
-
-    @Test
     void missingField() {
-        Map<String, Object> input = randomEntityMap();
+        Map<String, String> input = randomEntityMap(null);
         input.remove("customerUsername");
         HoursEntity inputEntity = entityMapToEntity(input);
 
         runTest(input, new ResponseEntity(new HashSet<>(Arrays.asList(new ResponseError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST), null);
     }
 
-    @Test
-    void missingAllFields() {
-        Map<String, Object> input = new HashMap<>();
-        runTest(input, new ResponseEntity(new HashSet(Arrays.asList(
-                new ResponseError("customerUsername", "must not be blank"),
-                new ResponseError("workerUsername", "must not be blank"),
-                new ResponseError("startDateTime", "must not be blank"),
-                new ResponseError("endDateTime", "must not be blank")
-        )), HttpStatus.BAD_REQUEST), null);
-    }
 
-
-    @Test
-    void listField() {
-        Map<String, Object> input = randomEntityMap();
-        input.put("customerUsername", Arrays.asList(randomAlphanumericString(20)));
-        HoursEntity inputEntity = entityMapToEntity(input);
-
-        runTest(input, new ResponseEntity(new HashSet<>(Arrays.asList(new ResponseError("customerUsername", "field expected to be class java.lang.String but received class java.util.Arrays$ArrayList"))), HttpStatus.BAD_REQUEST), Optional.of(inputEntity));
-    }
-
-    @Test
-    void mapField() {
-        Map<String, Object> input = randomEntityMap();
-
-        HashMap<String, Object> unexpectedMap = new HashMap<>();
-        unexpectedMap.put("customerUsername", randomAlphanumericString(20));
-        input.put("customerUsername", unexpectedMap);
-        HoursEntity inputEntity = entityMapToEntity(input);
-
-        runTest(input, new ResponseEntity(new HashSet<>(Arrays.asList(new ResponseError("customerUsername", "field expected to be class java.lang.String but received class java.util.HashMap"))), HttpStatus.BAD_REQUEST), Optional.of(inputEntity));
-    }
-
-
-    private void runTest(Map<String, Object> input, ResponseEntity expected, Optional<HoursEntity> returned) {
-        when(mockedUserRepository.findById(anyString())).thenReturn(returned);
+    private void runTest(Map<String, String> input, ResponseEntity expected, Optional<HoursEntity> returned) {
+        when(mockedUserRepository.findById(any())).thenReturn(returned);
         HoursEntity inputEntity = entityMapToEntity(input);
         when(mockedUserRepository.save(inputEntity)).thenReturn(inputEntity);
 

@@ -1,7 +1,10 @@
 package sept.major.hours.blackbox;
 
+import org.springframework.context.annotation.PropertySource;
 import sept.major.common.testing.BlackboxTestHelper;
 
+
+@PropertySource("classpath:application-test.properties")
 public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
 
     @Override

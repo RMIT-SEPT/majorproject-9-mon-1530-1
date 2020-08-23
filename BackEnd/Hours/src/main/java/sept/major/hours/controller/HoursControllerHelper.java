@@ -8,7 +8,7 @@ import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.service.HoursService;
 
 @Service
-public class HoursControllerHelper extends ControllerHelper<HoursEntity, String> {
+public class HoursControllerHelper extends ControllerHelper<HoursEntity, Integer> {
 
     @Getter
     private HoursService service;

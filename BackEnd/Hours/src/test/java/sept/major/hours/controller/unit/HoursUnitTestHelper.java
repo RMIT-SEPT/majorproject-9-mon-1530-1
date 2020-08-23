@@ -11,6 +11,7 @@ import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.repository.HoursRepository;
 import sept.major.hours.service.HoursService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,34 +62,51 @@ public abstract class HoursUnitTestHelper extends HoursTestHelper {
         return stringBuilder.toString();
     }
 
-    protected HoursEntity randomEntity(String id) {
-        return new HoursEntity(
-                id,
-                randomAlphanumericString(20),
-                randomAlphanumericString(20),
-                LocalDateTime.now().toString(),
-                LocalDateTime.now().toString()
-        );
+    protected Integer randomInt(int length) {
+        final int numbersUpper = 58;
+        final int numberLower = 48;
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int charToUse = (int) ((Math.random() * (numberLower - numbersUpper) + numbersUpper));
+            stringBuilder.append((char) charToUse);
+        }
+
+        return new Integer(stringBuilder.toString());
     }
 
-    protected HoursEntity randomEntityWithDate(String id, String date) {
-        return new HoursEntity(
-                id,
+    protected HoursEntity randomEntity(int id) {
+        HoursEntity hoursEntity = new HoursEntity(
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
-                date,
-                date
+                LocalDateTime.now(),
+                LocalDateTime.now()
         );
+
+        hoursEntity.setHoursId(id);
+        return hoursEntity;
     }
 
-    protected HoursEntity randomEntityWithDateRange(String id, String startDateTime, String endDateTime) {
-        return new HoursEntity(
-                id,
+    protected HoursEntity randomEntityWithDate(Integer id, LocalDate date) {
+        HoursEntity hoursEntity = new HoursEntity(
+                randomAlphanumericString(20),
+                randomAlphanumericString(20),
+                date.atStartOfDay(),
+                date.atTime(23, 59)
+        );
+        hoursEntity.setHoursId(id);
+        return hoursEntity;
+    }
+
+    protected HoursEntity randomEntityWithDateRange(Integer id, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        HoursEntity hoursEntity = new HoursEntity(
                 randomAlphanumericString(20),
                 randomAlphanumericString(20),
                 startDateTime,
                 endDateTime
         );
+        hoursEntity.setHoursId(id);
+        return hoursEntity;
     }
 
     protected List<HoursEntity> deepCopy(List<HoursEntity> toCopy) {
@@ -97,11 +115,11 @@ public abstract class HoursUnitTestHelper extends HoursTestHelper {
         }
         List<HoursEntity> copiedList = new ArrayList<>();
         toCopy.forEach(hoursEntity -> {
-            HoursEntity copiedEntity = new HoursEntity(hoursEntity.getHoursId(),
-                    hoursEntity.getWorkerUsername(),
+            HoursEntity copiedEntity = new HoursEntity(hoursEntity.getWorkerUsername(),
                     hoursEntity.getCustomerUsername(),
                     hoursEntity.getStartDateTime(),
                     hoursEntity.getEndDateTime());
+            copiedEntity.setHoursId(hoursEntity.getHoursId());
             copiedList.add(copiedEntity);
         });
 

@@ -106,21 +106,21 @@ public class HoursController {
 
     @GetMapping()
     public ResponseEntity getHours(@RequestParam String hoursId) {
-        return hoursControllerHelper.getEntity(hoursId);
+        return hoursControllerHelper.getEntity(hoursId, Integer.class);
     }
 
     @PostMapping
-    public ResponseEntity createHours(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createHours(@RequestBody Map<String, String> requestBody) {
         return hoursControllerHelper.validateInputAndPost(HoursEntity.class, requestBody);
     }
 
     @PatchMapping
-    public ResponseEntity updateHours(@RequestParam String hoursId, @RequestBody Map<String, Object> requestBody) {
-        return hoursControllerHelper.validateInputAndPatch(HoursEntity.class, hoursId, requestBody);
+    public ResponseEntity updateHours(@RequestParam String hoursId, @RequestBody Map<String, String> requestBody) {
+        return hoursControllerHelper.validateInputAndPatch(HoursEntity.class, hoursId, Integer.class, requestBody);
     }
 
     @DeleteMapping
     public ResponseEntity deleteHours(@RequestParam String hoursId) {
-        return hoursControllerHelper.deleteEntity(hoursId);
+        return hoursControllerHelper.deleteEntity(hoursId, Integer.class);
     }
 }

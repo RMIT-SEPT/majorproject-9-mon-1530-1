@@ -19,9 +19,9 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     @Test
     void valid() {
         List<HoursEntity> expected = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4))
         );
 
         runTest(new ResponseEntity(expected, HttpStatus.ACCEPTED),
@@ -31,19 +31,19 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     @Test
     void missingResult() {
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
-                Arrays.asList(), null, randomAlphanumericString(4));
+                Arrays.asList(), null, null);
     }
 
     @Test
     void workerUsernameProvidedValid() {
-        HoursEntity expected = randomEntity(randomAlphanumericString(4));
+        HoursEntity expected = randomEntity(randomInt(4));
         String workerUsername = randomAlphanumericString(20);
         expected.setWorkerUsername(workerUsername);
 
         List<HoursEntity> returned = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
+                randomEntity(randomInt(4)),
                 expected,
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4))
         );
 
         runTest(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
@@ -53,9 +53,9 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     @Test
     void workerUsernameProvidedMissing() {
         List<HoursEntity> returned = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4))
         );
 
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
@@ -64,14 +64,14 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void customerUsernameProvidedValid() {
-        HoursEntity expected = randomEntity(randomAlphanumericString(4));
+        HoursEntity expected = randomEntity(randomInt(4));
         String customerUsername = randomAlphanumericString(20);
         expected.setCustomerUsername(customerUsername);
 
         List<HoursEntity> returned = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
+                randomEntity(randomInt(4)),
                 expected,
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4))
         );
 
         runTest(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
@@ -81,9 +81,9 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     @Test
     void customerUsernameProvidedMissing() {
         List<HoursEntity> returned = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4))
         );
 
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
@@ -95,14 +95,14 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         String customerUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
-        HoursEntity expected = randomEntity(randomAlphanumericString(4));
+        HoursEntity expected = randomEntity(randomInt(4));
         expected.setCustomerUsername(customerUsername);
         expected.setWorkerUsername(workerUsername);
 
-        HoursEntity entityOne = randomEntity(randomAlphanumericString(4));
+        HoursEntity entityOne = randomEntity(randomInt(4));
         entityOne.setCustomerUsername(customerUsername);
 
-        HoursEntity entityTwo = randomEntity(randomAlphanumericString(4));
+        HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);
 
         List<HoursEntity> returned = Arrays.asList(
@@ -118,14 +118,14 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         String customerUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
-        HoursEntity entityOne = randomEntity(randomAlphanumericString(4));
+        HoursEntity entityOne = randomEntity(randomInt(4));
         entityOne.setCustomerUsername(customerUsername);
 
-        HoursEntity entityTwo = randomEntity(randomAlphanumericString(4));
+        HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);
 
         List<HoursEntity> returned = Arrays.asList(
-                entityOne, randomEntity(randomAlphanumericString(4)), entityTwo
+                entityOne, randomEntity(randomInt(4)), entityTwo
         );
 
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
