@@ -132,7 +132,7 @@ const CssTextField = withStyles({
 function Form() {
   const { register, handleSubmit, errors } = useForm()
   return (
-    <form onSubmit = {handleSubmit((data)=>alert (JSON.stringify(data)))}>
+    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7} >
           {/* the logo and the img on the left  */}
@@ -177,7 +177,7 @@ function Form() {
                       }
 
                     })
-                  }  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  } id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
               </Grid>
               <Grid item xs={6}>
@@ -196,7 +196,7 @@ function Form() {
                       }
 
                     })
-                  }  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  } id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
               </Grid>
 
@@ -220,7 +220,7 @@ function Form() {
                       }
 
                     })
-                  }  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  } id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
               </Grid>
 
@@ -244,7 +244,7 @@ function Form() {
                       }
 
                     })
-                  }  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  } id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
               </Grid>
 
@@ -264,12 +264,12 @@ function Form() {
                       }
 
                     })
-                  }  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  } id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
               </Grid>
               {/* submit button  */}
               <Grid item xs={12}>
-                <ColorButton   type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
+                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
               </Grid>
             </Grid>
           </Right>
