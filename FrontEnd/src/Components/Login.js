@@ -6,6 +6,7 @@ import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import auth from '../Components/auth.js'
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -127,7 +128,7 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
-function Login() {
+function Login(props) {
   const { register, handleSubmit, errors } = useForm()
   return (
     <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
@@ -172,7 +173,11 @@ function Login() {
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>
-                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
+                <ColorButton 
+                type="submit" variant="contained" color="#ffffff" > Submit
+                
+                
+                </ColorButton>
               </Grid>
             </Grid>
           </Right>
