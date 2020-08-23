@@ -297,7 +297,9 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                         throw new MultipleIdentifiersException(entityClass);
                     }
                 }
-                valueFieldsReflection.put(fieldName, new FieldReflectionResults(field, setterMethods.get(fieldName), getterMethods.get(fieldName)));
+                if(setterMethods.get(fieldName) != null && getterMethods.get(fieldName) != null) {
+                    valueFieldsReflection.put(fieldName, new FieldReflectionResults(field, setterMethods.get(fieldName), getterMethods.get(fieldName)));
+                }
             }
 
 

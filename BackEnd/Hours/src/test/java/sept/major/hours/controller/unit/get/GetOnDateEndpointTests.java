@@ -17,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+import static sept.major.hours.HoursTestHelper.*;
 
 @SpringBootTest
 class GetOnDateEndpointTests extends HoursUnitTestHelper {

@@ -93,19 +93,19 @@ public class HoursController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllHours(@RequestParam(required = false) String workerUsername,
+    public ResponseEntity getAllHours(@RequestParam(required = false, name = "workerUsername") String workerUsername,
                                       @RequestParam(required = false) String customerUsername) {
 
         try {
             List<HoursEntity> hours = hoursService.getAllHours(workerUsername, customerUsername);
-            return new ResponseEntity(hours, HttpStatus.ACCEPTED);
+            return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping()
-    public ResponseEntity getHours(@RequestParam String hoursId) {
+    public ResponseEntity getHours(@RequestParam(name = "hoursId") String hoursId) {
         return hoursControllerHelper.getEntity(hoursId, Integer.class);
     }
 
