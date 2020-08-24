@@ -59,8 +59,6 @@ const Left = styled.div`
 `
 
 const Logo = styled.img`
-  width: 40%;
-  height: auto;
   background-repeat: no-repeat;
   background-size: contain;
   /* padding-left: 10%; */

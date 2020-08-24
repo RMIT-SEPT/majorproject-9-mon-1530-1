@@ -9,12 +9,15 @@ import TextLoop from "react-text-loop";
 
 
 const MainWrapper = styled.div`
+
+  height: 100vh;
+  min-width: ${(props) => props.theme.dashboard.defaultWidth};
   background-color:black!important;
   height: 100vh;
   flex-grow: 1;
-  background-color: black;
+  background-color: white;
   color: white;
-padding :1%;
+
 
 `
 const BigFont = styled.div`
@@ -23,7 +26,7 @@ const BigFont = styled.div`
   font-size: 70px;
   line-height: 95px;
   letter-spacing: -0.05em;
-  color: #FFFFFF;
+  color: white;
   margin: 1%;
   margin-left: 5%;
 
