@@ -111,7 +111,7 @@ public abstract class HoursTestHelper {
         toCopy.forEach(hoursEntity -> {
             HoursEntity copiedEntity = new HoursEntity(
                     hoursEntity.getWorkerUsername(),
-                    hoursEntity.getCustomerUsername(),
+                    hoursEntity.getCreatorUsername(),
                     hoursEntity.getStartDateTime(),
                     hoursEntity.getEndDateTime());
             copiedEntity.setHoursId(hoursEntity.getHoursId());

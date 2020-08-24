@@ -101,7 +101,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
 
     private HoursEntity patchEntity(HoursEntity existing, HashMap<String, String> patchValues) {
 
-        HoursEntity newEntity = new HoursEntity(existing.getWorkerUsername(), existing.getCustomerUsername(), existing.getStartDateTime(), existing.getEndDateTime());
+        HoursEntity newEntity = new HoursEntity(existing.getWorkerUsername(), existing.getCreatorUsername(), existing.getStartDateTime(), existing.getEndDateTime());
 
         if(patchValues.get("hoursId") != null) {
             newEntity.setHoursId(new Integer(patchValues.get("hoursId")));
@@ -112,7 +112,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         }
 
         if(patchValues.get("customerUsername") != null) {
-            newEntity.setCustomerUsername(patchValues.get("customerUsername"));
+            newEntity.setCreatorUsername(patchValues.get("customerUsername"));
         }
 
         if(patchValues.get("startDateTime") != null) {
