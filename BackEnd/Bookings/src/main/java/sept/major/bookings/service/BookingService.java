@@ -37,11 +37,11 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
         throw new RecordNotFoundException(String.format("No booking entity for id %d", bookingId));
     }
 
-    public List<BookingEntity> getBookingsInRange(LocalDateTime startTime, String workerUsername, String customerUsername) throws IllegalArgumentException, RecordNotFoundException {
-        if (startTime == null) {
+    public List<BookingEntity> getBookingsOnDate(LocalDate date, String workerUsername, String customerUsername) throws IllegalArgumentException, RecordNotFoundException {
+        if (date == null) {
             throw new IllegalArgumentException("No start time was defined");
         }
-        return getBookingsInRange(startTime, startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1), workerUsername, customerUsername);
+        return getBookingsInRange(date.atStartOfDay(), date.atTime(23,59), workerUsername, customerUsername);
     }
 
     public List<BookingEntity> getBookingsInRange(LocalDateTime startTime, LocalDateTime endTime, String workerUsername, String customerUsername) throws IllegalArgumentException, RecordNotFoundException {

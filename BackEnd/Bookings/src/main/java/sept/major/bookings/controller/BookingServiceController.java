@@ -9,6 +9,7 @@ import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.service.BookingService;
 import sept.major.common.response.ResponseError;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -20,7 +21,8 @@ public class BookingServiceController {
 
     BookingService bookingService;
     BookingServiceControllerHelper bookingControllerHelper;
-    public static final String INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE = "Date time must be formatted as yyyy-mm-dd hh:mm:ss[.fffffffff]";
+    public static final String INCORRECT_DATE_FORMAT_ERROR_MESSAGE = "Date time must be formatted as yyyy-mm-dd";
+    public static final String INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE = "Date time must be formatted as yyyy-mm-ddThh:mm:ss[.fffffffff]";
 
     @Autowired
     public BookingServiceController(BookingService bookingService, BookingServiceControllerHelper bookingControllerHelper) {
@@ -61,17 +63,17 @@ public class BookingServiceController {
 
     //get bookings for date
     @GetMapping("/date")
-    public ResponseEntity getRange(@RequestParam(name = "startDateTime") String startDateTimeString,
+    public ResponseEntity getDate(@RequestParam(name = "date") String dateString,
                                    @RequestParam(required = false) String workerUsername,
                                    @RequestParam(required = false) String customerUsername) {
-        LocalDateTime startDateTime;
+        LocalDate date;
         try {
-            startDateTime = (startDateTimeString == null ? null : LocalDateTime.parse(startDateTimeString));
+            date = (dateString == null ? null : LocalDate.parse(dateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
         try {
-            List<BookingEntity> entityList = bookingService.getBookingsInRange(startDateTime, workerUsername, customerUsername);
+            List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -96,7 +98,7 @@ public class BookingServiceController {
 
     //get a specific booking
     @GetMapping
-    public ResponseEntity getAllBookings(@RequestParam String bookingId) {
+    public ResponseEntity getBooking(@RequestParam String bookingId) {
         try {
             BookingEntity entity = bookingService.getSpecificBooking(Integer.parseInt(bookingId));
             return new ResponseEntity(entity, HttpStatus.OK);
@@ -121,7 +123,7 @@ public class BookingServiceController {
 
     //delete a booking
     @DeleteMapping
-    public ResponseEntity deleteBooking(@RequestParam String bookingID) {
-        return bookingControllerHelper.deleteEntity(bookingID, Integer.class);
+    public ResponseEntity deleteBooking(@RequestParam String bookingId) {
+        return bookingControllerHelper.deleteEntity(bookingId, Integer.class);
     }
 }

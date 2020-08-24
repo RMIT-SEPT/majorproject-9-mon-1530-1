@@ -53,7 +53,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
 
-        ResponseEntity result = bookingServiceController.getRange(startTime.toString(), null, null);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -82,7 +82,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
 
-        ResponseEntity result = bookingServiceController.getRange(startTime.toString(), null, null);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -134,7 +134,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(Arrays.asList());
 
-        ResponseEntity result = bookingServiceController.getRange(startTime.toString(), null, null);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -143,12 +143,11 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void notDateTypeOnDate() {
-        String startTime = "Today";
-        String endTime = "Tomorrow";
+        String date = "Today";
 
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(LocalDate.now().atStartOfDay().toString(), null, null);
+        ResponseEntity result = bookingServiceController.getDate(date, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -162,7 +161,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(LocalDate.now().atStartOfDay().toString(), LocalDateTime.now().plusDays(2).toString(), null, null);
+        ResponseEntity result = bookingServiceController.getRange(startTime, endTime, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -173,7 +172,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
     void nullDate() {
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(null, null, null);
+        ResponseEntity result = bookingServiceController.getDate(null, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
