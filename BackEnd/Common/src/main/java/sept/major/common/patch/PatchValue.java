@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatchValue {
+    private Field field;
     private Method setter;
     private Method getter;
     private Object value;

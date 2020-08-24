@@ -1,4 +1,4 @@
-package sept.major.hours;
+package sept.major.hours.controller.unit.get;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.controller.HoursController;
+import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static sept.major.hours.HoursTestHelper.*;
 
 @SpringBootTest
-class GetInRangeEndpointTests extends UserServiceTestHelper {
+class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void noDatesProvided() {
@@ -46,7 +48,7 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
     void startDateValid() {
         LocalDateTime startDate = pastDate(1, 2, 0).atStartOfDay();
 
-        HoursEntity expected = randomEntityWithDateRange(randomAlphanumericString(4), startDate.toString(), null);
+        HoursEntity expected = randomEntityWithDateRange(randomInt(4), startDate, null);
 
         runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
                 Arrays.asList(expected), startDate.toString(), null);
@@ -56,7 +58,7 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
     void endDateValid() {
         LocalDateTime endDate = pastDate(1, 2, 3).atStartOfDay();
 
-        HoursEntity expected = randomEntityWithDateRange(randomAlphanumericString(4), endDate.toString(), null);
+        HoursEntity expected = randomEntityWithDateRange(randomInt(4), endDate, null);
 
         runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
                 Arrays.asList(expected), null, endDate.toString());
@@ -67,7 +69,7 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
         LocalDateTime startDate = pastDate(1, 2, 3).atStartOfDay();
         LocalDateTime endDate = pastDate(1, 2, 0).atStartOfDay();
 
-        HoursEntity expected = randomEntityWithDateRange(randomAlphanumericString(4), startDate.toString(), endDate.toString());
+        HoursEntity expected = randomEntityWithDateRange(randomInt(4), startDate, endDate);
 
         runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
                 Arrays.asList(expected), startDate.toString(), endDate.toString());
@@ -112,7 +114,7 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
             List<HoursEntity> workerUsernameEntities = deepCopy(returned);
             workerUsernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-            workerUsernameEntities.add(randomEntityWithDateRange(randomAlphanumericString(4), startDate, endDate));
+            workerUsernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
             runTest(updateExpectedWithUsername(expected, workerUsername, null), workerUsernameEntities, startDate, endDate, workerUsername, null);
         } else {
@@ -129,7 +131,7 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
             List<HoursEntity> customerUsernameEntities = deepCopy(returned);
             customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
 
-            customerUsernameEntities.add(randomEntityWithDateRange(randomAlphanumericString(4), startDate, endDate));
+            customerUsernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
             runTest(updateExpectedWithUsername(expected, null, customerUsername), customerUsernameEntities, startDate, endDate, null, customerUsername);
         } else {
@@ -148,15 +150,15 @@ class GetInRangeEndpointTests extends UserServiceTestHelper {
             usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
             usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-            HoursEntity customerUsernameEntity = randomEntityWithDateRange(randomAlphanumericString(4), startDate, endDate);
+            HoursEntity customerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
             customerUsernameEntity.setCustomerUsername(customerUsername);
             usernameEntities.add(customerUsernameEntity);
 
-            HoursEntity workerUsernameEntity = randomEntityWithDateRange(randomAlphanumericString(4), startDate, endDate);
+            HoursEntity workerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
             workerUsernameEntity.setWorkerUsername(workerUsername);
             usernameEntities.add(workerUsernameEntity);
 
-            usernameEntities.add(randomEntityWithDateRange(randomAlphanumericString(4), startDate, endDate));
+            usernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
             runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), usernameEntities, startDate, endDate, workerUsername, customerUsername);
         } else {

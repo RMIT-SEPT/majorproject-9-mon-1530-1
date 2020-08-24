@@ -1,4 +1,4 @@
-package sept.major.hours;
+package sept.major.hours.controller.unit.get;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.response.ResponseError;
 import sept.major.hours.controller.HoursController;
+import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDate;
@@ -16,16 +17,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+import static sept.major.hours.HoursTestHelper.*;
 
 @SpringBootTest
-class GetOnDateEndpointTests extends UserServiceTestHelper {
+class GetOnDateEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void noDateException() {
         List<HoursEntity> expected = Arrays.asList(
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4)),
-                randomEntity(randomAlphanumericString(4))
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4)),
+                randomEntity(randomInt(4))
         );
 
         assertThatThrownBy(() -> hoursController.getHoursInDate(null, null, null))
@@ -42,7 +44,7 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
     void dateValid() {
         LocalDate date = pastDate(1, 2, 3);
 
-        HoursEntity expected = randomEntityWithDate(randomAlphanumericString(4), date.toString());
+        HoursEntity expected = randomEntityWithDate(randomInt(4), date);
 
         runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
                 Arrays.asList(expected), date.toString());
@@ -67,7 +69,7 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
         List<HoursEntity> workerUsernameEntities = deepCopy(returned);
         workerUsernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-        workerUsernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+        workerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
         runTest(updateExpectedWithUsername(expected, workerUsername, null), workerUsernameEntities, date, workerUsername, null);
     }
@@ -78,7 +80,7 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
         List<HoursEntity> customerUsernameEntities = deepCopy(returned);
         customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
 
-        customerUsernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+        customerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
         runTest(updateExpectedWithUsername(expected, null, customerUsername), customerUsernameEntities, date, null, customerUsername);
     }
@@ -91,15 +93,15 @@ class GetOnDateEndpointTests extends UserServiceTestHelper {
         usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
         usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-        HoursEntity customerUsernameEntity = randomEntityWithDate(randomAlphanumericString(4), date);
+        HoursEntity customerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
         customerUsernameEntity.setCustomerUsername(customerUsername);
         usernameEntities.add(customerUsernameEntity);
 
-        HoursEntity workerUsernameEntity = randomEntityWithDate(randomAlphanumericString(4), date);
+        HoursEntity workerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
         workerUsernameEntity.setWorkerUsername(workerUsername);
         usernameEntities.add(workerUsernameEntity);
 
-        usernameEntities.add(randomEntityWithDate(randomAlphanumericString(4), date));
+        usernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
         runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), usernameEntities, date, workerUsername, customerUsername);
     }

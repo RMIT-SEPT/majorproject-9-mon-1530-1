@@ -93,34 +93,34 @@ public class HoursController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllHours(@RequestParam(required = false) String workerUsername,
+    public ResponseEntity getAllHours(@RequestParam(required = false, name = "workerUsername") String workerUsername,
                                       @RequestParam(required = false) String customerUsername) {
 
         try {
             List<HoursEntity> hours = hoursService.getAllHours(workerUsername, customerUsername);
-            return new ResponseEntity(hours, HttpStatus.ACCEPTED);
+            return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping()
-    public ResponseEntity getHours(@RequestParam(required = false) String hoursId) {
-        return hoursControllerHelper.getEntity(hoursId);
+    public ResponseEntity getHours(@RequestParam(name = "hoursId") String hoursId) {
+        return hoursControllerHelper.getEntity(hoursId, Integer.class);
     }
 
     @PostMapping
-    public ResponseEntity createHours(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createHours(@RequestBody Map<String, String> requestBody) {
         return hoursControllerHelper.validateInputAndPost(HoursEntity.class, requestBody);
     }
 
     @PatchMapping
-    public ResponseEntity updateHours(@RequestParam String hoursId, @RequestBody Map<String, Object> requestBody) {
-        return hoursControllerHelper.validateInputAndPatch(HoursEntity.class, hoursId, requestBody);
+    public ResponseEntity updateHours(@RequestParam String hoursId, @RequestBody Map<String, String> requestBody) {
+        return hoursControllerHelper.validateInputAndPatch(HoursEntity.class, hoursId, Integer.class, requestBody);
     }
 
     @DeleteMapping
     public ResponseEntity deleteHours(@RequestParam String hoursId) {
-        return hoursControllerHelper.deleteEntity(hoursId);
+        return hoursControllerHelper.deleteEntity(hoursId, Integer.class);
     }
 }

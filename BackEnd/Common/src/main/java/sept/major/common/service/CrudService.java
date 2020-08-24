@@ -13,8 +13,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,19 +73,17 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             * RecordNotFoundException: No record with the given id exists. Cannot update a record if there is no record.
             * IdentifierUpdateException: Occurs when the user attempts to update the identifying field. This would break database logic.
      */
-    public E patch(ID id, HashMap<String, PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ResponseErrorException {
+    public E patch(ID id, List<PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ResponseErrorException {
 
         // Gets the existing record by calling the generic read method implemented in this class. Returns RecordNotFoundException if record doesn't exist.
         E existingEntity = read(id);
 
-        for (Map.Entry<String, PatchValue> patchValueEntry : patchValues.entrySet()) {
-            PatchValue patchValue = patchValueEntry.getValue();
-
+        for (PatchValue patchValue : patchValues) {
             /*
                 The id field cannot be updated, to prevent this we check if the setter is used for setting the id.
                 It is assumed that the developer put a @Id annotation on the setter, otherwise the code will fail.
              */
-            if (patchValue.getSetter().getAnnotation(Id.class) == null) {
+            if (patchValue.getField().getAnnotation(Id.class) == null) {
                 try {
                     /*
                         Get the value for the field from the existing entity but involving the relevent getter on existing entity
