@@ -32,39 +32,39 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
         return hoursRepository;
     }
 
-    public List<HoursEntity> getAllHours(String workerUsername, String customerUsername) throws RecordNotFoundException {
+    public List<HoursEntity> getAllHours(String workerUsername, String creatorUsername) throws RecordNotFoundException {
         List<HoursEntity> allEntity = hoursRepository.findAll();
-        return filterUsernames(allEntity, workerUsername, customerUsername);
+        return filterUsernames(allEntity, workerUsername, creatorUsername);
     }
 
-    public List<HoursEntity> getHoursInDate(LocalDate date, String workerUsername, String customerUsername) throws RecordNotFoundException, ResponseErrorException {
+    public List<HoursEntity> getHoursInDate(LocalDate date, String workerUsername, String creatorUsername) throws RecordNotFoundException, ResponseErrorException {
         if(date == null) {
             throw new ResponseErrorException(new HashSet<>(Arrays.asList(new ResponseError("date", "Must be provided"))));
         }
         List<HoursEntity> hoursInDate = hoursRepository.findAllBetweenDates(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
-        return filterUsernames(hoursInDate, workerUsername, customerUsername);
+        return filterUsernames(hoursInDate, workerUsername, creatorUsername);
     }
 
-    public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String customerUsername) throws RecordNotFoundException {
+    public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String creatorUsername) throws RecordNotFoundException {
         List<HoursEntity> hoursBetweenDates = hoursRepository.findAllBetweenDates(startDate, endDate);
-        return filterUsernames(hoursBetweenDates, workerUsername, customerUsername);
+        return filterUsernames(hoursBetweenDates, workerUsername, creatorUsername);
 
     }
 
-    private List<HoursEntity> filterUsernames(List<HoursEntity> hoursList, String workerUsername, String customerUsername) throws RecordNotFoundException {
+    private List<HoursEntity> filterUsernames(List<HoursEntity> hoursList, String workerUsername, String creatorUsername) throws RecordNotFoundException {
         List<HoursEntity> result;
 
-        if (workerUsername != null && customerUsername != null) {
+        if (workerUsername != null && creatorUsername != null) {
             result = hoursList.stream()
-                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()) && customerUsername.equals(hoursEntity.getCustomerUsername()))
+                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()) && creatorUsername.equals(hoursEntity.getCreatorUsername()))
                     .collect(Collectors.toList());
         } else if (workerUsername != null) {
             result = hoursList.stream()
                     .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()))
                     .collect(Collectors.toList());
-        } else if (customerUsername != null) {
+        } else if (creatorUsername != null) {
             result = hoursList.stream()
-                    .filter(hoursEntity -> customerUsername.equals(hoursEntity.getCustomerUsername()))
+                    .filter(hoursEntity -> creatorUsername.equals(hoursEntity.getCreatorUsername()))
                     .collect(Collectors.toList());
         } else {
             result = hoursList;
