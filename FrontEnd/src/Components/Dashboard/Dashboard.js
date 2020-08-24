@@ -13,7 +13,7 @@ import chevronDown from '../../media/chevron-down-28px.svg';
 const MenuBar = styled.div`
   flex: none;
   width: 106px;
-  height: calc(100vh - 100px);
+  min-height: calc(100vh - 100px);
   background-color: white;
   box-shadow: 2px 0px #cccccc;
   margin-right: 2px;
@@ -25,7 +25,6 @@ const MenuIcon = styled.img`
 
 const StyledPageWrapper = styled.div`
   background-color: #f5f5f5;
-  height: 100vh;
   min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
@@ -38,11 +37,6 @@ const MenuContainer = styled.div`
   flex-direction: column;
   margin: 20px 0px;
   height: calc(100% - 40px);
-`;
-
-const LogOutIcon = styled.img`
-  margin: auto 0px 20px 0px;
-  padding-top: 20px;
 `;
 
 const StyledNavBar = styled.nav`
@@ -153,7 +147,7 @@ const MenuBarComponent = ({ children }) => {
     <MenuBar>
       <MenuContainer>
         {children}
-        <LogOutIcon src={logout} alt="Log out icon" />
+        <MenuIcon src={logout} alt="Log out icon" />
       </MenuContainer>
     </MenuBar>
   );

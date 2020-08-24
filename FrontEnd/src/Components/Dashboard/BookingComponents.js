@@ -6,11 +6,15 @@ import { Title } from './DashboardComponents';
 import { setBookingSelectedWorker } from './Booking';
 
 const StyledCard = styled.div`
-  width: 100%;
   height: 106px;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+`;
+
+const CardContents = styled.div`
+  display: flex;
+  margin: 16px 24px;
   transition: color ${(props) => props.theme.transition.short};
 
   &:hover {
@@ -18,11 +22,6 @@ const StyledCard = styled.div`
     text-decoration: underline;
     color: ${(props) => props.theme.colours.greenPrimary};
   }
-`;
-
-const CardContents = styled.div`
-  display: flex;
-  margin: 16px 24px;
 `;
 
 const TempServiceIcon = styled.div`
@@ -33,14 +32,30 @@ const TempServiceIcon = styled.div`
 `;
 
 const CardContentsText = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   bottom: 2px;
   flex: none;
   margin-left: 20px;
+  width: calc(100% - 74px - 24px);
 `;
 
 const TimeSelectorWrapper = styled.span`
   margin-right: 20px;
+`;
+
+const StyledRadioInput = styled.input`
+  width: 74px;
+  height: 74px;
+  margin: 0;
+`;
+
+const StyledLabel = styled.label`
+  width: 100%;
+  height: 100%;
+  font-weight: 550;
+  font-size: 24px;
 `;
 
 const BackButton = withStyles((theme) => ({
@@ -75,8 +90,8 @@ const StyledDateTimePicker = withStyles((theme) => ({
 
 const ServiceCard = ({ children, onClick }) => {
   return (
-    <StyledCard onClick={onClick}>
-      <CardContents>
+    <StyledCard>
+      <CardContents onClick={onClick}>
         <TempServiceIcon></TempServiceIcon>
         <CardContentsText>
           <Title>{children.serviceName}</Title>
@@ -88,17 +103,25 @@ const ServiceCard = ({ children, onClick }) => {
   );
 };
 
-const WorkerCard = ({ children, worker }) => {
+const WorkerRadioButton = ({ worker }) => {
   return (
-    <StyledCard
-      onClick={() => {
-        setBookingSelectedWorker(worker);
-      }}
-    >
+    <StyledCard>
       <CardContents>
-        <TempServiceIcon></TempServiceIcon>
+        <StyledRadioInput
+          type="radio"
+          id={worker.workerUserName}
+          key={worker.workerUserName}
+          label={worker.workerFullName}
+          value={worker.workerUser}
+          name="selectWorker"
+          onChange={() => {
+            setBookingSelectedWorker(worker);
+          }}
+        />
         <CardContentsText>
-          <Title>{children.workerFullName}</Title>
+          <StyledLabel htmlFor={worker.workerUserName}>
+            {worker.workerFullName}
+          </StyledLabel>
         </CardContentsText>
       </CardContents>
     </StyledCard>
@@ -123,4 +146,10 @@ const TimeSelector = ({ label, onChange }) => {
   );
 };
 
-export { BackButton, ServiceCard, WorkerCard, TimeSelector, SubmitButton };
+export {
+  BackButton,
+  ServiceCard,
+  TimeSelector,
+  SubmitButton,
+  WorkerRadioButton,
+};

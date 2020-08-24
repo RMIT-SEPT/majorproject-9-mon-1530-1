@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
 import {
   DashboardModule,
@@ -14,22 +14,22 @@ import {
 import {
   BackButton,
   ServiceCard,
-  WorkerCard,
   TimeSelector,
   SubmitButton,
+  WorkerRadioButton,
 } from './BookingComponents';
 import {
-  setBookingSelectedWorker,
   setBookingStartTime,
   setBookingEndTime,
   submitBooking,
 } from './Booking';
-import { localInstance } from '../Axios/Instance';
 import home from '../../media/home-40px.svg';
 import book from '../../media/book-40px.svg';
 import calendar from '../../media/calendar-40px.svg';
 import phone from '../../media/phone-40px.svg';
 import circleAdd from '../../media/plus-circle-20px.svg';
+
+const axios = require('axios');
 
 const services = [
   {
@@ -76,75 +76,28 @@ const workers = [
 
 const tempBookings = [
   {
-    bookingId: '00003',
+    workerUsername: 'jeffOak',
     customerUsername: 'rw22448',
-    employeeUsername: 'anthony',
-    date: '24/07/2020',
-    time: 900,
-    duration: 1.5,
+    startDateTime: '2020-08-29T12:00',
+    endDateTime: '2020-08-29T13:00',
   },
   {
-    bookingId: '00004',
-    customerUsername: 'rw22448',
-    employeeUsername: 'jeffOak',
-    date: '24/07/2020',
-    time: 1000,
-    duration: 1.5,
+    workerUsername: 'jeffOak',
+    customerUsername: 'anthony',
+    startDateTime: '2020-08-31T14:00',
+    endDateTime: '2020-08-31T16:00',
   },
-  // {
-  //   bookingId: '00005',
-  //   customerUsername: 'rw22448',
-  //   employeeUsername: 'jeffOak',
-  //   date: '24/07/2020',
-  //   time: 1000,
-  //   duration: 1.5,
-  // },
-  // {
-  //   bookingId: '00006',
-  //   customerUsername: 'rw22448',
-  //   employeeUsername: 'jeffOak',
-  //   date: '24/07/2020',
-  //   time: 1000,
-  //   duration: 1.5,
-  // },
-  // {
-  //   bookingId: '00007',
-  //   customerUsername: 'rw22448',
-  //   employeeUsername: 'jeffOak',
-  //   date: '24/07/2020',
-  //   time: 1000,
-  //   duration: 1.5,
-  // },
-  // {
-  //   bookingId: '00008',
-  //   customerUsername: 'rw22448',
-  //   employeeUsername: 'jeffOak',
-  //   date: '24/07/2020',
-  //   time: 1000,
-  //   duration: 1.5,
-  // },
 ];
-
-const handleSelectWorker = (worker) => {
-  setBookingSelectedWorker(worker.workerUserName);
-};
 
 const User = ({ id }) => {
   const fetchUserData = async (key, id) => {
-    const { data } = await localInstance
-      .get(`/users?username=${id}`)
+    const { data } = await axios
+      .get(`http://localhost:8080/users?username=${id}`)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
       });
 
     return data;
-  };
-
-  const fetchOfflineData = (key, id) => {
-    return {
-      name: 'Richard Offline',
-      userType: 'Offline',
-    };
   };
 
   // State changing functions for updating page view
@@ -171,7 +124,7 @@ const User = ({ id }) => {
 
   const { data, isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
-    fetchOfflineData,
+    fetchUserData,
     {
       onSuccess: (data) => {
         setUserName(data.name);
@@ -179,16 +132,26 @@ const User = ({ id }) => {
       },
     }
   );
+  const [mutate] = useMutation(
+    async () => {
+      await submitBooking(userId);
+    },
+    {
+      onSuccess: () => {
+        console.log('Booking successful!');
+      },
+    }
+  );
 
-  const [userId, setUserId] = useState(id);
+  const [userId] = useState(id);
   const [userName, setUserName] = useState();
   const [role, setRole] = useState('User');
-  const [date, setDate] = useState(new Date());
+  const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(false);
+  const [main, setMain] = useState(true);
   const [booking, setBooking] = useState(false);
-  const [service, setService] = useState(true);
+  const [service, setService] = useState(false);
 
   return (
     <>
@@ -220,7 +183,8 @@ const User = ({ id }) => {
                   Potentially update to use flex container for wrapping? */}
                   <AppointmentsGrid>
                     {tempBookings.map((booking) => (
-                      <UpcomingAppointmentCard key={booking.bookingId}>
+                      <UpcomingAppointmentCard key={booking.customerUsername}>
+                        {/* TODO: Potentially provide a bookingId to use as key for uniqueness? */}
                         {booking}
                       </UpcomingAppointmentCard>
                     ))}
@@ -262,15 +226,12 @@ const User = ({ id }) => {
                   <DashboardModule title="Choose a worker">
                     <PanelGrid>
                       {workers.map((worker) => (
-                        <WorkerCard
-                          key={worker.workerUserName}
+                        <WorkerRadioButton
+                          type="radio"
                           worker={worker}
-                          onClick={() => {
-                            handleSelectWorker(worker);
-                          }}
-                        >
-                          {worker}
-                        </WorkerCard>
+                          key={worker.workerUserName}
+                          name="selectWorker"
+                        ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
                   </DashboardModule>
@@ -285,13 +246,7 @@ const User = ({ id }) => {
                     onChange={setBookingEndTime}
                   ></TimeSelector>
                 </DashboardModule>
-                <SubmitButton
-                  onClick={() => {
-                    submitBooking(userId);
-                  }}
-                >
-                  Submit
-                </SubmitButton>
+                <SubmitButton onClick={mutate}>Submit</SubmitButton>
               </form>
             </Content>
           )}
@@ -302,7 +257,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'rw22448',
+  id: 'jeffOak',
 };
 
 export default User;

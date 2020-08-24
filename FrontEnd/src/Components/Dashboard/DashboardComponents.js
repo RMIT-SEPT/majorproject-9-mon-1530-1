@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import hairdresserImage from '../../media/hairdresser-card.png';
+import watch from '../../media/watch-16px.svg';
+import clock from '../../media/clock-16px.svg';
+import user from '../../media/user-16px.svg';
 
 const Heading = styled.div`
   font-weight: bold;
@@ -20,7 +23,7 @@ const Content = styled.div`
 
 const DashboardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 24px;
   row-gap: 24px;
   margin: 24px 0px;
@@ -39,7 +42,7 @@ const PanelGrid = styled.div`
 `;
 
 const StyledDashboardModule = styled.div`
-  grid-column: span 12;
+  grid-column: span 2;
 `;
 
 const ClickableSpan = styled.span`
@@ -82,7 +85,18 @@ const StyledAppointmentCard = styled.div`
 `;
 
 const CardContent = styled.div`
-  padding: 0px 12px 12px 12px;
+  padding: 4px 16px 12px 16px;
+`;
+
+const Strong = styled.span`
+  font-weight: 550;
+`;
+
+const AppointmentCardLogo = styled.img`
+  position: relative;
+  right: 2px;
+  top: 3px;
+  margin-right: 4px;
 `;
 
 const DashboardModule = ({ children, title, icon, action }) => {
@@ -106,11 +120,28 @@ const DashboardModule = ({ children, title, icon, action }) => {
 };
 
 const UpcomingAppointmentCard = ({ children }) => {
+  const [startTime] = useState(new Date(children.startDateTime));
+  const [endTime] = useState(new Date(children.endDateTime));
+
   return (
     // TODO: Solve responsive grid layout for these components when there are many elements in a single row
     <StyledAppointmentCard>
       <CardImage src={hairdresserImage} alt="Hairdresser image" />
-      <CardContent>{children.employeeUsername}</CardContent>
+      <CardContent>
+        <div>
+          <AppointmentCardLogo src={user} alt="User logo" />
+          <Strong>{children.workerUsername}</Strong>
+        </div>
+        <br />
+        <div>
+          <AppointmentCardLogo src={watch} alt="Watch logo" />
+          {startTime.toLocaleDateString()}
+        </div>
+        <div>
+          <AppointmentCardLogo src={clock} alt="Clock logo" />
+          {startTime.toLocaleTimeString()} to {endTime.toLocaleTimeString()}
+        </div>
+      </CardContent>
     </StyledAppointmentCard>
   );
 };
