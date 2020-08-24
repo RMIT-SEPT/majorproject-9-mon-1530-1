@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
-@Entity
 @Table(name = "hours")
+@Entity
 public class HoursEntity implements AbstractEntity<Integer> {
 
     @Id
@@ -27,7 +27,7 @@ public class HoursEntity implements AbstractEntity<Integer> {
     private String workerUsername;
 
     @NotBlank
-    private String customerUsername;
+    private String creatorUsername;
 
     @NotNull
     private LocalDateTime startDateTime;
@@ -35,9 +35,9 @@ public class HoursEntity implements AbstractEntity<Integer> {
     @NotNull
     private LocalDateTime endDateTime;
 
-    public HoursEntity(String workerUsername, String customerUsername, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public HoursEntity(String workerUsername, String creatorUsername, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         this.workerUsername = workerUsername;
-        this.customerUsername = customerUsername;
+        this.creatorUsername = creatorUsername;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
     }
