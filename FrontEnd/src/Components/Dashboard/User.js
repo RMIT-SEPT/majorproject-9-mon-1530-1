@@ -92,7 +92,7 @@ const tempBookings = [
 const User = ({ id }) => {
   const fetchUserData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8080/users?username=${id}`)
+      .get(`http://localhost:8083/users?username=${id}`)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
       });
