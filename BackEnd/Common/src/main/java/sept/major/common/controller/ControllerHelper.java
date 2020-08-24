@@ -67,7 +67,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-        Set<ResponseError> responseErrors = new HashSet<>();
+        List<ResponseError> responseErrors = new ArrayList<>();
 
         E entity;
         try {
@@ -160,7 +160,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-        Set<ResponseError> responseErrors = new HashSet<>();
+        List<ResponseError> responseErrors = new ArrayList<>();
 
         /*
             Maps field name to the
@@ -351,7 +351,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             try {
                 return (ID) convertString(identifierType, identifierString);
             } catch (FailedConversionException e) {
-                throw new ResponseErrorException(new HashSet<>(Arrays.asList(new ResponseError("id", e.getMessage()))));
+                throw new ResponseErrorException((Arrays.asList(new ResponseError("id", e.getMessage()))));
             }
         }
     }
