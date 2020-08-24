@@ -67,7 +67,7 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     void customerUsernameProvidedValid() {
         HoursEntity expected = randomEntity(randomInt(4));
         String customerUsername = randomAlphanumericString(20);
-        expected.setCustomerUsername(customerUsername);
+        expected.setCreatorUsername(customerUsername);
 
         List<HoursEntity> returned = Arrays.asList(
                 randomEntity(randomInt(4)),
@@ -97,11 +97,11 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         String workerUsername = randomAlphanumericString(20);
 
         HoursEntity expected = randomEntity(randomInt(4));
-        expected.setCustomerUsername(customerUsername);
+        expected.setCreatorUsername(customerUsername);
         expected.setWorkerUsername(workerUsername);
 
         HoursEntity entityOne = randomEntity(randomInt(4));
-        entityOne.setCustomerUsername(customerUsername);
+        entityOne.setCreatorUsername(customerUsername);
 
         HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);
@@ -120,7 +120,7 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         String workerUsername = randomAlphanumericString(20);
 
         HoursEntity entityOne = randomEntity(randomInt(4));
-        entityOne.setCustomerUsername(customerUsername);
+        entityOne.setCreatorUsername(customerUsername);
 
         HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);

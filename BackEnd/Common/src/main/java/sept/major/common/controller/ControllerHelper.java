@@ -39,7 +39,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
     public ResponseEntity getEntity(String identifierString, Class<ID> identifierClass) {
         ID id;
         try {
-            id = convertIdentifier(identifierFieldName, identifierClass);
+            id = convertIdentifier(identifierString, identifierClass);
         } catch (ResponseErrorException e) {
             return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
         }

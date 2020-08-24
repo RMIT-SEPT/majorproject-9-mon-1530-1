@@ -129,7 +129,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
         if (returned != null) {
             List<HoursEntity> customerUsernameEntities = deepCopy(returned);
-            customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+            customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
 
             customerUsernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
@@ -147,11 +147,11 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
         if (returned != null) {
             List<HoursEntity> usernameEntities = deepCopy(returned);
-            usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+            usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
             usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
             HoursEntity customerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
-            customerUsernameEntity.setCustomerUsername(customerUsername);
+            customerUsernameEntity.setCreatorUsername(customerUsername);
             usernameEntities.add(customerUsernameEntity);
 
             HoursEntity workerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
@@ -186,7 +186,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
                 hoursEntity.setWorkerUsername(workerUsername);
             }
             if (customerUsername != null) {
-                hoursEntity.setCustomerUsername(customerUsername);
+                hoursEntity.setCreatorUsername(customerUsername);
             }
             return new ResponseEntity(hoursEntity, expected.getStatusCode());
         }
@@ -197,7 +197,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
                     hoursEntity.setWorkerUsername(workerUsername);
                 }
                 if (customerUsername != null) {
-                    hoursEntity.setCustomerUsername(customerUsername);
+                    hoursEntity.setCreatorUsername(customerUsername);
                 }
             });
 
