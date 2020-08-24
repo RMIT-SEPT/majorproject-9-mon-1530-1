@@ -4,12 +4,11 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sept.major.common.controller.ControllerHelper;
-import sept.major.common.service.CrudService;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.service.HoursService;
 
 @Service
-public class HoursControllerHelper extends ControllerHelper<HoursEntity, String> {
+public class HoursControllerHelper extends ControllerHelper<HoursEntity, Integer> {
 
     @Getter
     private HoursService service;

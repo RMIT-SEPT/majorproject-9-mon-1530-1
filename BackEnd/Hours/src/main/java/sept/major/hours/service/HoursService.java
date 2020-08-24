@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class HoursService extends CrudService<HoursEntity, String> {
+public class HoursService extends CrudService<HoursEntity, Integer> {
 
     HoursRepository hoursRepository;
 
@@ -28,7 +28,7 @@ public class HoursService extends CrudService<HoursEntity, String> {
     }
 
     @Override
-    protected JpaRepository<HoursEntity, String> getRepository() {
+    protected JpaRepository<HoursEntity, Integer> getRepository() {
         return hoursRepository;
     }
 

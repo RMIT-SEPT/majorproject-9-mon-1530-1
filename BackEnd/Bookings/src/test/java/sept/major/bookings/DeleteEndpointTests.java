@@ -12,11 +12,11 @@ public class DeleteEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void valid() {
-        String bookingId = randomAlphanumericString(20);
+        int bookingId = (int)Math.random();
 
         Mockito.doNothing().when(mockedBookingRepository).deleteById(bookingId);
 
-        ResponseEntity result = bookingServiceController.deleteBooking(bookingId);
+        ResponseEntity result = bookingServiceController.deleteBooking(Integer.toString(bookingId));
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -25,11 +25,11 @@ public class DeleteEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void missing() {
-        String bookingId = randomAlphanumericString(20);
+        int bookingId = (int)Math.random();
 
         Mockito.doThrow(new EmptyResultDataAccessException(1)).when(mockedBookingRepository).deleteById(bookingId);
 
-        ResponseEntity result = bookingServiceController.deleteBooking(bookingId);
+        ResponseEntity result = bookingServiceController.deleteBooking(Integer.toString(bookingId));
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

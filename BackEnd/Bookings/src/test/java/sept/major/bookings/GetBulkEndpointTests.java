@@ -26,14 +26,14 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         LocalDateTime endTime = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
 
         List<BookingEntity> expected = Arrays.asList(
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString())
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime)
         );
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
 
-        ResponseEntity result = bookingServiceController.getRange(startTime, endTime);
+        ResponseEntity result = bookingServiceController.getRange(startTime.toString(), endTime.toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -46,14 +46,14 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
 
         List<BookingEntity> expected = Arrays.asList(
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString())
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime)
         );
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
 
-        ResponseEntity result = bookingServiceController.getRange(startTime);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -70,19 +70,19 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
 
         List<BookingEntity> data = Arrays.asList(
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString())
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
         );
 
         List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
 
-        ResponseEntity result = bookingServiceController.getRange(startTime);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -99,17 +99,17 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
 
         List<BookingEntity> data = Arrays.asList(
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), startTime.toString(), endTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString())
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
         );
 
         when(mockedBookingRepository.findAllBetweenDates(endTime, startTime)).thenReturn(Arrays.asList());
 
-        ResponseEntity result = bookingServiceController.getRange(endTime, startTime);
+        ResponseEntity result = bookingServiceController.getRange(endTime.toString(), startTime.toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -126,15 +126,15 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
 
         List<BookingEntity> data = Arrays.asList(
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime.toString(), nextDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString()),
-                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime.toString(), prevDayEndTime.toString())
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
         );
 
         when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(Arrays.asList());
 
-        ResponseEntity result = bookingServiceController.getRange(startTime);
+        ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -143,12 +143,11 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void notDateTypeOnDate() {
-        String startTime = "Today";
-        String endTime = "Tomorrow";
+        String date = "Today";
 
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(LocalDate.now().atStartOfDay());
+        ResponseEntity result = bookingServiceController.getDate(date, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -162,7 +161,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(LocalDate.now().atStartOfDay(), LocalDateTime.now().plusDays(2));
+        ResponseEntity result = bookingServiceController.getRange(startTime, endTime, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -173,7 +172,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
     void nullDate() {
         when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity result = bookingServiceController.getRange(null, null);
+        ResponseEntity result = bookingServiceController.getDate(null, null, null);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
