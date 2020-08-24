@@ -128,7 +128,7 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
-function Login(props) {
+export const Login = props =>{
   const { register, handleSubmit, errors } = useForm()
   return (
     <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
@@ -173,16 +173,7 @@ function Login(props) {
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>
-                <ColorButton onClick ={
-                  () => {
-                   auth.login(() => {
-                     this.props.history.push ("/user")
-
-                   })
-                  }
-
-                }
-                type="submit" variant="contained" color="#ffffff" > Submit
+                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit
                 
                 
                 </ColorButton>
