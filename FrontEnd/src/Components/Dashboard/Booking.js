@@ -17,4 +17,14 @@ const setBookingEndTime = (time) => {
   console.log('End time ' + endTime);
 };
 
-export { setBookingSelectedWorker, setBookingStartTime, setBookingEndTime };
+const submitBooking = (user) => {
+  console.log('Booking...');
+  console.log('User = ' + user);
+};
+
+export {
+  setBookingSelectedWorker,
+  setBookingStartTime,
+  setBookingEndTime,
+  submitBooking,
+};

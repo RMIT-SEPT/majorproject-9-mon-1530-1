@@ -5,15 +5,22 @@ import { withStyles } from '@material-ui/core/styles';
 import { Title } from './DashboardComponents';
 import { setBookingSelectedWorker } from './Booking';
 
-const StyledServiceCard = styled.div`
+const StyledCard = styled.div`
   width: 100%;
   height: 106px;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  transition: color ${(props) => props.theme.transition.short};
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.colours.greenPrimary};
+  }
 `;
 
-const ServiceCardContents = styled.div`
+const CardContents = styled.div`
   display: flex;
   margin: 16px 24px;
 `;
@@ -25,7 +32,9 @@ const TempServiceIcon = styled.div`
   border-radius: 37px;
 `;
 
-const ServiceCardContentsText = styled.div`
+const CardContentsText = styled.div`
+  position: relative;
+  bottom: 2px;
   flex: none;
   margin-left: 20px;
 `;
@@ -66,33 +75,33 @@ const StyledDateTimePicker = withStyles((theme) => ({
 
 const ServiceCard = ({ children, onClick }) => {
   return (
-    <StyledServiceCard onClick={onClick}>
-      <ServiceCardContents>
+    <StyledCard onClick={onClick}>
+      <CardContents>
         <TempServiceIcon></TempServiceIcon>
-        <ServiceCardContentsText>
+        <CardContentsText>
           <Title>{children.serviceName}</Title>
           <div>{children.address}</div>
           <div>{children.phoneNumber}</div>
-        </ServiceCardContentsText>
-      </ServiceCardContents>
-    </StyledServiceCard>
+        </CardContentsText>
+      </CardContents>
+    </StyledCard>
   );
 };
 
 const WorkerCard = ({ children, worker }) => {
   return (
-    <StyledServiceCard
+    <StyledCard
       onClick={() => {
         setBookingSelectedWorker(worker);
       }}
     >
-      <ServiceCardContents>
+      <CardContents>
         <TempServiceIcon></TempServiceIcon>
-        <ServiceCardContentsText>
+        <CardContentsText>
           <Title>{children.workerFullName}</Title>
-        </ServiceCardContentsText>
-      </ServiceCardContents>
-    </StyledServiceCard>
+        </CardContentsText>
+      </CardContents>
+    </StyledCard>
   );
 };
 

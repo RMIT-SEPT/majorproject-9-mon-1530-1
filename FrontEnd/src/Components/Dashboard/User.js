@@ -22,7 +22,9 @@ import {
   setBookingSelectedWorker,
   setBookingStartTime,
   setBookingEndTime,
+  submitBooking,
 } from './Booking';
+import { localInstance } from '../Axios/Instance';
 import home from '../../media/home-40px.svg';
 import book from '../../media/book-40px.svg';
 import calendar from '../../media/calendar-40px.svg';
@@ -41,8 +43,16 @@ const services = [
     phoneNumber: '03 9530 2393',
   },
 
-  { serviceName: 'Nail Lisa' },
-  { serviceName: 'Bob the Builder' },
+  {
+    serviceName: 'Nail Lisa',
+    address: 'No address available',
+    phoneNumber: '03 9561 2313',
+  },
+  {
+    serviceName: 'Bob the Builder',
+    address: 'Channel 3, ABC, Australia',
+    phoneNumber: '123 456',
+  },
 ];
 
 const workers = [
@@ -119,18 +129,18 @@ const handleSelectWorker = (worker) => {
   setBookingSelectedWorker(worker.workerUserName);
 };
 
-const User = ({ userId }) => {
-  const fetchUserData = async (key, userId) => {
-    const result = await fetch(
-      `http://localhost:8080/users?username=${userId}`
-    ).catch((e) => {
-      console.log('Error: ', e);
-    });
+const User = ({ id }) => {
+  const fetchUserData = async (key, id) => {
+    const { data } = await localInstance
+      .get(`/users?username=${id}`)
+      .catch((error) => {
+        console.log('Error fetching user data: ' + error);
+      });
 
-    return result.json();
+    return data;
   };
 
-  const fetchOfflineData = (key, userId) => {
+  const fetchOfflineData = (key, id) => {
     return {
       name: 'Richard Offline',
       userType: 'Offline',
@@ -160,7 +170,7 @@ const User = ({ userId }) => {
   };
 
   const { data, isSuccess, isLoading, isError } = useQuery(
-    ['userData', userId],
+    ['userData', id],
     fetchOfflineData,
     {
       onSuccess: (data) => {
@@ -170,7 +180,8 @@ const User = ({ userId }) => {
     }
   );
 
-  const [userName, setUserName] = useState(userId);
+  const [userId, setUserId] = useState(id);
+  const [userName, setUserName] = useState();
   const [role, setRole] = useState('User');
   const [date, setDate] = useState(new Date());
 
@@ -215,8 +226,6 @@ const User = ({ userId }) => {
                     ))}
                   </AppointmentsGrid>
                 </DashboardModule>
-                <DashboardModule title="Service">Service</DashboardModule>
-                <DashboardModule title="Service">Service</DashboardModule>
               </DashboardGrid>
             </Content>
           )}
@@ -276,7 +285,13 @@ const User = ({ userId }) => {
                     onChange={setBookingEndTime}
                   ></TimeSelector>
                 </DashboardModule>
-                <SubmitButton>Submit</SubmitButton>
+                <SubmitButton
+                  onClick={() => {
+                    submitBooking(userId);
+                  }}
+                >
+                  Submit
+                </SubmitButton>
               </form>
             </Content>
           )}
@@ -287,7 +302,7 @@ const User = ({ userId }) => {
 };
 
 User.defaultProps = {
-  userId: 'rw22448',
+  id: 'rw22448',
 };
 
 export default User;
