@@ -34,10 +34,10 @@ public class HoursController {
     }
 
     @GetMapping("/range")
-    public ResponseEntity getHoursInRange(@RequestParam(required = false) String startDateString,
-                                          @RequestParam(required = false) String endDateString,
-                                          @RequestParam(required = false) String workerUsename,
-                                          @RequestParam(required = false) String customerUsername) {
+    public ResponseEntity getHoursInRange(@RequestParam(name = "startDateTime") String startDateString,
+                                          @RequestParam(name = "endDateTime") String endDateString,
+                                          @RequestParam(required = false) String workerUsername,
+                                          @RequestParam(required = false) String creatorUsername) {
         LocalDateTime startDate;
         try {
             startDate = (startDateString == null ? null : LocalDateTime.parse(startDateString));
@@ -63,7 +63,7 @@ public class HoursController {
         }
 
         try {
-            List<HoursEntity> hours = hoursService.getHoursBetweenDates(startDate, endDate, workerUsename, customerUsername);
+            List<HoursEntity> hours = hoursService.getHoursBetweenDates(startDate, endDate, workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.ACCEPTED);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -72,16 +72,11 @@ public class HoursController {
     }
 
     @GetMapping("/date")
-    public ResponseEntity getHoursInDate(@RequestParam String date,
+    public ResponseEntity getHoursInDate(@RequestParam(name = "date") String dateString,
                                          @RequestParam(required = false) String workerUsername,
-                                         @RequestParam(required = false) String customerUsername) {
-
-        if(date == null) {
-            throw new RuntimeException("Received null date when the field is required by the endpoint");
-        }
-
+                                         @RequestParam(required = false) String creatorUsername) {
         try {
-            List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(date), workerUsername, customerUsername);
+            List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(dateString), workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.ACCEPTED);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -93,11 +88,11 @@ public class HoursController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllHours(@RequestParam(required = false, name = "workerUsername") String workerUsername,
-                                      @RequestParam(required = false) String customerUsername) {
+    public ResponseEntity getAllHours(@RequestParam(required = false) String workerUsername,
+                                      @RequestParam(required = false) String creatorUsername) {
 
         try {
-            List<HoursEntity> hours = hoursService.getAllHours(workerUsername, customerUsername);
+            List<HoursEntity> hours = hoursService.getAllHours(workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
