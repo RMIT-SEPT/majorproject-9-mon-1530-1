@@ -115,7 +115,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
     public ResponseEntity getEntity(String identifierString, Class<ID> identifierClass) {
         ID id;
         try {
-            id = convertIdentifier(identifierFieldName, identifierClass);
+            id = convertIdentifier(identifierString, identifierClass);
         } catch (FailedConversionException e) {
             String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
             return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
