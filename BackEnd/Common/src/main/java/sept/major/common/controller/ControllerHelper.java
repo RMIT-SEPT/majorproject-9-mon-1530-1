@@ -7,7 +7,7 @@ import sept.major.common.annotation.ReadOnly;
 import sept.major.common.entity.AbstractEntity;
 import sept.major.common.exception.*;
 import sept.major.common.patch.PatchValue;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.common.service.CrudService;
 
 import javax.persistence.Id;
@@ -118,7 +118,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             id = convertIdentifier(identifierFieldName, identifierClass);
         } catch (FailedConversionException e) {
             String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
-            return new ResponseEntity(new ResponseError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         try {
             E entity = getService().read(id); // Call the service's implementation of retrieving a record.
@@ -138,14 +138,14 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
      * @param responseBody Maps field name to field value. Typically sourced from JSON provided in a request body.
      * @return An entity constructed from the map provided. Fields are assigned the values provided by the map
      * @throws RecordAlreadyExistsException A record already exists with the id provided in the {@code responseBody} parameter
-     * @throws ResponseErrorException There was a validation error in entity created from the map provided.
+     * @throws ValidationErrorException There was a validation error in entity created from the map provided.
      */
-    public E validatePostInput(Class<E> entityClass, Map<String, String> responseBody) throws RecordAlreadyExistsException, ResponseErrorException {
+    public E validatePostInput(Class<E> entityClass, Map<String, String> responseBody) throws RecordAlreadyExistsException, ValidationErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-        List<ResponseError> responseErrors = new ArrayList<>();
+        List<ValidationError> validationErrors = new ArrayList<>();
 
         E entity;
         try {
@@ -166,7 +166,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             String fieldKey = getKeyForField(field);
             if(field.getAnnotation(ReadOnly.class) != null) {
                 if(responseBody.get(fieldKey) != null) {
-                    responseErrors.add(new ResponseError(fieldKey, "value cannot be set because field is read only"));
+                    validationErrors.add(new ValidationError(fieldKey, "value cannot be set because field is read only"));
                     continue;
                 }
             }
@@ -178,7 +178,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        responseErrors.add(new ResponseError(fieldKey, e.getMessage()));
+                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
                     }
                 }
 
@@ -196,8 +196,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
 
         }
 
-        if (!responseErrors.isEmpty()) {
-            throw new ResponseErrorException(responseErrors);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationErrorException(validationErrors);
         }
         return entity;
     }
@@ -222,8 +222,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
 
         } catch (RecordAlreadyExistsException e) {
             return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
-        } catch (ResponseErrorException e) {
-            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        } catch (ValidationErrorException e) {
+            return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -234,14 +234,14 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
      * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
      * @param responseBody Maps field name to field value for fields to update. Typically sourced from JSON provided in a request body.
      * @return A list of values to update along with the {@link Field} to assign the value to and the getter/setter {@link Method} for the field
-     * @throws ResponseErrorException There was a validation error in one of the values provided
+     * @throws ValidationErrorException There was a validation error in one of the values provided
      */
-    public List<PatchValue> validatePatchInput(Class<E> entityClass, Map<String, String> responseBody) throws ResponseErrorException {
+    public List<PatchValue> validatePatchInput(Class<E> entityClass, Map<String, String> responseBody) throws ValidationErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-        List<ResponseError> responseErrors = new ArrayList<>();
+        List<ValidationError> validationErrors = new ArrayList<>();
 
         /*
             Maps field name to the
@@ -260,7 +260,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             String fieldKey = getKeyForField(field);
             if(field.getAnnotation(ReadOnly.class) != null) {
                 if(responseBody.get(fieldKey) != null) {
-                    responseErrors.add(new ResponseError(fieldKey, "value cannot be updated because field is read only"));
+                    validationErrors.add(new ValidationError(fieldKey, "value cannot be updated because field is read only"));
                     continue;
                 }
             }
@@ -272,7 +272,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        responseErrors.add(new ResponseError(fieldKey, e.getMessage()));
+                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
                     }
                 }
 
@@ -293,8 +293,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         }
 
 
-        if (!responseErrors.isEmpty()) {
-            throw new ResponseErrorException(responseErrors);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationErrorException(validationErrors);
         }
 
         return patchValues;
@@ -316,7 +316,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         try {
             id = convertIdentifier(identifierString, identifierClass);
         } catch (FailedConversionException e) {
-            return new ResponseEntity(new ResponseError(identifierFieldName, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError(identifierFieldName, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -326,12 +326,12 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             E patchedEntity = getService().patch(id, patchValues);
             return new ResponseEntity(patchedEntity, HttpStatus.OK);
 
-        } catch (ResponseErrorException e) {
-            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        } catch (ValidationErrorException e) {
+            return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(new ResponseError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ValidationError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IdentifierUpdateException e) {
-            return new ResponseEntity(new ResponseError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -350,7 +350,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             id = convertIdentifier(identifierString, identifierClass);
         } catch (FailedConversionException e) {
             String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
-            return new ResponseEntity(new ResponseError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         try {
             getService().delete(id);

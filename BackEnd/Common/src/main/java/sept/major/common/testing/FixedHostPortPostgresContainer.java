@@ -3,12 +3,14 @@ package sept.major.common.testing;
 import org.testcontainers.containers.InternetProtocol;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-/*
-    The following class is an almost direct duplicate of the FixedHostPortGenericContainer class created by the testContainers library.
-    I chose to duplicate the class so that I can make use of PostgresSQLContainer functionality while still having a fixed host port.
-    A class is needed to set a fix port because the developers of the testContainers library made the setFixedExposedPort method protected,
-    this is done to circumvent port conflicts however we need a fixed port due to Spring context prohibiting JPA connections to
-    change in runtime without predetermined properties; Instead of a random port we will provide one.
+/**
+ * The following class is an almost direct duplicate of the FixedHostPortGenericContainer class created by the testContainers library.
+ * I chose to duplicate the class so that I can make use of PostgresSQLContainer functionality while still having a fixed host port.
+ * A class is needed to set a fix port because the developers of the testContainers library made the setFixedExposedPort method protected,
+ * this is done to circumvent port conflicts however we need a fixed port due to Spring context prohibiting JPA connections to
+ * change in runtime without predetermined properties; Instead of a random port we will provide one.
+ *
+ * @param <SELF>
  */
 public class FixedHostPortPostgresContainer<SELF extends FixedHostPortPostgresContainer<SELF>> extends PostgreSQLContainer<SELF> {
 
