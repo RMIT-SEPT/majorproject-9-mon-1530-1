@@ -138,9 +138,9 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             Go through all the violations and translate the violations into ResponseErrors.
             Done so that the API returns the standard error response, allowing for automatic analysis and higher human readability.
          */
-        Set<ResponseError> responseErrors = violations.stream()
+        List<ResponseError> responseErrors = violations.stream()
                 .map(violation -> new ResponseError(violation.getPropertyPath().toString(), violation.getMessage()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         if(!responseErrors.isEmpty()) {
             throw new ResponseErrorException(responseErrors);
