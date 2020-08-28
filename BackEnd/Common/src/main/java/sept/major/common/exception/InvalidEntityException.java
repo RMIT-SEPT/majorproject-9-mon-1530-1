@@ -1,10 +1,13 @@
 package sept.major.common.exception;
 
-/*
-    This exception will occur whenever the implemented entity provided to either ControllerHelp or CrudService does not have
-        * An accessible empty constructor
-        * At least one field with a getter and setter
-    This exception could also occur when code is changed incorrectly and checks are missed
+/**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * Thrown when there was an error in the entity (implementation of AbstractEntity) that ControllerHelper, CrudService etc use.
+ * Often occurs whens the entity doesn't contain an accessible entity constructor or the a poor code alteration.
+ *
  */
 public class InvalidEntityException extends RuntimeException {
     public InvalidEntityException(String message) {
