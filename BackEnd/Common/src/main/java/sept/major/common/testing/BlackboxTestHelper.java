@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
  * Used in unit testing where a clean environment is required, allowing for accurate service level testing.
  * By implementing this class in your unit test a docker container containing a postgres database will be spun up before every test.
  * This dramatically increase runtime but will ensure your tests are completely isolated from other of impacts.

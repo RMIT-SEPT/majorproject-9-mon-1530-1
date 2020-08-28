@@ -4,6 +4,10 @@ import org.testcontainers.containers.InternetProtocol;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
  * The following class is an almost direct duplicate of the FixedHostPortGenericContainer class created by the testContainers library.
  * I chose to duplicate the class so that I can make use of PostgresSQLContainer functionality while still having a fixed host port.
  * A class is needed to set a fix port because the developers of the testContainers library made the setFixedExposedPort method protected,
