@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/bookings")
+@CrossOrigin
 public class BookingServiceController {
 
     BookingService bookingService;
