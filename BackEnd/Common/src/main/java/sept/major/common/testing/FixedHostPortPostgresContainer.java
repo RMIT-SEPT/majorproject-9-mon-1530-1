@@ -10,7 +10,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
  * this is done to circumvent port conflicts however we need a fixed port due to Spring context prohibiting JPA connections to
  * change in runtime without predetermined properties; Instead of a random port we will provide one.
  *
- * @param <SELF>
+ * @param <SELF> This class, inherited from {@link PostgreSQLContainer}
  */
 public class FixedHostPortPostgresContainer<SELF extends FixedHostPortPostgresContainer<SELF>> extends PostgreSQLContainer<SELF> {
 

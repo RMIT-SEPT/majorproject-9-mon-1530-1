@@ -12,7 +12,7 @@ import java.util.List;
  * @since 1.0.9
  * <p>
  * Thrown in order to carry validation errors up the stack trace.
- * All validation errors are stored within the exception, see {@link #getValidationErrors()}
+ * All validation errors are stored within the exception, see {@link #validationErrors}
  */
 /*
     Used to transfer validationErrors back to the calling method if any exist.
