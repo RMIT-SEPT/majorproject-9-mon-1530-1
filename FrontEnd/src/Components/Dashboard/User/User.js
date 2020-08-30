@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
+import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -10,24 +10,24 @@ import {
   DashboardGrid,
   AppointmentsGrid,
   PanelGrid,
-} from './DashboardComponents';
+} from '../DashboardComponents';
 import {
   BackButton,
   ServiceCard,
   TimeSelector,
   SubmitButton,
   WorkerRadioButton,
-} from './BookingComponents';
+} from '../Bookings/BookingComponents';
 import {
   setBookingStartTime,
   setBookingEndTime,
   submitBooking,
-} from './Booking';
-import home from '../../media/home-40px.svg';
-import book from '../../media/book-40px.svg';
-import calendar from '../../media/calendar-40px.svg';
-import phone from '../../media/phone-40px.svg';
-import circleAdd from '../../media/plus-circle-20px.svg';
+} from '../Bookings/Booking';
+import home from '../../../media/home-40px.svg';
+import book from '../../../media/book-40px.svg';
+import calendar from '../../../media/calendar-40px.svg';
+import phone from '../../../media/phone-40px.svg';
+import circleAdd from '../../../media/plus-circle-20px.svg';
 
 const axios = require('axios');
 

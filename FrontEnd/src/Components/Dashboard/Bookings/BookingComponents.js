@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { Title } from './DashboardComponents';
+import { Title } from '../DashboardComponents';
 import { setBookingSelectedWorker } from './Booking';
 
 const StyledCard = styled.div`
@@ -88,6 +88,7 @@ const StyledDateTimePicker = withStyles((theme) => ({
   },
 }))(TextField);
 
+// TODO: Refactor to take a service as props instead of service as child
 const ServiceCard = ({ children, onClick }) => {
   return (
     <StyledCard>

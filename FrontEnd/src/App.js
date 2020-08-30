@@ -5,14 +5,13 @@ import Form from './Components/Form';
 import Main from './Components/Main';
 import Login from './Components/Login';
 import Contact from './Components/Contact';
-import User from './Components/Dashboard/User';
+import User from './Components/Dashboard/User/User';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import ProtectedRoute from './Components/protected.route.js'
+import ProtectedRoute from './Components/protected.route.js';
 import Landing from './Components/logintest';
 import Dashboard from './Components/logout';
 import Unauthorized from './Components/Unauthorized';
-
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -35,17 +34,17 @@ const theme = {
 };
 
 function App() {
-  const [user, setUser] = useState(false)
+  const [user, setUser] = useState(false);
 
-  const handleLogin = e => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setUser(true);
-  }
+  };
 
-  const handleLogout = e => {
+  const handleLogout = (e) => {
     e.preventDefault();
     setUser(false);
-  }
+  };
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -58,10 +57,26 @@ function App() {
             <Route exact path="/about" component={About} />
             <Route exact path="/contactus" component={Contact} />
             <Route exact path="/user" component={User} />
-            <Route exact path='/logt' handleLogin={handleLogin} render={
-              props => <Landing {...props} user={user.toString()} handleLogin={handleLogin} />} />
-            <ProtectedRoute exact path='/out' user={user} handleLogout={handleLogout} component={Dashboard} />
-            <Route exact path='/unauthorized' component={Unauthorized} />
+            <Route
+              exact
+              path="/logt"
+              handleLogin={handleLogin}
+              render={(props) => (
+                <Landing
+                  {...props}
+                  user={user.toString()}
+                  handleLogin={handleLogin}
+                />
+              )}
+            />
+            <ProtectedRoute
+              exact
+              path="/out"
+              user={user}
+              handleLogout={handleLogout}
+              component={Dashboard}
+            />
+            <Route exact path="/unauthorized" component={Unauthorized} />
           </Router>
         </div>
       </ThemeProvider>
@@ -70,3 +85,4 @@ function App() {
 }
 
 export default App;
+export { theme };
