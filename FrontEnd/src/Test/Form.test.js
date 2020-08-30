@@ -1,6 +1,9 @@
 import React from 'react';
+import 'mutationobserver-shim';
 import { render } from '@testing-library/react';
 import Form from '../Components/Form';
+
+global.MutationObserver = window.MutationObserver;
 
 describe('Form', () => {
   it('should render a link to log in', () => {

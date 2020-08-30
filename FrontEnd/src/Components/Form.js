@@ -267,7 +267,7 @@ function Form() {
               </Grid>
               {/* submit button  */}
               <Grid item xs={12}>
-                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit</ColorButton>
+                <ColorButton type="submit" variant="contained"> Submit</ColorButton>
               </Grid>
             </Grid>
           </Right>
