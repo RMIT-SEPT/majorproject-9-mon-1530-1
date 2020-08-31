@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
 import {
@@ -14,11 +14,12 @@ import {
 import {
   BackButton,
   ServiceCard,
-  TimeSelector,
+  DateTimeSelector,
   SubmitButton,
   WorkerRadioButton,
 } from '../Bookings/BookingComponents';
 import {
+  setBookingSelectedWorker,
   setBookingStartTime,
   setBookingEndTime,
   submitBooking,
@@ -28,6 +29,7 @@ import book from '../../../media/book-40px.svg';
 import calendar from '../../../media/calendar-40px.svg';
 import phone from '../../../media/phone-40px.svg';
 import circleAdd from '../../../media/plus-circle-20px.svg';
+import { BrowserContext } from '../../../Contexts/BrowserContext';
 
 const axios = require('axios');
 
@@ -143,15 +145,17 @@ const User = ({ id }) => {
     }
   );
 
+  const browserContext = useContext(BrowserContext);
+
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
   const [role, setRole] = useState('User');
   const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(true);
+  const [main, setMain] = useState(false);
   const [booking, setBooking] = useState(false);
-  const [service, setService] = useState(false);
+  const [service, setService] = useState(true);
 
   return (
     <>
@@ -206,9 +210,8 @@ const User = ({ id }) => {
                         <ServiceCard
                           key={service.serviceName}
                           onClick={selectService}
-                        >
-                          {service}
-                        </ServiceCard>
+                          service={service}
+                        ></ServiceCard>
                       ))}
                     </PanelGrid>
                   </DashboardModule>
@@ -231,20 +234,26 @@ const User = ({ id }) => {
                           worker={worker}
                           key={worker.workerUserName}
                           name="selectWorker"
+                          onChange={setBookingSelectedWorker}
                         ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
                   </DashboardModule>
                 </DashboardGrid>
                 <DashboardModule title="Select times">
-                  <TimeSelector
-                    label="Start time"
-                    onChange={setBookingStartTime}
-                  ></TimeSelector>
-                  <TimeSelector
-                    label="End time"
-                    onChange={setBookingEndTime}
-                  ></TimeSelector>
+                  {browserContext.isChrome && (
+                    <>
+                      <DateTimeSelector
+                        label="Start time"
+                        onChange={setBookingStartTime}
+                      ></DateTimeSelector>
+                      <DateTimeSelector
+                        label="End time"
+                        onChange={setBookingEndTime}
+                      ></DateTimeSelector>
+                    </>
+                  )}
+                  {browserContext.isFirefox && <div>Firefox...</div>}
                 </DashboardModule>
                 <SubmitButton onClick={mutate}>Submit</SubmitButton>
               </form>

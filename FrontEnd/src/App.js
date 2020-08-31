@@ -12,6 +12,7 @@ import ProtectedRoute from './Components/protected.route.js';
 import Landing from './Components/logintest';
 import Dashboard from './Components/logout';
 import Unauthorized from './Components/Unauthorized';
+import BrowserContext from './Contexts/BrowserContext';
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -50,34 +51,36 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <div className="App">
-          <Router>
-            <Route exact path="/" component={Main} />
-            <Route exact path="/form" component={Form} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/about" component={About} />
-            <Route exact path="/contactus" component={Contact} />
-            <Route exact path="/user" component={User} />
-            <Route
-              exact
-              path="/logt"
-              handleLogin={handleLogin}
-              render={(props) => (
-                <Landing
-                  {...props}
-                  user={user.toString()}
-                  handleLogin={handleLogin}
-                />
-              )}
-            />
-            <ProtectedRoute
-              exact
-              path="/out"
-              user={user}
-              handleLogout={handleLogout}
-              component={Dashboard}
-            />
-            <Route exact path="/unauthorized" component={Unauthorized} />
-          </Router>
+          <BrowserContext>
+            <Router>
+              <Route exact path="/" component={Main} />
+              <Route exact path="/form" component={Form} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/about" component={About} />
+              <Route exact path="/contactus" component={Contact} />
+              <Route exact path="/user" component={User} />
+              <Route
+                exact
+                path="/logt"
+                handleLogin={handleLogin}
+                render={(props) => (
+                  <Landing
+                    {...props}
+                    user={user.toString()}
+                    handleLogin={handleLogin}
+                  />
+                )}
+              />
+              <ProtectedRoute
+                exact
+                path="/out"
+                user={user}
+                handleLogout={handleLogout}
+                component={Dashboard}
+              />
+              <Route exact path="/unauthorized" component={Unauthorized} />
+            </Router>
+          </BrowserContext>
         </div>
       </ThemeProvider>
     </>

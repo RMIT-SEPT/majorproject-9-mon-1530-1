@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Button, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Title } from '../DashboardComponents';
-import { setBookingSelectedWorker } from './Booking';
 
 const StyledCard = styled.div`
   height: 106px;
@@ -41,14 +40,24 @@ const CardContentsText = styled.div`
   width: calc(100% - 74px - 24px);
 `;
 
-const TimeSelectorWrapper = styled.span`
+const DateTimeSelectorWrapper = styled.span`
   margin-right: 20px;
 `;
 
 const StyledRadioInput = styled.input`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   width: 74px;
   height: 74px;
   margin: 0;
+  outline: 0px;
+  border-radius: 50%;
+  border: 2px solid #999;
+
+  &:checked {
+    border: 37px solid ${(props) => props.theme.colours.greenPrimary};
+  }
 `;
 
 const StyledLabel = styled.label`
@@ -82,29 +91,22 @@ const SubmitButton = withStyles((theme) => ({
   },
 }))(Button);
 
-const StyledDateTimePicker = withStyles((theme) => ({
-  root: {
-    color: theme.palette.getContrastText('#000000'),
-  },
-}))(TextField);
-
-// TODO: Refactor to take a service as props instead of service as child
-const ServiceCard = ({ children, onClick }) => {
+const ServiceCard = ({ service, onClick }) => {
   return (
     <StyledCard>
       <CardContents onClick={onClick}>
         <TempServiceIcon></TempServiceIcon>
         <CardContentsText>
-          <Title>{children.serviceName}</Title>
-          <div>{children.address}</div>
-          <div>{children.phoneNumber}</div>
+          <Title>{service.serviceName}</Title>
+          <div>{service.address}</div>
+          <div>{service.phoneNumber}</div>
         </CardContentsText>
       </CardContents>
     </StyledCard>
   );
 };
 
-const WorkerRadioButton = ({ worker }) => {
+const WorkerRadioButton = ({ worker, onChange }) => {
   return (
     <StyledCard>
       <CardContents>
@@ -113,10 +115,10 @@ const WorkerRadioButton = ({ worker }) => {
           id={worker.workerUserName}
           key={worker.workerUserName}
           label={worker.workerFullName}
-          value={worker.workerUser}
+          value={worker.workerUserName}
           name="selectWorker"
           onChange={() => {
-            setBookingSelectedWorker(worker);
+            onChange(worker);
           }}
         />
         <CardContentsText>
@@ -129,28 +131,26 @@ const WorkerRadioButton = ({ worker }) => {
   );
 };
 
-const TimeSelector = ({ label, onChange }) => {
+const DateTimeSelector = ({ label, onChange }) => {
   return (
-    <TimeSelectorWrapper>
-      <StyledDateTimePicker
-        id="datetime-local"
-        label={label}
+    <DateTimeSelectorWrapper>
+      <label htmlFor={label}>{label}</label>
+      <input
         type="datetime-local"
-        InputLabelProps={{
-          shrink: true,
-        }}
+        id={label}
+        name={label}
         onChange={(e) => {
           onChange(e.target.value);
         }}
       />
-    </TimeSelectorWrapper>
+    </DateTimeSelectorWrapper>
   );
 };
 
 export {
   BackButton,
   ServiceCard,
-  TimeSelector,
+  DateTimeSelector,
   SubmitButton,
   WorkerRadioButton,
 };

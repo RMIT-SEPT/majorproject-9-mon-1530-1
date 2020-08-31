@@ -1,10 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
+import { render, fireEvent } from '@testing-library/react';
+import { shallow, mount } from 'enzyme';
+import styled, { ThemeProvider } from 'styled-components';
 import {
   ServiceCard,
   WorkerRadioButton,
-  TimeSelector,
+  DateTimeSelector,
 } from './BookingComponents';
 import { theme } from '../../../App';
 
@@ -25,43 +26,84 @@ const renderComponent = (component) => {
 
 describe('BookingComponents', () => {
   describe('ServiceCard', () => {
-    it('should render component when provided a service as child', () => {
-      const {} = renderComponent(<ServiceCard>{testService}</ServiceCard>);
+    it('should render component and details when provided a service as child', () => {
+      const { getByText } = renderComponent(
+        <ServiceCard service={testService}></ServiceCard>
+      );
+
+      expect(getByText(testService.serviceName)).toBeTruthy();
+      expect(getByText(testService.address)).toBeTruthy();
+      expect(getByText(testService.phoneNumber)).toBeTruthy();
+    });
+
+    it('should simulate onClick event', () => {
+      const onClickMock = jest.fn();
+
+      const { getByText } = renderComponent(
+        <ServiceCard service={testService} onClick={onClickMock}></ServiceCard>
+      );
+
+      fireEvent.click(getByText(testService.serviceName));
+
+      expect(onClickMock).toHaveBeenCalled();
     });
   });
 
   describe('WorkerRadioButton', () => {
-    it('should render component when provided a worker as prop', () => {
-      const {} = renderComponent(
+    it('should render component and details when provided a worker as prop', () => {
+      const { getByText } = renderComponent(
         <WorkerRadioButton worker={testWorker}></WorkerRadioButton>
       );
+
+      expect(getByText(testWorker.workerFullName)).toBeTruthy();
+    });
+
+    it('should simulate onChange event', () => {
+      const onChangeMock = jest.fn();
+
+      const { getByText } = renderComponent(
+        <WorkerRadioButton
+          worker={testWorker}
+          onChange={onChangeMock}
+        ></WorkerRadioButton>
+      );
+
+      fireEvent.click(getByText(testWorker.workerFullName));
+
+      expect(onChangeMock).toHaveBeenCalled();
     });
   });
 
-  describe('TimeSelector', () => {
+  describe('DateTimeSelector', () => {
     const label = 'Time';
 
     it('should render component with a given label', () => {
       const { getByText } = renderComponent(
-        <TimeSelector label={label}></TimeSelector>
+        <DateTimeSelector label={label}></DateTimeSelector>
       );
 
       expect(getByText(label)).toBeTruthy();
     });
 
-    it('should activate onChange function when interacting with component', () => {
+    it('should simulate onChange event', () => {
       const onChangeMock = jest.fn();
+      const event = {
+        target: { value: 'testValue' },
+      };
 
-      const { debug } = renderComponent(
-        <TimeSelector
+      const wrapper = shallow(
+        <DateTimeSelector
           label={label}
-          onChange={() => {
-            console.log('Click!');
-          }}
-        ></TimeSelector>
+          onChange={onChangeMock}
+        ></DateTimeSelector>
       );
 
-      debug();
+      console.log(wrapper.debug());
+
+      wrapper.find('input').simulate('change', event);
+
+      expect(onChangeMock).toHaveBeenCalled();
+      expect(onChangeMock).toHaveBeenCalledWith(event.target.value);
     });
   });
 });
