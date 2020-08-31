@@ -10,19 +10,20 @@ import {
   DashboardGrid,
   AppointmentsGrid,
   PanelGrid,
+  Button,
 } from '../DashboardComponents';
 import {
-  BackButton,
   ServiceCard,
   DateTimeSelector,
-  SubmitButton,
   WorkerRadioButton,
+  TimeFlex,
 } from '../Bookings/BookingComponents';
 import {
   setBookingSelectedWorker,
   setBookingStartTime,
   setBookingEndTime,
   submitBooking,
+  clearBooking,
 } from '../Bookings/Booking';
 import home from '../../../media/home-40px.svg';
 import book from '../../../media/book-40px.svg';
@@ -32,6 +33,10 @@ import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 
 const axios = require('axios');
+
+// User dashboard component for a logged in user. id of user is passed in a pro-
+// ps so that we can reuse the Dashboard component. Here we can handle the logi-
+// c of booking a service and such
 
 const services = [
   {
@@ -104,12 +109,14 @@ const User = ({ id }) => {
 
   // State changing functions for updating page view
   const bookAppointment = () => {
+    clearBooking();
     setMain(false);
     setService(false);
     setBooking(true);
   };
 
   const cancelBooking = () => {
+    clearBooking();
     setBooking(false);
     setMain(true);
   };
@@ -120,6 +127,7 @@ const User = ({ id }) => {
   };
 
   const cancelService = () => {
+    clearBooking();
     setService(false);
     setMain(true);
   };
@@ -153,9 +161,9 @@ const User = ({ id }) => {
   const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(false);
+  const [main, setMain] = useState(true);
   const [booking, setBooking] = useState(false);
-  const [service, setService] = useState(true);
+  const [service, setService] = useState(false);
 
   return (
     <>
@@ -201,7 +209,9 @@ const User = ({ id }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <BackButton onClick={cancelBooking}>Back</BackButton>
+              <Button type="button" onClick={cancelBooking}>
+                Back
+              </Button>
               <form>
                 <DashboardGrid>
                   <DashboardModule title="Choose a service">
@@ -224,7 +234,9 @@ const User = ({ id }) => {
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
               <form>
-                <BackButton onClick={cancelService}>Back</BackButton>
+                <Button type="button" onClick={cancelService}>
+                  Back
+                </Button>
                 <DashboardGrid>
                   <DashboardModule title="Choose a worker">
                     <PanelGrid>
@@ -241,21 +253,25 @@ const User = ({ id }) => {
                   </DashboardModule>
                 </DashboardGrid>
                 <DashboardModule title="Select times">
-                  {browserContext.isChrome && (
-                    <>
-                      <DateTimeSelector
-                        label="Start time"
-                        onChange={setBookingStartTime}
-                      ></DateTimeSelector>
-                      <DateTimeSelector
-                        label="End time"
-                        onChange={setBookingEndTime}
-                      ></DateTimeSelector>
-                    </>
-                  )}
-                  {browserContext.isFirefox && <div>Firefox...</div>}
+                  <TimeFlex>
+                    {browserContext.isChrome && (
+                      <>
+                        <DateTimeSelector
+                          label="Start time"
+                          onChange={setBookingStartTime}
+                        ></DateTimeSelector>
+                        <DateTimeSelector
+                          label="End time"
+                          onChange={setBookingEndTime}
+                        ></DateTimeSelector>
+                      </>
+                    )}
+                    {browserContext.isFirefox && <div>Firefox...</div>}
+                  </TimeFlex>
                 </DashboardModule>
-                <SubmitButton onClick={mutate}>Submit</SubmitButton>
+                <Button type="button" onClick={mutate}>
+                  Submit
+                </Button>
               </form>
             </Content>
           )}

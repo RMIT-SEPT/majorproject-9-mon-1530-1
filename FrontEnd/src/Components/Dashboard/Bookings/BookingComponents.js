@@ -1,11 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, TextField } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import { Title } from '../DashboardComponents';
 
-const StyledCard = styled.div`
+// Components defined here are specifically used for booking appointments
+
+const StyledServiceCard = styled.div`
   height: 106px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+`;
+
+const StyledWorkerCard = styled.div`
+  height: 60px;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
@@ -48,52 +55,54 @@ const StyledRadioInput = styled.input`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 74px;
-  height: 74px;
+  width: 24px;
+  height: 24px;
   margin: 0;
   outline: 0px;
   border-radius: 50%;
   border: 2px solid #999;
+  position: relative;
+  top: 2px;
 
   &:checked {
-    border: 37px solid ${(props) => props.theme.colours.greenPrimary};
+    border: 12px solid ${(props) => props.theme.colours.greenPrimary};
   }
 `;
 
 const StyledLabel = styled.label`
   width: 100%;
   height: 100%;
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 24px;
 `;
 
-const BackButton = withStyles((theme) => ({
-  root: {
-    margin: '24px 0px 0px 0px',
-    color: theme.palette.getContrastText('#000000'),
-    backgroundColor: '#5ac490',
+const StyledDateTimeInput = styled.input`
+  display: block;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  position: relative;
+  right: 2px;
+  margin-top: 4px;
+  padding-top: 4px;
+  font-size: 16px;
+  font-family: ${(props) => props.theme.font.primary};
+`;
 
-    '&:hover': {
-      backgroundColor: '#369668',
-    },
-  },
-}))(Button);
+// Used to help find component during unit testing
+StyledDateTimeInput.displayName = 'StyledDateTimeInput';
 
-const SubmitButton = withStyles((theme) => ({
-  root: {
-    margin: '24px 0px 0px 0px',
-    color: theme.palette.getContrastText('#000000'),
-    backgroundColor: '#5ac490',
+const TimeFlex = styled.div`
+  display: flex;
+`;
 
-    '&:hover': {
-      backgroundColor: '#369668',
-    },
-  },
-}))(Button);
+const StyledHr = styled.hr`
+  margin-bottom: 0;
+`;
 
 const ServiceCard = ({ service, onClick }) => {
   return (
-    <StyledCard>
+    <StyledServiceCard>
       <CardContents onClick={onClick}>
         <TempServiceIcon></TempServiceIcon>
         <CardContentsText>
@@ -102,13 +111,13 @@ const ServiceCard = ({ service, onClick }) => {
           <div>{service.phoneNumber}</div>
         </CardContentsText>
       </CardContents>
-    </StyledCard>
+    </StyledServiceCard>
   );
 };
 
 const WorkerRadioButton = ({ worker, onChange }) => {
   return (
-    <StyledCard>
+    <StyledWorkerCard>
       <CardContents>
         <StyledRadioInput
           type="radio"
@@ -127,7 +136,7 @@ const WorkerRadioButton = ({ worker, onChange }) => {
           </StyledLabel>
         </CardContentsText>
       </CardContents>
-    </StyledCard>
+    </StyledWorkerCard>
   );
 };
 
@@ -135,7 +144,7 @@ const DateTimeSelector = ({ label, onChange }) => {
   return (
     <DateTimeSelectorWrapper>
       <label htmlFor={label}>{label}</label>
-      <input
+      <StyledDateTimeInput
         type="datetime-local"
         id={label}
         name={label}
@@ -143,14 +152,9 @@ const DateTimeSelector = ({ label, onChange }) => {
           onChange(e.target.value);
         }}
       />
+      <StyledHr />
     </DateTimeSelectorWrapper>
   );
 };
 
-export {
-  BackButton,
-  ServiceCard,
-  DateTimeSelector,
-  SubmitButton,
-  WorkerRadioButton,
-};
+export { ServiceCard, DateTimeSelector, WorkerRadioButton, TimeFlex };

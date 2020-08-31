@@ -6,9 +6,10 @@ import chevronDown from '../../media/chevron-down-28px.svg';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
 // idea is to allow for cohesive re-use of the same component, simply by provid-
-// ing the values for the navigation bar through React props. Note that a minim-
-// um screen width of 1304px is used to align the navigation bar and body eleme-
-// nt
+// ing the values for the navigation bar through React props. As well, it will
+// render any child element to the screen inside a flex container, for responsi-
+// ve view. Note that a minimum screen width of 1304px is used to align the nav-
+// igation bar and body element
 
 const MenuBar = styled.div`
   flex: none;
@@ -55,7 +56,7 @@ const StyledLogoLink = styled.a`
 const GreenNavLink = styled.div`
   flex: none;
   color: ${(props) => props.theme.colours.greenPrimary};
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 28px;
   margin: 0px 30px 4px 30px;
   transition: color ${(props) => props.theme.transition.short};
@@ -96,14 +97,14 @@ const StyledUserTagName = styled.div`
 const UserName = styled.div`
   text-align: right;
   font-size: 20px;
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
 
 const Role = styled.div`
   text-align: right;
   color: ${(props) => props.theme.colours.greenPrimary};
   font-size: 16px;
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
   text-transform: capitalize;
 `;
 
@@ -112,8 +113,8 @@ const StyledDashboardNav = styled.div`
   min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
-// props gets passed in to the DashboardWrapper component to access dynaic elem-
-// ents such as the userName and role
+// props gets passed in to the DashboardWrapper component to access dynamic ele-
+// ments such as the userName and role
 
 const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
@@ -141,6 +142,8 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
     </StyledPageWrapper>
   );
 };
+
+// MenuBarComponent renders the side bar for quick functionality at hand
 
 const MenuBarComponent = ({ children }) => {
   return (

@@ -4,6 +4,7 @@ export const BrowserContext = createContext();
 
 // Browser context object used to determine the browser for rendering supported
 // DOM elements
+
 class BrowserContextProvider extends Component {
   state = {
     isFirefox: typeof InstallTrigger !== 'undefined',

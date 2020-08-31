@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import styled, { ThemeProvider } from 'styled-components';
 import {
   ServiceCard,
@@ -85,7 +85,7 @@ describe('BookingComponents', () => {
       expect(getByText(label)).toBeTruthy();
     });
 
-    it('should simulate onChange event', () => {
+    it('should simulate onChange event with correct event data', () => {
       const onChangeMock = jest.fn();
       const event = {
         target: { value: 'testValue' },
@@ -98,9 +98,7 @@ describe('BookingComponents', () => {
         ></DateTimeSelector>
       );
 
-      console.log(wrapper.debug());
-
-      wrapper.find('input').simulate('change', event);
+      wrapper.find('StyledDateTimeInput').simulate('change', event);
 
       expect(onChangeMock).toHaveBeenCalled();
       expect(onChangeMock).toHaveBeenCalledWith(event.target.value);

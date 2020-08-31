@@ -1,31 +1,24 @@
 const axios = require('axios');
 
+// Handles the logic for booking an appointment
+
 var selectedWorker;
 var startTime;
 var endTime;
 
 const setBookingSelectedWorker = (worker) => {
   selectedWorker = worker;
-  console.log(selectedWorker.workerUserName);
 };
 
 const setBookingStartTime = (time) => {
   startTime = time;
-  console.log('Start time ' + startTime);
 };
 
 const setBookingEndTime = (time) => {
   endTime = time;
-  console.log('End time ' + endTime);
 };
 
 const submitBooking = async (userId) => {
-  console.log('Booking...');
-  console.log('User = ' + userId);
-  console.log('Worker = ' + selectedWorker.workerUserName);
-  console.log('Start = ' + startTime);
-  console.log('End = ' + endTime);
-
   await axios.post('http://localhost:8081/bookings', {
     workerUsername: selectedWorker.workerUserName,
     customerUsername: userId,
@@ -34,9 +27,16 @@ const submitBooking = async (userId) => {
   });
 };
 
+const clearBooking = () => {
+  setBookingSelectedWorker(undefined);
+  setBookingStartTime(undefined);
+  setBookingEndTime(undefined);
+};
+
 export {
   setBookingSelectedWorker,
   setBookingStartTime,
   setBookingEndTime,
   submitBooking,
+  clearBooking,
 };

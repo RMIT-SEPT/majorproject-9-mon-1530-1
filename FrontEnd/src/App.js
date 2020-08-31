@@ -32,6 +32,15 @@ const theme = {
   transition: {
     short: '0.15s',
   },
+  font: {
+    primary: 'Nunito Sans',
+  },
+  fontWeight: {
+    semiBold: '550',
+  },
+  shadow: {
+    defaultBoxShadow: '0px 4px 8px rgba(0, 0, 0, 0.25)',
+  },
 };
 
 function App() {
