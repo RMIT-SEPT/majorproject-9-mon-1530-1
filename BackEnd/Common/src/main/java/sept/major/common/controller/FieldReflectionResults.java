@@ -7,6 +7,14 @@ import lombok.Setter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+/**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * POJO for storing a field's {@link Field} and getter/setter {@link Method}
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

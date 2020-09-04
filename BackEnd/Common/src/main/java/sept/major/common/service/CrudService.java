@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import sept.major.common.entity.AbstractEntity;
 import sept.major.common.exception.*;
 import sept.major.common.patch.PatchValue;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 
 import javax.persistence.Id;
 import javax.validation.ConstraintViolation;
@@ -18,23 +18,35 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/*
-    A abstract implementation of generic service functionality.
-    This service will satisfy the requirements of a simple CRUD service.
+/**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * Implements basic CRUD functionality. Used by ControllerHelper for basic CRUD functionality implementation.
+ *
+ * @param <E> This is the class of the entity that will be used to transfer data; The entity that will be created, retrieved, updated and deleted.
+ * @param <ID> The class of the @Id field within the {@code <E>} parameter.
  */
 public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
 
     private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private Validator validator = factory.getValidator();
 
-    /*
-        Method for retrieving the linked repository in a generic fashion.
-        A basic CRUD service requires a repository to write to, this provides it.
-      */
+    /**
+     * The method this class uses to access the repository for it's CRUD functionality
+     *
+     * @return The repository this class with use for CRUD functionality
+     */
     protected abstract JpaRepository<E, ID> getRepository();
 
-    /*
-        Generic get entity by id functionality
+    /**
+     *
+     * Performs basic retrieve entity from database functionality
+     *
+     * @param id The identifying value for the entity to retrieve
+     * @return The entity that was retrieved
+     * @throws RecordNotFoundException No entity with the provided identifying value could be found
      */
     public E read(ID id) throws RecordNotFoundException {
         Optional<E> entity = getRepository().findById(id); // Get the entity from the repository
@@ -45,10 +57,15 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         }
     }
 
-    /*
-        Generic create entity functionality
+    /**
+     * Validates provided entity and then creates the entity in the database
+     *
+     * @param entity The entity to be created in the database
+     * @return The entity after being created. Includes values given when the entity is created.
+     * @throws ValidationErrorException The provided entity had validation errors
+     * @throws RecordAlreadyExistsException A record with the same identifying value as the entity provided already exists.
      */
-    public E create(E entity) throws ResponseErrorException, RecordAlreadyExistsException {
+    public E create(E entity) throws ValidationErrorException, RecordAlreadyExistsException {
         validateEntity(entity); // Validate entity and return responseErrorException
         if(entity.getID() != null) {
             try {
@@ -63,17 +80,18 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         throw new RecordAlreadyExistsException();
     }
 
-    /*
-        Generic update record with given id functionality.
-        Values provided:
-            * The id of the entity which will be updated
-            * A map that links field name to field value, field getter and field setter.
-        Returns: The entity after being updated
-        Throws:
-            * RecordNotFoundException: No record with the given id exists. Cannot update a record if there is no record.
-            * IdentifierUpdateException: Occurs when the user attempts to update the identifying field. This would break database logic.
+    /**
+     *
+     * Updates the entity represented by the provided identifier value with the values provided
+     *
+     * @param id The identifying value of the entity to update
+     * @param patchValues The values to update fields with along with the field to update.
+     * @return The entity after being updated.
+     * @throws RecordNotFoundException No entity with the provided identifying value could be found
+     * @throws IdentifierUpdateException There was an attempt to update the identifying field the entity.
+     * @throws ValidationErrorException There were validation errors in the entity after being updated
      */
-    public E patch(ID id, List<PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ResponseErrorException {
+    public E patch(ID id, List<PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ValidationErrorException {
 
         // Gets the existing record by calling the generic read method implemented in this class. Returns RecordNotFoundException if record doesn't exist.
         E existingEntity = read(id);
@@ -116,6 +134,12 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         return getRepository().save(existingEntity);
     }
 
+    /**
+     * Delete the entity from the database which has the provided identifying field
+     *
+     * @param id The identifying value of the entity to delete
+     * @throws RecordNotFoundException There was no record with the provided identifying field
+     */
     /*
         Generic implementation of delete record by id
      */
@@ -127,7 +151,14 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
         }
     }
 
-    private void validateEntity(E entity) throws ResponseErrorException {
+    /**
+     *
+     * Uses javax validation (bean validation) to validate the provided entity.
+     *
+     * @param entity The entity to validate
+     * @throws ValidationErrorException There were validation errors in the provided entity
+     */
+    private void validateEntity(E entity) throws ValidationErrorException {
         /*
             Validates the provided entity with JSR 380/Bean Validation 2.0
             Allows developers to annotate fields with validation such as NotBlank for convenient field validation.
@@ -138,12 +169,12 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             Go through all the violations and translate the violations into ResponseErrors.
             Done so that the API returns the standard error response, allowing for automatic analysis and higher human readability.
          */
-        Set<ResponseError> responseErrors = violations.stream()
-                .map(violation -> new ResponseError(violation.getPropertyPath().toString(), violation.getMessage()))
-                .collect(Collectors.toSet());
+        List<ValidationError> validationErrors = violations.stream()
+                .map(violation -> new ValidationError(violation.getPropertyPath().toString(), violation.getMessage()))
+                .collect(Collectors.toList());
 
-        if(!responseErrors.isEmpty()) {
-            throw new ResponseErrorException(responseErrors);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationErrorException(validationErrors);
         }
     }
 }

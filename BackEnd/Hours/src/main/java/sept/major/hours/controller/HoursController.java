@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/hours")
+@CrossOrigin
 public class HoursController {
 
     private HoursControllerHelper hoursControllerHelper;

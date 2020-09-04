@@ -1,7 +1,12 @@
 package sept.major.common.exception;
 
-/*
-    Occurs when the user attempts to update the identifying field of an entity in PATCH
+/**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * Thrown when the user attempts to update the identifying field
+ *
  */
 public class IdentifierUpdateException extends Exception {
     public IdentifierUpdateException() {
