@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
         runTest(hoursId, patchValues, Optional.empty(), patchedEntity,
-                new ResponseEntity(new ResponseError("Identifier field", String.format("No record with a identifier of %s was found", hoursId)), HttpStatus.NOT_FOUND));
+                new ResponseEntity(new ValidationError("Identifier field", String.format("No record with a identifier of %s was found", hoursId)), HttpStatus.NOT_FOUND));
     }
 
     @Test
@@ -63,7 +63,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
         runTest(hoursId, patchValues, Optional.of(existing), patchedEntity,
-                new ResponseEntity(new HashSet<>(Arrays.asList(new ResponseError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST));
+                new ResponseEntity(new HashSet<>(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST));
     }
 
     @Test
@@ -82,8 +82,8 @@ class PatchEndpointTests extends HoursUnitTestHelper {
 
         runTest(hoursId, patchValues, Optional.of(existing), patchedEntity,
                 new ResponseEntity(new HashSet<>(Arrays.asList(
-                        new ResponseError("customerUsername", "must not be blank"),
-                        new ResponseError("workerUsername", "must not be blank")
+                        new ValidationError("customerUsername", "must not be blank"),
+                        new ValidationError("workerUsername", "must not be blank")
                 )), HttpStatus.BAD_REQUEST));
     }
 
@@ -101,7 +101,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
 
     private HoursEntity patchEntity(HoursEntity existing, HashMap<String, String> patchValues) {
 
-        HoursEntity newEntity = new HoursEntity(existing.getWorkerUsername(), existing.getCustomerUsername(), existing.getStartDateTime(), existing.getEndDateTime());
+        HoursEntity newEntity = new HoursEntity(existing.getWorkerUsername(), existing.getCreatorUsername(), existing.getStartDateTime(), existing.getEndDateTime());
 
         if(patchValues.get("hoursId") != null) {
             newEntity.setHoursId(new Integer(patchValues.get("hoursId")));
@@ -112,7 +112,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         }
 
         if(patchValues.get("customerUsername") != null) {
-            newEntity.setCustomerUsername(patchValues.get("customerUsername"));
+            newEntity.setCreatorUsername(patchValues.get("customerUsername"));
         }
 
         if(patchValues.get("startDateTime") != null) {

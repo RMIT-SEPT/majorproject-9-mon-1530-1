@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
@@ -36,7 +36,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void invalidDate() {
-        runTest(new ResponseEntity(new ResponseError("date", HoursController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+        runTest(new ResponseEntity(new ValidationError("date", HoursController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
                 null, "foo", null, null);
     }
 
@@ -78,7 +78,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
         String customerUsername = randomAlphanumericString(20);
 
         List<HoursEntity> customerUsernameEntities = deepCopy(returned);
-        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
 
         customerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
@@ -90,11 +90,11 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
         String workerUsername = randomAlphanumericString(20);
 
         List<HoursEntity> usernameEntities = deepCopy(returned);
-        usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+        usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
         usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
         HoursEntity customerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
-        customerUsernameEntity.setCustomerUsername(customerUsername);
+        customerUsernameEntity.setCreatorUsername(customerUsername);
         usernameEntities.add(customerUsernameEntity);
 
         HoursEntity workerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
@@ -131,7 +131,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
                 hoursEntity.setWorkerUsername(workerUsername);
             }
             if(customerUsername != null) {
-                hoursEntity.setCustomerUsername(customerUsername);
+                hoursEntity.setCreatorUsername(customerUsername);
             }
             return new ResponseEntity(hoursEntity, expected.getStatusCode());
         }
@@ -142,7 +142,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
                     hoursEntity.setWorkerUsername(workerUsername);
                 }
                 if(customerUsername != null) {
-                    hoursEntity.setCustomerUsername(customerUsername);
+                    hoursEntity.setCreatorUsername(customerUsername);
                 }
             });
 
