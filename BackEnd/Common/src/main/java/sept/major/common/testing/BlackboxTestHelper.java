@@ -8,12 +8,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.List;
 
 /**
  * @author Brodey Yendall
  * @version %I%, %G%
  * @since 1.0.9
- *
+ * <p>
  * Used in unit testing where a clean environment is required, allowing for accurate service level testing.
  * By implementing this class in your unit test a docker container containing a postgres database will be spun up before every test.
  * This dramatically increase runtime but will ensure your tests are completely isolated from other of impacts.
@@ -65,7 +66,6 @@ public abstract class BlackboxTestHelper {
     private FixedHostPortPostgresContainer databaseContainer = createPostgresContainer();
 
     /**
-     *
      * Generates a random port that isn't already being used. Done to avoid port conflicts
      *
      * @return A random unused port number
@@ -79,7 +79,6 @@ public abstract class BlackboxTestHelper {
     }
 
     /**
-     *
      * Creates and starts the database docker container.
      * Sets the spring property so that the service knows how to connect to it as well.
      *
@@ -108,26 +107,72 @@ public abstract class BlackboxTestHelper {
      *
      * @return The url for the service junit tests implementing this class with be testing.
      */
-    //
     public String getUrl() {
         return String.format("http://%s:%s/%s", databaseContainer.getContainerIpAddress(), servicePort, getApiExtension());
     }
 
     /**
+     * Convenience method that calls {@link #getUrl()} and adds request parameters to the result using {@link #addRequestParameters(String, List)}
+     * Used in tests when parameters need to be included in the request
      *
+     * @param requestParameters The request parameters to add to the url
+     * @return The url with request parameters added
+     */
+    public String getUrl(List<RequestParameter> requestParameters) {
+        return addRequestParameters(getUrl(), requestParameters);
+    }
+
+    /**
+     * Convenience method that calls {@link #getUrl(String)} and adds request parameters to the result using {@link #addRequestParameters(String, List)}
+     * Used in tests when parameters need to be included in the request
+     *
+     * @param urlExtension      The string to extend the url with
+     * @param requestParameters The request parameters to add to the url
+     * @return The url with request parameters added
+     */
+    public String getUrl(String urlExtension, List<RequestParameter> requestParameters) {
+        return addRequestParameters(getUrl(urlExtension), requestParameters);
+    }
+
+
+    /**
+     * Adds the provided requestParameters to the provided url in the format needed for API requests.
+     * For example: <url>?hoursId=1&workerUsername=bob
+     *
+     * @param url               The url to add request parameters to
+     * @param requestParameters The request parameters to add to the url
+     * @return The url with the request parameters added
+     */
+    public String addRequestParameters(String url, List<RequestParameter> requestParameters) {
+        if (requestParameters != null && !requestParameters.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder(url);
+            for (int i = 0; i < requestParameters.size(); i++) {
+                if (i == 0) {
+                    stringBuilder.append("?");
+                } else {
+                    stringBuilder.append("&");
+                }
+                stringBuilder.append(requestParameters.get(i));
+            }
+
+            return stringBuilder.toString();
+        }
+
+        return url;
+    }
+
+    /**
      * Generates the url that tests will use to access the service being tested. Needed because the service port is randomized.
      * Is an extension of the {@link #getUrl()} method by providing a convenient way to add a url extension
      *
      * @param urlExtension The string to extend the url with
      * @return The url for the service junit tests implementing this class with be testing including the provided url extension.
      */
-    // Generates the url that tests will use to access the service being tested. Needed because the service port is randomized.
     public String getUrl(String urlExtension) {
         return String.format("%s/%s", getUrl(), urlExtension);
     }
 
     /**
-     *
      * Used when creating the database docker container. Provides the name of the sql file to run at the start up of the database.
      *
      * @return The name of the sql file to run at the start up of the database.
@@ -135,7 +180,6 @@ public abstract class BlackboxTestHelper {
     public abstract String getInitScriptName();
 
     /**
-     *
      * Used when generating url's for accessing the service unit tests implementing this class will be testing.
      * It is the extension used to represent the service, i.e /hours
      *

@@ -17,10 +17,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static sept.major.common.reflection.ReflectionUtils.*;
 
@@ -178,7 +175,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
                     }
                 }
 
@@ -272,7 +269,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
                     }
                 }
 
