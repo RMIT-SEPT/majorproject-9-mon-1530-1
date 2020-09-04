@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 // Handles the logic for booking an appointment
+// TODO: Possible refactor logic into User as state
 
 var selectedWorker;
 var startTime;
@@ -19,6 +20,7 @@ const setBookingEndTime = (time) => {
 };
 
 const submitBooking = async (userId) => {
+  // TODO: Handle errors
   await axios.post('http://localhost:8081/bookings', {
     workerUsername: selectedWorker.workerUserName,
     customerUsername: userId,

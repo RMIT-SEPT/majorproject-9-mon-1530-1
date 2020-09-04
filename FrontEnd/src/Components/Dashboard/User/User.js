@@ -32,6 +32,7 @@ import phone from '../../../media/phone-40px.svg';
 import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 
+// TODO: Use import statement and test
 const axios = require('axios');
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
