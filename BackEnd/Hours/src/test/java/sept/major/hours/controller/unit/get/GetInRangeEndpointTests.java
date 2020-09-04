@@ -103,7 +103,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     private void runTestsWithUsernameFilters(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate) {
         testWorkerUsernameFilter(expected, returned, startDate, endDate);
-        testCustomerUsernameFilter(expected, returned, startDate, endDate);
+        testcreatorUsernameFilter(expected, returned, startDate, endDate);
         testCustomerAndWorkerUsernameFilter(expected, returned, startDate, endDate);
     }
 
@@ -124,35 +124,35 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     }
 
-    private void testCustomerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate) {
-        String customerUsername = randomAlphanumericString(20);
+    private void testcreatorUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate) {
+        String creatorUsername = randomAlphanumericString(20);
 
         if (returned != null) {
-            List<HoursEntity> customerUsernameEntities = deepCopy(returned);
-            customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
+            List<HoursEntity> creatorUsernameEntities = deepCopy(returned);
+            creatorUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(creatorUsername));
 
-            customerUsernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
+            creatorUsernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
-            runTest(updateExpectedWithUsername(expected, null, customerUsername), customerUsernameEntities, startDate, endDate, null, customerUsername);
+            runTest(updateExpectedWithUsername(expected, null, creatorUsername), creatorUsernameEntities, startDate, endDate, null, creatorUsername);
         } else {
-            runTest(updateExpectedWithUsername(expected, null, customerUsername), returned, startDate, endDate, null, customerUsername);
+            runTest(updateExpectedWithUsername(expected, null, creatorUsername), returned, startDate, endDate, null, creatorUsername);
         }
 
 
     }
 
     private void testCustomerAndWorkerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate) {
-        String customerUsername = randomAlphanumericString(20);
+        String creatorUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
         if (returned != null) {
             List<HoursEntity> usernameEntities = deepCopy(returned);
-            usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
+            usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(creatorUsername));
             usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-            HoursEntity customerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
-            customerUsernameEntity.setCreatorUsername(customerUsername);
-            usernameEntities.add(customerUsernameEntity);
+            HoursEntity creatorUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
+            creatorUsernameEntity.setCreatorUsername(creatorUsername);
+            usernameEntities.add(creatorUsernameEntity);
 
             HoursEntity workerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
             workerUsernameEntity.setWorkerUsername(workerUsername);
@@ -160,17 +160,17 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
             usernameEntities.add(randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate)));
 
-            runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), usernameEntities, startDate, endDate, workerUsername, customerUsername);
+            runTest(updateExpectedWithUsername(expected, workerUsername, creatorUsername), usernameEntities, startDate, endDate, workerUsername, creatorUsername);
         } else {
-            runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), null, startDate, endDate, workerUsername, customerUsername);
+            runTest(updateExpectedWithUsername(expected, workerUsername, creatorUsername), null, startDate, endDate, workerUsername, creatorUsername);
         }
 
     }
 
 
-    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate, String workerUsername, String customerUsername) {
+    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate, String workerUsername, String creatorUsername) {
         when(mockedUserRepository.findAllBetweenDates(any(), any())).thenReturn(returned);
-        ResponseEntity result = hoursController.getHoursInRange(startDate, endDate, workerUsername, customerUsername);
+        ResponseEntity result = hoursController.getHoursInRange(startDate, endDate, workerUsername, creatorUsername);
 
         assertThat(result).isNotNull();
         assertThat(result.getBody()).isEqualTo(expected.getBody());
@@ -178,15 +178,15 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     }
 
-    private ResponseEntity updateExpectedWithUsername(ResponseEntity expected, String workerUsername, String customerUsername) {
+    private ResponseEntity updateExpectedWithUsername(ResponseEntity expected, String workerUsername, String creatorUsername) {
         Object expectedBody = expected.getBody();
         if (expectedBody instanceof HoursEntity) {
             HoursEntity hoursEntity = (HoursEntity) expectedBody;
             if (workerUsername != null) {
                 hoursEntity.setWorkerUsername(workerUsername);
             }
-            if (customerUsername != null) {
-                hoursEntity.setCreatorUsername(customerUsername);
+            if (creatorUsername != null) {
+                hoursEntity.setCreatorUsername(creatorUsername);
             }
             return new ResponseEntity(hoursEntity, expected.getStatusCode());
         }
@@ -196,8 +196,8 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
                 if (workerUsername != null) {
                     hoursEntity.setWorkerUsername(workerUsername);
                 }
-                if (customerUsername != null) {
-                    hoursEntity.setCreatorUsername(customerUsername);
+                if (creatorUsername != null) {
+                    hoursEntity.setCreatorUsername(creatorUsername);
                 }
             });
 

@@ -64,10 +64,10 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     }
 
     @Test
-    void customerUsernameProvidedValid() {
+    void creatorUsernameProvidedValid() {
         HoursEntity expected = randomEntity(randomInt(4));
-        String customerUsername = randomAlphanumericString(20);
-        expected.setCreatorUsername(customerUsername);
+        String creatorUsername = randomAlphanumericString(20);
+        expected.setCreatorUsername(creatorUsername);
 
         List<HoursEntity> returned = Arrays.asList(
                 randomEntity(randomInt(4)),
@@ -76,11 +76,11 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         );
 
         runTest(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
-                returned, null, customerUsername);
+                returned, null, creatorUsername);
     }
 
     @Test
-    void customerUsernameProvidedMissing() {
+    void creatorUsernameProvidedMissing() {
         List<HoursEntity> returned = Arrays.asList(
                 randomEntity(randomInt(4)),
                 randomEntity(randomInt(4)),
@@ -92,16 +92,16 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
     }
 
     @Test
-    void customerUsernameAndWorkerUsernameProvidedValid() {
-        String customerUsername = randomAlphanumericString(20);
+    void creatorUsernameAndWorkerUsernameProvidedValid() {
+        String creatorUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
         HoursEntity expected = randomEntity(randomInt(4));
-        expected.setCreatorUsername(customerUsername);
+        expected.setCreatorUsername(creatorUsername);
         expected.setWorkerUsername(workerUsername);
 
         HoursEntity entityOne = randomEntity(randomInt(4));
-        entityOne.setCreatorUsername(customerUsername);
+        entityOne.setCreatorUsername(creatorUsername);
 
         HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);
@@ -111,16 +111,16 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         );
 
         runTest(new ResponseEntity(Arrays.asList(expected), HttpStatus.ACCEPTED),
-                returned, workerUsername, customerUsername);
+                returned, workerUsername, creatorUsername);
     }
 
     @Test
-    void customerUsernameAndWorkerUsernameProvidedMissing() {
-        String customerUsername = randomAlphanumericString(20);
+    void creatorUsernameAndWorkerUsernameProvidedMissing() {
+        String creatorUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
         HoursEntity entityOne = randomEntity(randomInt(4));
-        entityOne.setCreatorUsername(customerUsername);
+        entityOne.setCreatorUsername(creatorUsername);
 
         HoursEntity entityTwo = randomEntity(randomInt(4));
         entityTwo.setWorkerUsername(workerUsername);
@@ -130,12 +130,12 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
         );
 
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
-                returned, workerUsername, customerUsername);
+                returned, workerUsername, creatorUsername);
     }
 
-    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String workerUsername, String customerUsername) {
+    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String workerUsername, String creatorUsername) {
         when(mockedUserRepository.findAll()).thenReturn(returned);
-        ResponseEntity result = hoursController.getAllHours(workerUsername, customerUsername);
+        ResponseEntity result = hoursController.getAllHours(workerUsername, creatorUsername);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(expected.getStatusCode());

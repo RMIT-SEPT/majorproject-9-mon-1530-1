@@ -78,7 +78,7 @@ public class HoursController {
                                          @RequestParam(required = false) String creatorUsername) {
         try {
             List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(dateString), workerUsername, creatorUsername);
-            return new ResponseEntity(hours, HttpStatus.ACCEPTED);
+            return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (DateTimeParseException e) {

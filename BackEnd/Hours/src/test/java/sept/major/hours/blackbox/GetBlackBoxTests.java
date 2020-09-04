@@ -1,33 +1,81 @@
 package sept.major.hours.blackbox;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import sept.major.common.testing.RequestParameter;
+import sept.major.hours.HoursTestHelper;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static sept.major.hours.HoursTestHelper.randomAlphanumericString;
 import static sept.major.hours.HoursTestHelper.randomEntityMap;
 
-@PropertySource("classpath:application-test.properties")
 public class GetBlackBoxTests extends HoursBlackBoxHelper {
 
     @Test
-    public void getById() throws JsonProcessingException {
-        Map<String, String> postResultMap = successfulPost(randomEntityMap(null));
+    public void getById() {
+        List<Map<String, String>> postResults = Arrays.asList(successfulPost(randomEntityMap()), successfulPost(randomEntityMap()));
 
-        HashMap<String, String> queryValues = new HashMap<>();
-        queryValues.put("workerUsername", "foo");
+        List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("hoursId", "1"));
 
-        ResponseEntity<String> getResult = testRestTemplate.getForEntity(getUrl("all"), String.class, queryValues);
-
-        System.out.println(getResult);
-        assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(getResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(postResultMap));
-
+        successfulGet(postResults.get(0), getUrl(requestParameters));
     }
+
+    @Test
+    public void getAll() {
+        String workerUsername = randomAlphanumericString(20);
+        String creatorUsername = randomAlphanumericString(20);
+
+        Map<String, String> justWorkerUsername = randomEntityMap();
+        justWorkerUsername.put("workerUsername", workerUsername);
+
+        Map<String, String> justCreatorUsername = randomEntityMap();
+        justCreatorUsername.put("creatorUsername", creatorUsername);
+
+        Map<String, String> creatorAndWorkerUsername = randomEntityMap();
+        creatorAndWorkerUsername.put("workerUsername", workerUsername);
+        creatorAndWorkerUsername.put("creatorUsername", creatorUsername);
+
+        successfulPost(justWorkerUsername);
+        successfulPost(justCreatorUsername);
+        HashMap<String, String> expected = successfulPost(creatorAndWorkerUsername);
+        successfulPost(randomEntityMap());
+
+        List<RequestParameter> requestParameters = Arrays.asList(
+                new RequestParameter("workerUsername", workerUsername),
+                new RequestParameter("creatorUsername", creatorUsername)
+
+        );
+
+        successfulGetList(Arrays.asList(expected), getUrl("all", requestParameters));
+    }
+
+    @Test
+    public void getDate() {
+        Map<String, String> pastDate = randomEntityMap();
+        pastDate.put("startDateTime", HoursTestHelper.pastDateTime(0, 0, 1).toString());
+        pastDate.put("endDateTime", HoursTestHelper.pastDateTime(0, 0, 1).toString());
+
+        Map<String, String> futureDate = randomEntityMap();
+        futureDate.put("startDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
+        futureDate.put("endDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
+
+        Map<String, String> onDate = randomEntityMap();
+
+        successfulPost(pastDate);
+        successfulPost(futureDate);
+        HashMap<String, String> expected = successfulPost(onDate);
+
+        List<RequestParameter> requestParameters = Arrays.asList(
+                new RequestParameter("date", LocalDate.now().toString())
+        );
+
+        successfulGetList(Arrays.asList(expected), getUrl("date", requestParameters));
+    }
+
+
+
 }

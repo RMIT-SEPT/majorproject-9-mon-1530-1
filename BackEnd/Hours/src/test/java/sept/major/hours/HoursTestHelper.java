@@ -41,24 +41,33 @@ public abstract class HoursTestHelper {
         return new Integer(stringBuilder.toString());
     }
 
-    public static Map<String, String> randomEntityMap() {
-        return new HashMap<String, String>() {{
-            put("hoursId", randomAlphanumericString(4));
-            put("workerUsername", randomAlphanumericString(20));
-            put("customerUsername", randomAlphanumericString(20));
-            put("startDateTime", LocalDateTime.now().toString());
-            put("endDateTime", LocalDateTime.now().toString());
-        }};
+    public static Map<String, String> randomEntityMap(Integer id) {
+        LocalDateTime timeNow = LocalDateTime.now();
+        timeNow = timeNow.minusNanos(timeNow.getNano());
+
+        HashMap<String, String> entityMap = new HashMap<>();
+
+        entityMap.put("hoursId", (id == null) ? null : id.toString());
+        entityMap.put("workerUsername", randomAlphanumericString(20));
+        entityMap.put("creatorUsername", randomAlphanumericString(20));
+        entityMap.put("startDateTime", timeNow.toString());
+        entityMap.put("endDateTime", timeNow.toString());
+
+        return entityMap;
     }
 
-    public static Map<String, String> randomEntityMap(Integer id) {
-        return new HashMap<String, String>() {{
-            put("hoursId", (id == null) ? null : id.toString());
-            put("workerUsername", randomAlphanumericString(20));
-            put("customerUsername", randomAlphanumericString(20));
-            put("startDateTime", LocalDateTime.now().toString());
-            put("endDateTime", LocalDateTime.now().toString());
-        }};
+    public static Map<String, String> randomEntityMap() {
+        LocalDateTime timeNow = LocalDateTime.now();
+        timeNow = timeNow.minusNanos(timeNow.getNano());
+
+        HashMap<String, String> entityMap = new HashMap<>();
+
+        entityMap.put("workerUsername", randomAlphanumericString(20));
+        entityMap.put("creatorUsername", randomAlphanumericString(20));
+        entityMap.put("startDateTime", timeNow.toString());
+        entityMap.put("endDateTime", timeNow.toString());
+
+        return entityMap;
     }
 
     public static LocalDate pastDate(int years, int months, int days) {
@@ -68,10 +77,33 @@ public abstract class HoursTestHelper {
         return date.minusDays(days);
     }
 
+    public static LocalDate futureDate(int years, int months, int days) {
+        LocalDate date = LocalDate.now();
+        date = date.plusYears(years);
+        date = date.plusMonths(months);
+        return date.plusDays(days);
+    }
+
+    public static LocalDateTime pastDateTime(int years, int months, int days) {
+        LocalDateTime date = LocalDateTime.now();
+        date = date.minusYears(years);
+        date = date.minusMonths(months);
+        date = date.minusDays(days);
+        return date;
+    }
+
+    public static LocalDateTime futureDateTime(int years, int months, int days) {
+        LocalDateTime date = LocalDateTime.now();
+        date = date.plusYears(years);
+        date = date.plusMonths(months);
+        date = date.plusDays(days);
+        return date;
+    }
+
     public static HoursEntity entityMapToEntity(Map<String, String> map) {
         return new HoursEntity(
                 (map.get("workerUsername") == null) ? null : map.get("workerUsername").toString(),
-                (map.get("customerUsername") == null) ? null : map.get("customerUsername").toString(),
+                (map.get("creatorUsername") == null) ? null : map.get("creatorUsername").toString(),
                 LocalDateTime.parse(map.get("startDateTime")),
                 LocalDateTime.parse(map.get("endDateTime"))
         );
