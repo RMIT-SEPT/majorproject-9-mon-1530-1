@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.service.BookingService;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,14 +41,14 @@ public class BookingServiceController {
         try {
             startDateTime = (startDateTimeString == null ? null : LocalDateTime.parse(startDateTimeString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         LocalDateTime endDateTime;
         try {
             endDateTime = (endDateTimeString == null ? null : LocalDateTime.parse(endDateTimeString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("endDate",INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("endDate",INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -70,7 +70,7 @@ public class BookingServiceController {
         try {
             date = (dateString == null ? null : LocalDate.parse(dateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
         try {
             List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);
