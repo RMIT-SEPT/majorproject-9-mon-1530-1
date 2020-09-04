@@ -6,7 +6,7 @@ import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import auth from '../Components/auth.js'
+
 
 
 const ColorButton = withStyles((theme) => ({
