@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { Button, Grid } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import logo from '../media/logo.png';
@@ -6,7 +6,9 @@ import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-
+import auth from './auth';
+import { useHistory } from "react-router-dom";
+const axios = require('axios');
 
 
 const ColorButton = withStyles((theme) => ({
@@ -129,9 +131,42 @@ const Left = styled.div`
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
 export const Login = props =>{
-  const { register, handleSubmit, errors } = useForm()
+  const { register,handleSubmit, errors,reset } = useForm()
+  const [loginerror, setLoginerror] = useState('')
+  let history = useHistory();
+
+  // every time a user goes to login page it resets 
+  // useEffect(() => {
+  //   auth.logout(()=>{
+
+  //   }); 
+  // }, [])
+
+
+  const onSubmit=(values) =>{
+      axios.get(`http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`)
+      .then(function (response) {
+        console.log(response)
+        let r = response.data;
+        if(r.result === "true"){
+          //setLocalStorage to user data
+          localStorage.setItem('username',values.username)
+          auth.login(()=>{
+            //check standard user and then transfer to admin panel
+              history.push("/about");
+          });  
+        }else{
+          setLoginerror("The email or password is incorrect.");
+          reset();
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    
+  }
   return (
-    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7} >
           {/* the logo and the img on the left  */}
@@ -162,6 +197,7 @@ export const Login = props =>{
                     required: 'First Name Required'
                   })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
+                {errors.username && <span>This field is required</span>}
               </Grid>
               <Grid item xs={12}>
                 <Heading>Password</Heading>
@@ -170,9 +206,11 @@ export const Login = props =>{
                     required: 'First Name Required'
                   })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
+                {errors.password && <span>This field is required</span>}
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>
+                {loginerror}
                 <ColorButton type="submit" variant="contained" color="#ffffff" > Submit
                 
                 
