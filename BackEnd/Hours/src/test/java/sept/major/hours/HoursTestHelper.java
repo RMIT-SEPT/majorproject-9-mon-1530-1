@@ -70,6 +70,17 @@ public abstract class HoursTestHelper {
         return entityMap;
     }
 
+    public static Map<String, String> randomEntityMap(LocalDateTime timeToUse) {
+        HashMap<String, String> entityMap = new HashMap<>();
+
+        entityMap.put("workerUsername", randomAlphanumericString(20));
+        entityMap.put("creatorUsername", randomAlphanumericString(20));
+        entityMap.put("startDateTime", timeToUse.toString());
+        entityMap.put("endDateTime", timeToUse.toString());
+
+        return entityMap;
+    }
+
     public static LocalDate pastDate(int years, int months, int days) {
         LocalDate date = LocalDate.now();
         date = date.minusYears(years);

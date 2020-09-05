@@ -169,7 +169,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
 
     private void runTest(ResponseEntity expected, List<HoursEntity> returned, String startDate, String endDate, String workerUsername, String creatorUsername) {
-        when(mockedUserRepository.findAllBetweenDates(any(), any())).thenReturn(returned);
+        when(mockedUserRepository.findAllByStartDateTimeBetween(any(), any())).thenReturn(returned);
         ResponseEntity result = hoursController.getHoursInRange(startDate, endDate, workerUsername, creatorUsername);
 
         assertThat(result).isNotNull();

@@ -23,7 +23,7 @@ class PostEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void valid() {
-        Map<String, String> input = randomEntityMap(null);
+        Map<String, String> input = randomEntityMap();
         HoursEntity inputEntity = entityMapToEntity(input);
 
         runTest(input, new ResponseEntity(inputEntity, HttpStatus.OK), Optional.empty());
@@ -31,7 +31,7 @@ class PostEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void missingField() {
-        Map<String, String> input = randomEntityMap(null);
+        Map<String, String> input = randomEntityMap();
         input.remove("creatorUsername");
         HoursEntity inputEntity = entityMapToEntity(input);
 

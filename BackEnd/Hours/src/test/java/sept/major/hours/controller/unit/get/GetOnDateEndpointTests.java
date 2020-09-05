@@ -111,7 +111,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
         try {
             if (date != null) {
                 LocalDate parsedDate = LocalDate.parse(date);
-                when(mockedUserRepository.findAllBetweenDates(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
+                when(mockedUserRepository.findAllByStartDateTimeBetween(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
             }
         } catch (DateTimeParseException e) {
 

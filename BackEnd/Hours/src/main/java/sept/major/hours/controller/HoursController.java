@@ -65,7 +65,7 @@ public class HoursController {
 
         try {
             List<HoursEntity> hours = hoursService.getHoursBetweenDates(startDate, endDate, workerUsername, creatorUsername);
-            return new ResponseEntity(hours, HttpStatus.ACCEPTED);
+            return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }

@@ -2,14 +2,18 @@ package sept.major.hours.blackbox;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import sept.major.common.testing.BlackboxTestHelper;
+import sept.major.common.testing.RequestParameter;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +47,19 @@ public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
         try {
             HashMap<String, String> resultMap = objectMapper.readValue(result.getBody(), new TypeReference<HashMap<String, String>>() {
             });
-            entityMap.put("hoursId", resultMap.get("hoursId"));
 
+            HashMap<String, String> entityMapCopy = new HashMap<>(entityMap);
+            entityMapCopy.put("hoursId", resultMap.get("hoursId"));
 
-            assertThat(resultMap).isEqualTo(entityMap);
+            System.out.println("Comparing " + resultMap + " to " + entityMapCopy);
+            assertThat(resultMap.size()).isEqualTo(entityMapCopy.size());
+            for (Map.Entry<String, String> entry : resultMap.entrySet()) {
+                if (entry.getKey().equals("startDateTime") || entry.getKey().equals("endDateTime")) {
+                    assertThat(LocalDateTime.parse(resultMap.get(entry.getKey()))).isEqualTo(LocalDateTime.parse(entityMapCopy.get(entry.getKey())));
+                } else {
+                    assertThat(resultMap.get(entry.getKey())).isEqualTo(entityMapCopy.get(entry.getKey()));
+                }
+            }
 
             return resultMap;
         } catch (JsonProcessingException e) {
@@ -54,6 +67,36 @@ public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
             return null;
         }
     }
+
+    protected void successfulPatch(Map<String, String> entityMap, Map<String, String> patchValues) throws JsonProcessingException {
+        HashMap<String, String> postResult = successfulPost(entityMap);
+
+        List<RequestParameter> requestParameters = Arrays.asList(
+                new RequestParameter("hoursId", postResult.get("hoursId"))
+        );
+
+        // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
+        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+
+        assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        for (Map.Entry<String, String> entry : patchValues.entrySet()) {
+            postResult.put(entry.getKey(), entry.getValue());
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> castPathResult = objectMapper.readValue(patchResult.getBody(), new TypeReference<HashMap<String, String>>() {
+        });
+
+        for (Map.Entry<String, String> entry : castPathResult.entrySet()) {
+            if (entry.getKey().equals("startDateTime") || entry.getKey().equals("endDateTime")) {
+                assertThat(LocalDateTime.parse(castPathResult.get(entry.getKey()))).isEqualTo(LocalDateTime.parse(postResult.get(entry.getKey())));
+            } else {
+                assertThat(castPathResult.get(entry.getKey())).isEqualTo(postResult.get(entry.getKey()));
+            }
+        }
+    }
+
 
     protected void successfulGet(Map<String, String> expected, String url) {
         ResponseEntity<HashMap> getResult = testRestTemplate.getForEntity(url, HashMap.class);
@@ -68,25 +111,18 @@ public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
         assertThat(getCastedResult).isEqualTo(expected);
     }
 
-    protected void successfulGetList(List<Map<String, String>> expected, String url) {
-        ResponseEntity<List> getResult = testRestTemplate.getForEntity(url, List.class);
-        List<HashMap<String, String>> getCastedResult = new ArrayList<>();
-
-
-        for (Object result : getResult.getBody()) {
-            HashMap<String, Object> resultCast = (HashMap<String, Object>) result;
-
-            HashMap<String, String> castMap = new HashMap<>();
-            for (Map.Entry<String, Object> entry : resultCast.entrySet()) {
-                castMap.put(entry.getKey(), entry.getValue().toString());
-            }
-
-            getCastedResult.add(castMap);
-
-        }
+    protected void successfulGetList(List<Map<String, String>> expected, String url) throws JsonProcessingException {
+        ResponseEntity<String> getResult = testRestTemplate.getForEntity(url, String.class);
 
         System.out.println(getResult);
         assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<HashMap<String, String>> getCastedResult = objectMapper.readValue(getResult.getBody(), new TypeReference<List<HashMap<String, String>>>() {
+        });
+
+
+        System.out.println(getCastedResult);
         assertThat(getCastedResult).isEqualTo(expected);
     }
 }

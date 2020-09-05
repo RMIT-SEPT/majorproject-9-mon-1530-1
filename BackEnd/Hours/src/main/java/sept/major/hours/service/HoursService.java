@@ -3,6 +3,7 @@ package sept.major.hours.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import sept.major.common.exception.RecordAlreadyExistsException;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.exception.ValidationErrorException;
 import sept.major.common.response.ValidationError;
@@ -40,12 +41,12 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
         if(date == null) {
             throw new ValidationErrorException(Arrays.asList(new ValidationError("date", "Must be provided")));
         }
-        List<HoursEntity> hoursInDate = hoursRepository.findAllBetweenDates(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+        List<HoursEntity> hoursInDate = hoursRepository.findAllByStartDateTimeBetween(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
         return filterUsernames(hoursInDate, workerUsername, creatorUsername);
     }
 
     public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String creatorUsername) throws RecordNotFoundException {
-        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllBetweenDates(startDate, endDate);
+        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllByStartDateTimeBetween(startDate, endDate);
         return filterUsernames(hoursBetweenDates, workerUsername, creatorUsername);
 
     }
@@ -74,5 +75,25 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
         }
 
         return result;
+    }
+
+    @Override
+    protected HoursEntity saveEntity(HoursEntity entity) throws RecordAlreadyExistsException, ValidationErrorException {
+        if (entity.getEndDateTime().isBefore(entity.getStartDateTime())) {
+            throw new ValidationErrorException(Arrays.asList(new ValidationError("endDateTime", "must be after startDateTime")));
+        }
+
+        List<HoursEntity> duplicateEntities = hoursRepository.findConflictingHours(entity.getWorkerUsername(),
+                entity.getStartDateTime(), entity.getEndDateTime());
+        if (duplicateEntities == null) {
+            return super.saveEntity(entity);
+        } else {
+            duplicateEntities.removeIf((HoursEntity hoursEntity) -> hoursEntity.getID().equals(entity.getID()));
+            if (duplicateEntities.isEmpty()) {
+                return super.saveEntity(entity);
+            } else {
+                throw new RecordAlreadyExistsException("Hours provided conflicts with existing hours: " + duplicateEntities.get(0));
+            }
+        }
     }
 }

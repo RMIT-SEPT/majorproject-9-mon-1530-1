@@ -1,14 +1,20 @@
 package sept.major.hours.controller.unit.get;
 
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sept.major.hours.HoursTestHelper;
 import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -131,6 +137,56 @@ class GetAllEndpointTests extends HoursUnitTestHelper {
 
         runTest(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
                 returned, workerUsername, creatorUsername);
+    }
+
+    // TOOD DELETE THIS
+    @Test
+    void quickTest() {
+
+        HashMap<String, Pair<LocalDateTime, LocalDateTime>> dates = new HashMap<>();
+
+        Pair<LocalDateTime, LocalDateTime> pastDate = new Pair<>(HoursTestHelper.pastDateTime(0, 0, 3),
+                HoursTestHelper.pastDateTime(0, 0, 3));
+        dates.put("pastDate", pastDate);
+
+        Pair<LocalDateTime, LocalDateTime> futureDate = new Pair<>(HoursTestHelper.futureDateTime(0, 0, 1),
+                HoursTestHelper.futureDateTime(0, 0, 1));
+        dates.put("futureDate", futureDate);
+
+        Pair<LocalDateTime, LocalDateTime> correctDayPastTime = new Pair<>(LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(7, 30, 0)),
+                LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(8, 30, 0)));
+        dates.put("correctDayPastTime", correctDayPastTime);
+
+        Pair<LocalDateTime, LocalDateTime> correctDayFutureTime = new Pair<>(LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(18, 30, 0)),
+                LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(19, 30, 0)));
+        dates.put("correctDayFutureTime", correctDayFutureTime);
+
+        Pair<LocalDateTime, LocalDateTime> firstDateInRange = new Pair<>(LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(9, 30, 0)),
+                LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(10, 15, 0)));
+        dates.put("firstDateInRange", firstDateInRange);
+
+        Pair<LocalDateTime, LocalDateTime> secondDateInRange = new Pair<>(LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(17, 0, 0)),
+                LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(18, 0, 0)));
+        dates.put("secondDateInRange", secondDateInRange);
+
+        Pair<LocalDateTime, LocalDateTime> thirdDateInRange = new Pair<>(LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(1, 0)),
+                LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(2, 0, 0)));
+        dates.put("thirdDateInRange", thirdDateInRange);
+
+
+        LocalDateTime lower = LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(9, 30, 0));
+        LocalDateTime upper = LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(17, 30, 0));
+
+        for (Map.Entry<String, Pair<LocalDateTime, LocalDateTime>> entry : dates.entrySet()) {
+            LocalDateTime entryLower = entry.getValue().getKey();
+            LocalDateTime entryHigher = entry.getValue().getValue();
+            if (((lower.isBefore(entryLower) || lower.isEqual(entryLower)) && (upper.isBefore(entryLower) || upper.isEqual(entryLower)))
+                    || (lower.isAfter(entryHigher))) {
+                System.out.println(entry.getKey() + " Not in range");
+            } else {
+                System.out.println(entry.getKey() + " In range");
+            }
+        }
     }
 
     private void runTest(ResponseEntity expected, List<HoursEntity> returned, String workerUsername, String creatorUsername) {
