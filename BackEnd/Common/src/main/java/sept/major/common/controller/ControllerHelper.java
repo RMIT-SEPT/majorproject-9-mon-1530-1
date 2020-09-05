@@ -218,7 +218,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(createdEntity, HttpStatus.OK);
 
         } catch (RecordAlreadyExistsException e) {
-            return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         } catch (ValidationErrorException e) {
             return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         }
@@ -329,6 +329,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(new ValidationError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IdentifierUpdateException e) {
             return new ResponseEntity(new ValidationError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
+        } catch (RecordAlreadyExistsException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }
