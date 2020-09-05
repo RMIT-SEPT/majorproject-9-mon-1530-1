@@ -1,79 +1,72 @@
 package sept.major.availability.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import sept.major.availability.entity.AvailabilityEntity;
-import sept.major.availability.repository.AvailabilityRepository;
-import sept.major.common.exception.RecordNotFoundException;
-import sept.major.common.exception.ValidationErrorException;
-import sept.major.common.response.ValidationError;
-import sept.major.common.service.CrudService;
+import sept.major.availability.entity.BookingEntity;
+import sept.major.availability.entity.HoursEntity;
 
 @Service
-public class AvailabilityService extends CrudService<AvailabilityEntity, String> { //TODO this class is copied from hours and need to be completely rewritten
+public class AvailabilityService {
 
-    AvailabilityRepository hoursRepository;
+	/**
+	 * Gets list of hours and bookings and derive the availabilities by overlapping the two.
+	 * @param hours
+	 * @param bookings
+	 * @return
+	 */
+	public List<AvailabilityEntity> checkAllAvailabilities(List<HoursEntity> hours, List<BookingEntity> bookings) {
+		List<AvailabilityEntity> allAvailabilities = new ArrayList<>();
 
-    @Autowired
-    public AvailabilityService(AvailabilityRepository hoursRepository) {
-        this.hoursRepository = hoursRepository;
-    }
+		for (HoursEntity hour : hours) {
+			List<AvailabilityEntity> availabilities = new ArrayList<>();
+			AvailabilityEntity availability = new AvailabilityEntity("", hour.getWorkerUsername(), hour.getCustomerUsername(), hour.getStartDateTime(),
+					hour.getEndDateTime());
+			availabilities.add(availability);
+			for (BookingEntity booking : bookings) {
+				overlap(availabilities, booking);
+			}
+			allAvailabilities.addAll(availabilities);
+		}
 
-    @Override
-    protected JpaRepository<AvailabilityEntity, String> getRepository() {
-        return hoursRepository;
-    }
-
-    public List<AvailabilityEntity> getAllHours(String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<AvailabilityEntity> allEntity = hoursRepository.findAll();
-        return filterUsernames(allEntity, workerUsername, customerUsername);
-    }
-
-    public List<AvailabilityEntity> getHoursInDate(LocalDate date, String workerUsername, String customerUsername) throws RecordNotFoundException, ValidationErrorException {
-        if(date == null) {
-            throw new ValidationErrorException(Arrays.asList(new ValidationError("date", "Must be provided")));
-        }
-        List<AvailabilityEntity> hoursInDate = hoursRepository.findAllBetweenDates(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
-        return filterUsernames(hoursInDate, workerUsername, customerUsername);
-    }
-
-    public List<AvailabilityEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<AvailabilityEntity> hoursBetweenDates = hoursRepository.findAllBetweenDates(startDate, endDate);
-        return filterUsernames(hoursBetweenDates, workerUsername, customerUsername);
-
-    }
-
-    private List<AvailabilityEntity> filterUsernames(List<AvailabilityEntity> hoursList, String workerUsername, String customerUsername) throws RecordNotFoundException {
-        List<AvailabilityEntity> result;
-
-        if (workerUsername != null && customerUsername != null) {
-            result = hoursList.stream()
-                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()) && customerUsername.equals(hoursEntity.getCustomerUsername()))
-                    .collect(Collectors.toList());
-        } else if (workerUsername != null) {
-            result = hoursList.stream()
-                    .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()))
-                    .collect(Collectors.toList());
-        } else if (customerUsername != null) {
-            result = hoursList.stream()
-                    .filter(hoursEntity -> customerUsername.equals(hoursEntity.getCustomerUsername()))
-                    .collect(Collectors.toList());
-        } else {
-            result = hoursList;
-        }
-
-        if (result.size() == 0) {
-            throw new RecordNotFoundException(String.format("No records within provided bounds were found"));
-        }
-
-        return result;
-    }
+		return allAvailabilities;
+	}
+	
+	/**
+	 * Overlaps the availabilities with the booking 
+	 * @param availabilities
+	 * @param booking
+	 */
+	private void overlap(List<AvailabilityEntity> availabilities, BookingEntity booking) {
+		for (int i = 0; i< availabilities.size(); ++i) {
+			AvailabilityEntity availability = availabilities.get(i);
+			
+			//if no overlap then no change
+			if (availability.getStartDateTime().isAfter(booking.getEndTime()) || availability.getEndDateTime().isBefore(booking.getStartTime())) {
+				
+				//if partial overlap then adjust
+			} else if (availability.getStartDateTime().isAfter(booking.getStartTime()) && availability.getEndDateTime().isAfter(booking.getStartTime())) {
+				availability.setStartDateTime(booking.getEndTime());
+				
+				//if partial overlap then adjust
+			} else if (availability.getStartDateTime().isBefore(booking.getStartTime()) && availability.getEndDateTime().isBefore(booking.getStartTime())) {
+				availability.setEndDateTime(booking.getStartTime());
+				
+				//if availability is within booking then remove
+			} else if ((availability.getStartDateTime().isEqual(booking.getStartTime()) || availability.getStartDateTime().isAfter(booking.getStartTime()))
+					&& (availability.getEndDateTime().isEqual(booking.getEndTime()) || availability.getStartDateTime().isBefore(booking.getStartTime()))) {
+				availabilities.remove(availability);
+				
+				// else, booking inside Availability, then split
+			} else {  //TODO not sure if the 
+				//split
+				availability.setEndDateTime(booking.getStartTime());
+				availabilities.add(new AvailabilityEntity("", availability.getWorkerUsername(), availability.getCustomerUsername(), booking.getEndTime(), availability.getEndDateTime()));
+			}
+		}
+	}
+	
 }

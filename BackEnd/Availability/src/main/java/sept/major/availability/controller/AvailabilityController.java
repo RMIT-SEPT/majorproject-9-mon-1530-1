@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.Getter;
 import sept.major.availability.entity.BookingEntity;
 import sept.major.availability.entity.HoursEntity;
+import sept.major.availability.service.AvailabilityService;
 
 @RestController
 @RequestMapping("/availability")
@@ -24,10 +26,12 @@ public class AvailabilityController {
 	private static final Logger log = LoggerFactory.getLogger(AvailabilityController.class);
 	
 	
+	@Autowired
+    private AvailabilityService availabilityService;
 
 	
 	@Autowired
-	RestTemplate rt;
+	RestTemplate restTemplate;
 	
 	@Autowired
 	public Environment env;
@@ -48,35 +52,37 @@ public class AvailabilityController {
 	 * @return
 	 */
 	@GetMapping("/range")
-	 public void getAvailabilityInRange(@RequestParam(required = false) String username , /*LocalDateTime*/String startDateTime, /*LocalDateTime*/String endDateTime ) {
+	public void getAvailabilityInRange(@RequestParam(name = "startDateTime") String startDateString,
+					@RequestParam(name = "endDateTime") String endDateString, @RequestParam(required = false) String workerUsername,
+					@RequestParam(required = false) String creatorUsername) {
 
-		log.debug("username:{}, startDateTime:{}, endDateTime:{}", username, startDateTime, endDateTime);
-		System.out.printf("username:%s, startDateTime:%s, endDateTime:%s \n", username, startDateTime, endDateTime);
-		
+		log.debug("startDateTime:{}, endDateTime:{}, workerUsername:{}, creatorUsername:{}, ", startDateString, endDateString, workerUsername, creatorUsername);
+		System.out.printf("username:%s, startDateTime:%s, endDateTime:%s \n", workerUsername, startDateString, endDateString);
 		
 		String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
 		String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
 		String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 		
-		
 		Map<String, String> hoursVariablesMap = new HashMap<String, String>();
-		hoursVariablesMap.put("startDateString", "123");
-		hoursVariablesMap.put("endDateString", "234");
-		hoursVariablesMap.put("workerUsename", "345");
-		hoursVariablesMap.put("customerUsername", "456");
+		hoursVariablesMap.put("startDateTime", startDateString);
+		hoursVariablesMap.put("endDateTime", endDateString);
+		hoursVariablesMap.put("workerUsename", workerUsername);
+		hoursVariablesMap.put("creatorUsername", creatorUsername);
 		
-		String hoursTemplateUrl = hoursServiceEndpoint + "/range?startDateString={startDateString}&endDateString={endDateString}&workerUsename={workerUsename}&customerUsername={customerUsername}";
-		List<HoursEntity> hoursList = rt.getForObject(hoursTemplateUrl, List.class, hoursVariablesMap);
+		String hoursTemplateUrl = hoursServiceEndpoint + "/range?startDateTime={startDateTime}&endDateTime={endDateTime}&workerUsename={workerUsename}&creatorUsername={creatorUsername}";
+		List<HoursEntity> hoursList = restTemplate.getForObject(hoursTemplateUrl, List.class, hoursVariablesMap);
 
-		
 		Map<String, String> bookingsVariablesMap = new HashMap<String, String>();
-		bookingsVariablesMap.put("startTime", "123");
-		bookingsVariablesMap.put("endTime", "234");
+		bookingsVariablesMap.put("startDateTime", startDateString);
+		bookingsVariablesMap.put("endDateTime", endDateString);
+		bookingsVariablesMap.put("workerUsername", workerUsername);
 		
-		String bookingsTemplateUrl = bookingsServiceEndpoint + "/range?startTime={startTime}&endTime={endTime}";
-		List<BookingEntity> bookingsList = rt.getForObject(bookingsTemplateUrl, List.class, bookingsVariablesMap);
+		String bookingsTemplateUrl = bookingsServiceEndpoint + "/range?startDateTime={startDateTime}&endDateTime={endDateTime}&workerUsername={workerUsername}";
+		List<BookingEntity> bookingsList = restTemplate.getForObject(bookingsTemplateUrl, List.class, bookingsVariablesMap);
 
 		log.info(hoursList.toString());  
 		System.out.printf(hoursList.toString());
+		
+		availabilityService.checkAllAvailabilities(hoursList, bookingsList);
 	 }
 }
