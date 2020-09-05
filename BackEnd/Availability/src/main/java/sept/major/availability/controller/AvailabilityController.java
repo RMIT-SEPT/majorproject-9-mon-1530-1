@@ -1,5 +1,6 @@
 package sept.major.availability.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.Getter;
 import sept.major.availability.entity.BookingEntity;
 import sept.major.availability.entity.HoursEntity;
 import sept.major.availability.service.AvailabilityService;
@@ -41,27 +41,32 @@ public class AvailabilityController {
 	private static final String BOOKINGS_SERVICE_ENDPOINT = "bookings.service.endpoint";
 	
 	/**
-	 * This method will
-	 * 	get user's available hours in the range
-	 *  get user's booked times
-	 *  overlay the booking on the availability
-	 *  calculate the result and return as a list
-	 * @param username
-	 * @param startDateTime
-	 * @param endDateTme
-	 * @return
+	 * This method will get user's available hours in the range get user's booked times overlay the booking on the availability calculate the result and return
+	 * as a list
+	 * 
+	 * @param startDateString, example : '2020-09-05T21:54:41.173'
+	 * @param endDateString
+	 * @param workerUsername
+	 * @param creatorUsername
 	 */
 	@GetMapping("/range")
 	public void getAvailabilityInRange(@RequestParam(name = "startDateTime") String startDateString,
 					@RequestParam(name = "endDateTime") String endDateString, @RequestParam(required = false) String workerUsername,
 					@RequestParam(required = false) String creatorUsername) {
 
-		log.debug("startDateTime:{}, endDateTime:{}, workerUsername:{}, creatorUsername:{}, ", startDateString, endDateString, workerUsername, creatorUsername);
-		System.out.printf("username:%s, startDateTime:%s, endDateTime:%s \n", workerUsername, startDateString, endDateString);
+		log.info("startDateTime:{}, endDateTime:{}, workerUsername:{}, creatorUsername:{}, ", startDateString, endDateString, workerUsername, creatorUsername);
 		
 		String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
 		String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
 		String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
+		
+		{//conversion test
+			LocalDateTime sample = LocalDateTime.now();
+			log.info("sample:{}", sample);
+			LocalDateTime start_LDT = LocalDateTime.parse(startDateString);
+			LocalDateTime end_LDT = LocalDateTime.parse(startDateString);
+			log.info("start_LDT:{}, end_LDT:{}", start_LDT, end_LDT);
+		}
 		
 		Map<String, String> hoursVariablesMap = new HashMap<String, String>();
 		hoursVariablesMap.put("startDateTime", startDateString);
@@ -81,7 +86,6 @@ public class AvailabilityController {
 		List<BookingEntity> bookingsList = restTemplate.getForObject(bookingsTemplateUrl, List.class, bookingsVariablesMap);
 
 		log.info(hoursList.toString());  
-		System.out.printf(hoursList.toString());
 		
 		availabilityService.checkAllAvailabilities(hoursList, bookingsList);
 	 }
