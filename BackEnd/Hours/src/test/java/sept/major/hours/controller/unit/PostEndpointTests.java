@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.entity.HoursEntity;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ class PostEndpointTests extends HoursUnitTestHelper {
         input.remove("customerUsername");
         HoursEntity inputEntity = entityMapToEntity(input);
 
-        runTest(input, new ResponseEntity(new HashSet<>(Arrays.asList(new ResponseError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST), null);
+        runTest(input, new ResponseEntity(new HashSet<>(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST), null);
     }
 
 

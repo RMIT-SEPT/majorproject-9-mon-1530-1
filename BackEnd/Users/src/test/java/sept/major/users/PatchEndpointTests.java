@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.FieldIncorrectTypeError;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.users.entity.UserEntity;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -20,10 +21,10 @@ class PatchEndpointTests extends UserServiceTestHelper {
     void updateExistingValue() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         UserEntity inputEntity = createUserEntity(input);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("userType", randomAlphanumericString(20));
         }};
 
@@ -43,10 +44,10 @@ class PatchEndpointTests extends UserServiceTestHelper {
     void updateAllNonIdentifiersExistingValues() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         UserEntity inputEntity = createUserEntity(input);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("userType", randomAlphanumericString(20));
             put("name", randomAlphanumericString(20));
             put("phone", randomAlphanumericString(20));
@@ -69,11 +70,11 @@ class PatchEndpointTests extends UserServiceTestHelper {
     void updateNullValue() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         input.put("userType", null);
         UserEntity inputEntity = createUserEntity(input);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("userType", randomAlphanumericString(20));
         }};
 
@@ -93,7 +94,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
     void updateAllNonIdentifiersNullValues() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("username", username);
             put("userType", null);
             put("name", null);
@@ -102,7 +103,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
         }};
         UserEntity inputEntity = createUserEntity(input);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("userType", randomAlphanumericString(20));
             put("name", randomAlphanumericString(20));
             put("phone", randomAlphanumericString(20));
@@ -125,10 +126,10 @@ class PatchEndpointTests extends UserServiceTestHelper {
     void updateIdentifierValue() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         UserEntity inputEntity = createUserEntity(input);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("username", randomAlphanumericString(20));
         }};
 
@@ -141,14 +142,14 @@ class PatchEndpointTests extends UserServiceTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new ResponseError("Identifier field", "Cannot update field used for identifying entities"));
+        assertThat(result.getBody()).isEqualTo(new ValidationError("Identifier field", "Cannot update field used for identifying entities"));
     }
 
     @Test
     void noExistingEntity() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
+        Map<String, String> patchMap = new HashMap<String, String>() {{
             put("username", randomAlphanumericString(20));
         }};
 
@@ -158,156 +159,10 @@ class PatchEndpointTests extends UserServiceTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(result.getBody()).isEqualTo(new ResponseError("Identifier field", String.format("No record with a identifier of %s was found", username)));
+        assertThat(result.getBody()).isEqualTo(new ValidationError("Identifier field", String.format("No record with a identifier of %s was found", username)));
     }
 
-    @Test
-    void updateToList() {
-        String username = randomAlphanumericString(20);
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("userType", Arrays.asList(randomAlphanumericString(20)));
-        }};
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.Arrays$ArrayList")
-        )));
-    }
-
-    @Test
-    void updateAllToList() {
-        String username = randomAlphanumericString(20);
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("userType", Arrays.asList(randomAlphanumericString(20)));
-            put("name", Arrays.asList(randomAlphanumericString(20)));
-            put("phone", Arrays.asList(randomAlphanumericString(20)));
-            put("address", Arrays.asList(randomAlphanumericString(20)));
-        }};
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.Arrays$ArrayList"),
-                new FieldIncorrectTypeError("name", "class java.lang.String", "class java.util.Arrays$ArrayList"),
-                new FieldIncorrectTypeError("phone", "class java.lang.String", "class java.util.Arrays$ArrayList"),
-                new FieldIncorrectTypeError("address", "class java.lang.String", "class java.util.Arrays$ArrayList")
-        )));
-    }
-
-    @Test
-    void updateToMap() {
-        String username = randomAlphanumericString(20);
-
-        HashMap<String, String> userTypeMap = new HashMap<>();
-        userTypeMap.put("userType", randomAlphanumericString(20));
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("userType", userTypeMap);
-        }};
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.HashMap")
-        )));
-    }
-
-    @Test
-    void updateAllToMap() {
-        String username = randomAlphanumericString(20);
-
-        HashMap<String, String> userTypeMap = new HashMap<>();
-        userTypeMap.put("userType", randomAlphanumericString(20));
-
-        HashMap<String, String> nameMap = new HashMap<>();
-        nameMap.put("name", randomAlphanumericString(20));
-
-        HashMap<String, String> phoneMap = new HashMap<>();
-        phoneMap.put("phone", randomAlphanumericString(20));
-
-        HashMap<String, String> addressMap = new HashMap<>();
-        addressMap.put("address", randomAlphanumericString(20));
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("userType", userTypeMap);
-            put("name", nameMap);
-            put("phone", phoneMap);
-            put("address", addressMap);
-        }};
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("phone", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("address", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("name", "class java.lang.String", "class java.util.HashMap")
-        )));
-    }
-
-    @Test
-    void updateIdentifierToMap() {
-        String username = randomAlphanumericString(20);
-
-        Map<String, Object> input = randomEntityMap(username);
-        UserEntity inputEntity = createUserEntity(input);
-
-        HashMap<String, String> usernameMap = new HashMap<>();
-        usernameMap.put("username", randomAlphanumericString(20));
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("username", usernameMap);
-        }};
-
-
-        when(mockedUserRepository.findById(username)).thenReturn(Optional.of(inputEntity));
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("username", "class java.lang.String", "class java.util.HashMap")
-        )));
-    }
-
-    @Test
-    void updateIdentifierToList() {
-        String username = randomAlphanumericString(20);
-
-        Map<String, Object> input = randomEntityMap(username);
-        UserEntity inputEntity = createUserEntity(input);
-
-
-        Map<String, Object> patchMap = new HashMap<String, Object>() {{
-            put("username", Arrays.asList(randomAlphanumericString(20)));
-        }};
-
-
-        when(mockedUserRepository.findById(username)).thenReturn(Optional.of(inputEntity));
-
-        ResponseEntity result = userServiceController.updateUser(username, patchMap);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("username", "class java.lang.String", "class java.util.Arrays$ArrayList")
-        )));
-    }
-
-
-    private UserEntity getExpected(UserEntity existingValue, Map<String, Object> patchMap) {
+    private UserEntity getExpected(UserEntity existingValue, Map<String, String> patchMap) {
         if (patchMap.get("username") != null) {
             existingValue.setUsername((String) patchMap.get("username"));
         }
@@ -331,8 +186,8 @@ class PatchEndpointTests extends UserServiceTestHelper {
         return existingValue;
     }
 
-    private Map<String, Object> randomEntityMap(String username) {
-        return new HashMap<String, Object>() {{
+    private Map<String, String> randomEntityMap(String username) {
+        return new HashMap<String, String>() {{
             put("username", username);
             put("userType", randomAlphanumericString(20));
             put("name", randomAlphanumericString(20));
@@ -341,7 +196,7 @@ class PatchEndpointTests extends UserServiceTestHelper {
         }};
     }
 
-    private UserEntity createUserEntity(Map<String, Object> entityMap) {
+    private UserEntity createUserEntity(Map<String, String> entityMap) {
         return new UserEntity(
                 (String) entityMap.get("username"),
                 "pass123",

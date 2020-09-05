@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
@@ -36,7 +36,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void invalidDate() {
-        runTest(new ResponseEntity(new ResponseError("date", HoursController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+        runTest(new ResponseEntity(new ValidationError("date", HoursController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
                 null, "foo", null, null);
     }
 

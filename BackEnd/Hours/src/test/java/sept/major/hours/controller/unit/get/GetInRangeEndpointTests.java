@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.controller.HoursController;
 import sept.major.hours.controller.unit.HoursUnitTestHelper;
 import sept.major.hours.entity.HoursEntity;
@@ -23,24 +23,24 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void noDatesProvided() {
-        runTestsWithUsernameFilters(new ResponseEntity(new ResponseError("date range", "You must provide at least one date in the range"), HttpStatus.BAD_REQUEST), null, null, null);
+        runTestsWithUsernameFilters(new ResponseEntity(new ValidationError("date range", "You must provide at least one date in the range"), HttpStatus.BAD_REQUEST), null, null, null);
     }
 
     @Test
     void invalidStartDate() {
-        runTestsWithUsernameFilters(new ResponseEntity(new ResponseError("startDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+        runTestsWithUsernameFilters(new ResponseEntity(new ValidationError("startDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
                 null, "foo", null);
     }
 
     @Test
     void invalidEndDate() {
-        runTestsWithUsernameFilters(new ResponseEntity(new ResponseError("endDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+        runTestsWithUsernameFilters(new ResponseEntity(new ValidationError("endDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
                 null, null, "foo");
     }
 
     @Test
     void bothDatesInvalid() {
-        runTestsWithUsernameFilters(new ResponseEntity(new ResponseError("startDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+        runTestsWithUsernameFilters(new ResponseEntity(new ValidationError("startDate", HoursController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
                 null, "foo", "foo");
     }
 
@@ -96,7 +96,7 @@ class GetInRangeEndpointTests extends HoursUnitTestHelper {
 
     @Test
     void endDateBeforeStartDate() {
-        runTestsWithUsernameFilters(new ResponseEntity(new ResponseError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST),
+        runTestsWithUsernameFilters(new ResponseEntity(new ValidationError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST),
                 Arrays.asList(), LocalDateTime.now().toString(), pastDate(0, 0, 1).atStartOfDay().toString());
     }
 
