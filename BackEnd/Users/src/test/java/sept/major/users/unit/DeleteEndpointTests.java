@@ -1,4 +1,4 @@
-package sept.major.users;
+package sept.major.users.unit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static sept.major.users.UserServiceTestHelper.randomAlphanumericString;
 
 @SpringBootTest
 class DeleteEndpointTests extends UserServiceTestHelper {

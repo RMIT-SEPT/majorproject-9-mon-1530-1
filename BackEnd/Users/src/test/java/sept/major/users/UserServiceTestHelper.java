@@ -1,43 +1,10 @@
 package sept.major.users;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import sept.major.users.controller.UserServiceController;
-import sept.major.users.controller.UserServiceControllerHelper;
-import sept.major.users.repository.UsersRepository;
-import sept.major.users.service.UserService;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
 public abstract class UserServiceTestHelper {
-
-    UserServiceController userServiceController;
-    UserServiceControllerHelper userServiceControllerHelper;
-    UserService userService;
-
-    public UserService getUserService() {
-    	return userService;
-    }
-    
-    @Mock
-    public UsersRepository mockedUserRepository;
-
-    @BeforeEach
-    public void setUp() {
-        userService = new UserService(mockedUserRepository);
-        userServiceControllerHelper = new UserServiceControllerHelper(userService);
-        userServiceController = new UserServiceController(userService, userServiceControllerHelper);
-    }
-
-    @Test
-    void contextLoads() {
-        assertThat(userServiceController).isNotNull();
-    }
-
-    protected String randomAlphanumericString(int length) {
+    public static String randomAlphanumericString(int length) {
         final int[] uppercaseRange = {65, 91};
         final int[] lowerCaseRange = {97, 123};
         final int[] numbersRange = {48, 58};
@@ -57,5 +24,27 @@ public abstract class UserServiceTestHelper {
         }
 
         return stringBuilder.toString();
+    }
+
+    public static Map<String, String> randomEntityMap() {
+        HashMap<String, String> entityMap = new HashMap<>();
+        entityMap.put("username", randomAlphanumericString(20));
+        entityMap.put("password", randomAlphanumericString(20));
+        entityMap.put("userType", randomAlphanumericString(20));
+        entityMap.put("name", randomAlphanumericString(20));
+        entityMap.put("phone", randomAlphanumericString(20));
+        entityMap.put("address", randomAlphanumericString(20));
+        return entityMap;
+    }
+
+    public static Map<String, String> randomEntityMap(String password) {
+        HashMap<String, String> entityMap = new HashMap<>();
+        entityMap.put("username", randomAlphanumericString(20));
+        entityMap.put("password", password);
+        entityMap.put("userType", randomAlphanumericString(20));
+        entityMap.put("name", randomAlphanumericString(20));
+        entityMap.put("phone", randomAlphanumericString(20));
+        entityMap.put("address", randomAlphanumericString(20));
+        return entityMap;
     }
 }

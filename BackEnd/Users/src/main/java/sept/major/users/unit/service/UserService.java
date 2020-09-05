@@ -1,17 +1,16 @@
-package sept.major.users.service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package sept.major.users.unit.service;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.service.CrudService;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.repository.UsersRepository;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserService extends CrudService<UserEntity, String> {
