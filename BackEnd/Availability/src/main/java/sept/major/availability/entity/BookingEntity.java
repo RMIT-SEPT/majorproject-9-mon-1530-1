@@ -1,11 +1,21 @@
 package sept.major.availability.entity;
 
-import lombok.*;
-import sept.major.common.converter.StringToTimestampConverter;
-import sept.major.common.entity.AbstractEntity;
+import java.time.LocalDateTime;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import sept.major.common.entity.AbstractEntity;
 
 @Getter
 @Setter
@@ -28,12 +38,10 @@ public class BookingEntity implements AbstractEntity<String> { //TODO This class
     private String customerId;
 
     @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String startTime;
+    private LocalDateTime startTime;
 
     @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String endTime;
+    private LocalDateTime endTime;
 
     @Override
     public String getID() {
