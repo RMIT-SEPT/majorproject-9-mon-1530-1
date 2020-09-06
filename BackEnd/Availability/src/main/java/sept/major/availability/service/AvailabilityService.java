@@ -23,7 +23,7 @@ public class AvailabilityService {
 
 		for (HoursEntity hour : hours) {
 			List<AvailabilityEntity> availabilities = new ArrayList<>();
-			AvailabilityEntity availability = new AvailabilityEntity("", hour.getWorkerUsername(), hour.getCustomerUsername(), hour.getStartDateTime(),
+			AvailabilityEntity availability = new AvailabilityEntity(hour.getID(), hour.getWorkerUsername(), hour.getCustomerUsername(), hour.getStartDateTime(),
 					hour.getEndDateTime());
 			availabilities.add(availability);
 			for (BookingEntity booking : bookings) {
@@ -45,26 +45,31 @@ public class AvailabilityService {
 			AvailabilityEntity availability = availabilities.get(i);
 			
 			//if no overlap then no change
-			if (availability.getStartDateTime().isAfter(booking.getEndTime()) || availability.getEndDateTime().isBefore(booking.getStartTime())) {
+			if (availability.getStartDateTime().isEqual(booking.getEndTime()) || availability.getStartDateTime().isAfter(booking.getEndTime())
+					|| availability.getEndDateTime().isEqual(booking.getStartTime()) || availability.getEndDateTime().isBefore(booking.getStartTime())) {
 				
-				//if partial overlap then adjust
-			} else if (availability.getStartDateTime().isAfter(booking.getStartTime()) && availability.getEndDateTime().isAfter(booking.getStartTime())) {
-				availability.setStartDateTime(booking.getEndTime());
-				
-				//if partial overlap then adjust
-			} else if (availability.getStartDateTime().isBefore(booking.getStartTime()) && availability.getEndDateTime().isBefore(booking.getStartTime())) {
+				//if partial overlap in the end, then adjust
+			} else if (booking.getStartTime().isAfter(availability.getStartDateTime()) && booking.getStartTime().isBefore(availability.getEndDateTime()) &&  
+					(availability.getEndDateTime().isEqual(booking.getEndTime()) || availability.getEndDateTime().isBefore(booking.getEndTime()))) {
 				availability.setEndDateTime(booking.getStartTime());
+				
+				//if partial overlap in the start, then adjust
+			} else if ((availability.getStartDateTime().isEqual(booking.getStartTime()) || availability.getStartDateTime().isAfter(booking.getStartTime())) 
+					&& booking.getEndTime().isAfter(availability.getStartDateTime()) && booking.getEndTime().isBefore(availability.getEndDateTime())) {
+				availability.setStartDateTime(booking.getEndTime());
 				
 				//if availability is within booking then remove
 			} else if ((availability.getStartDateTime().isEqual(booking.getStartTime()) || availability.getStartDateTime().isAfter(booking.getStartTime()))
-					&& (availability.getEndDateTime().isEqual(booking.getEndTime()) || availability.getStartDateTime().isBefore(booking.getStartTime()))) {
+					&& (availability.getEndDateTime().isEqual(booking.getEndTime()) || availability.getEndDateTime().isBefore(booking.getEndTime()))) {
 				availabilities.remove(availability);
 				
 				// else, booking inside Availability, then split
 			} else {  //TODO not sure if the 
 				//split
+				availabilities.add(new AvailabilityEntity("", availability.getWorkerUsername(), availability.getCustomerUsername(), booking.getEndTime(),
+						availability.getEndDateTime()));
 				availability.setEndDateTime(booking.getStartTime());
-				availabilities.add(new AvailabilityEntity("", availability.getWorkerUsername(), availability.getCustomerUsername(), booking.getEndTime(), availability.getEndDateTime()));
+				
 			}
 		}
 	}

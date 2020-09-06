@@ -41,8 +41,8 @@ public class AvailabilityServiceTest {
 		
 		LocalDateTime now = LocalDateTime.now();
 		
-		bookings.add(new BookingEntity("", "", "", now, now.plus(5, ChronoUnit.DAYS)));
-		bookings.add(new BookingEntity("", "", "", now.plus(10, ChronoUnit.DAYS), now.plus(15, ChronoUnit.DAYS)));
+		bookings.add(new BookingEntity("", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -58,11 +58,11 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("", "", "", now, now.plus(5, ChronoUnit.DAYS)));
-		hours.add(new HoursEntity("", "", "", now.plus(5, ChronoUnit.DAYS), now.plus(15, ChronoUnit.DAYS)));
+		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingEntity("", "", "", now, now.plus(5, ChronoUnit.DAYS)));
-		bookings.add(new BookingEntity("", "", "", now.plus(5, ChronoUnit.DAYS), now.plus(15, ChronoUnit.DAYS)));
+		bookings.add(new BookingEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -77,33 +77,146 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("", "", "", now, now.plus(5, ChronoUnit.DAYS)));
-		hours.add(new HoursEntity("", "", "", now.plus(5, ChronoUnit.DAYS), now.plus(15, ChronoUnit.DAYS)));
-		
+		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("2", "", "", now.plus(5, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
-		
+
 		assertTrue(availabilities != null);
 		assertFalse(availabilities.isEmpty());
-		assertEquals("", availabilities.size(), 2);
+		assertEquals("number of availabilities,", 2, availabilities.size());
 	}
+
 	
-	@Test // only hours 
+	@Test // no overlap
+	void checkAllAvailabilities_noOverlap() {
+		List<HoursEntity> hours = new ArrayList<>();
+		List<BookingEntity> bookings = new ArrayList<>();
+
+		LocalDateTime now = LocalDateTime.now();
+
+		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		
+		bookings.add(new BookingEntity("1", "", "", now.minus(10, ChronoUnit.HOURS), now.minus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(10, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("3", "", "", now.plus(15, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("4", "", "", now.plus(20, ChronoUnit.HOURS), now.plus(25, ChronoUnit.HOURS)));
+
+		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
+
+		assertTrue(availabilities != null);
+		assertFalse(availabilities.isEmpty());
+		assertEquals("number of availabilities,", 2, availabilities.size());
+		assertEquals("availability start time,", now, availabilities.get(0).getStartDateTime());
+		assertEquals("availability end time,", now.plus(5, ChronoUnit.HOURS), availabilities.get(0).getEndDateTime());
+		assertEquals("availability start time,", now.plus(10, ChronoUnit.HOURS), availabilities.get(1).getStartDateTime());
+		assertEquals("availability end time,", now.plus(15, ChronoUnit.HOURS), availabilities.get(1).getEndDateTime());
+
+	}
+
+	@Test // partial overlap at the start
 	void checkAllAvailabilities_partialStartOverlap() {
 		List<HoursEntity> hours = new ArrayList<>();
 		List<BookingEntity> bookings = new ArrayList<>();
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("", "", "", now, now.plus(5, ChronoUnit.DAYS)));
-		bookings.add(new BookingEntity("", "", "", now.minus(3, ChronoUnit.DAYS), now.plus(2, ChronoUnit.DAYS)));
+		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("1", "", "", now.minus(3, ChronoUnit.HOURS), now.plus(2, ChronoUnit.HOURS)));
+
+		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
+
+		assertTrue(availabilities != null);
+		assertFalse(availabilities.isEmpty());
+		assertEquals("number of availabilities,", availabilities.size(), 1);
+		assertEquals("availability start time,", now.plus(2, ChronoUnit.HOURS), availabilities.get(0).getStartDateTime());
+		assertEquals("availability end time,", now.plus(5, ChronoUnit.HOURS), availabilities.get(0).getEndDateTime());
+	}
+	
+	@Test // partial overlap at the end 
+	void checkAllAvailabilities_partialEndOverlap() {
+		List<HoursEntity> hours = new ArrayList<>();
+		List<BookingEntity> bookings = new ArrayList<>();
+
+		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
+
+		hours.add(new HoursEntity("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingEntity("1", "", "", base.plus(3, ChronoUnit.HOURS), base.plus(6, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
 		assertTrue(availabilities != null);
 		assertFalse(availabilities.isEmpty());
-		assertEquals("", availabilities.size(), 1);
-		assertEquals("", availabilities.get(0).getStartDateTime(),now.plus(2, ChronoUnit.DAYS));
-		assertEquals("", availabilities.get(0).getEndDateTime(),now.plus(5, ChronoUnit.DAYS));
+		assertEquals("number of availabilities,", 1, availabilities.size());
+		assertEquals("availability start time,", base , availabilities.get(0).getStartDateTime());
+		assertEquals("availability end time,", base.plus(3, ChronoUnit.HOURS), availabilities.get(0).getEndDateTime());
+	}
+	
+	
+	@Test // partial overlap at the start 
+	void checkAllAvailabilities_bookingWithingHours() {
+		List<HoursEntity> hours = new ArrayList<>();
+		List<BookingEntity> bookings = new ArrayList<>();
+
+		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
+
+		hours.add(new HoursEntity("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
 		
+		bookings.add(new BookingEntity("1", "", "", base.plus(2, ChronoUnit.HOURS), base.plus(3, ChronoUnit.HOURS)));
+		
+		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
+		
+		assertTrue(availabilities != null);
+		assertFalse(availabilities.isEmpty());
+		assertEquals("number of availabilities,", availabilities.size(), 2);
+		assertEquals("availability start time,", base, availabilities.get(0).getStartDateTime());
+		assertEquals("availability end time," , base.plus(2, ChronoUnit.HOURS), availabilities.get(0).getEndDateTime());
+		assertEquals("availability start time,", base.plus(3, ChronoUnit.HOURS), availabilities.get(1).getStartDateTime());
+		assertEquals("availability end time,", base.plus(5, ChronoUnit.HOURS), availabilities.get(1).getEndDateTime());
+	}
+
+	
+	@Test // partial overlap at the start 
+	void checkAllAvailabilities_complex() {
+		List<HoursEntity> hours = new ArrayList<>();
+		List<BookingEntity> bookings = new ArrayList<>();
+
+		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
+
+		hours.add(new HoursEntity("1", "", "", base.plus(00, ChronoUnit.HOURS), base.plus(05, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(25, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("4", "", "", base.plus(30, ChronoUnit.HOURS), base.plus(35, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("5", "", "", base.plus(40, ChronoUnit.HOURS), base.plus(45, ChronoUnit.HOURS)));
+		hours.add(new HoursEntity("5", "", "", base.plus(50, ChronoUnit.HOURS), base.plus(55, ChronoUnit.HOURS)));
+
+		bookings.add(new BookingEntity("1", "", "",base.minus(10, ChronoUnit.HOURS), base.minus(5, ChronoUnit.HOURS))); 	//no overlap
+		bookings.add(new BookingEntity("1", "", "",base.minus(05, ChronoUnit.HOURS), base.minus(0, ChronoUnit.HOURS))); 	//no overlap
+		bookings.add(new BookingEntity("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));    	// full overlap
+		bookings.add(new BookingEntity("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(23, ChronoUnit.HOURS)));   	// partial start overlap
+		bookings.add(new BookingEntity("3", "", "", base.plus(32, ChronoUnit.HOURS), base.plus(36, ChronoUnit.HOURS)));   	// partial end overlap
+		bookings.add(new BookingEntity("3", "", "", base.plus(42, ChronoUnit.HOURS), base.plus(44, ChronoUnit.HOURS)));   	// middle overlap
+		bookings.add(new BookingEntity("3", "", "", base.plus(55, ChronoUnit.HOURS), base.plus(60, ChronoUnit.HOURS)));   	// no overlap
+		bookings.add(new BookingEntity("3", "", "", base.plus(60, ChronoUnit.HOURS), base.plus(65, ChronoUnit.HOURS)));   	// no overlap
+		
+		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
+		
+		assertTrue(availabilities != null);
+		assertFalse(availabilities.isEmpty());
+		assertEquals("number of availabilities,", availabilities.size(), 6);
+		assertEquals("availability1 start time,", base, availabilities.get(0).getStartDateTime());
+		assertEquals("availability1 end time," , base.plus(5, ChronoUnit.HOURS), availabilities.get(0).getEndDateTime());
+		assertEquals("availability2 start time,", base.plus(23, ChronoUnit.HOURS), availabilities.get(1).getStartDateTime());
+		assertEquals("availability2 end time," , base.plus(25, ChronoUnit.HOURS), availabilities.get(1).getEndDateTime());
+		assertEquals("availability3 start time,", base.plus(30, ChronoUnit.HOURS), availabilities.get(2).getStartDateTime());
+		assertEquals("availability3 end time," , base.plus(32, ChronoUnit.HOURS), availabilities.get(2).getEndDateTime());
+		assertEquals("availability4 start time,", base.plus(40, ChronoUnit.HOURS), availabilities.get(3).getStartDateTime());
+		assertEquals("availability4 end time," , base.plus(42, ChronoUnit.HOURS), availabilities.get(3).getEndDateTime());
+		assertEquals("availability5 start time,", base.plus(44, ChronoUnit.HOURS), availabilities.get(4).getStartDateTime());
+		assertEquals("availability5 end time," , base.plus(45, ChronoUnit.HOURS), availabilities.get(4).getEndDateTime());
+		assertEquals("availability6 start time,", base.plus(50, ChronoUnit.HOURS), availabilities.get(5).getStartDateTime());
+		assertEquals("availability6 end time," , base.plus(55, ChronoUnit.HOURS), availabilities.get(5).getEndDateTime());
+
 	}
 }
