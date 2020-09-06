@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
-import sept.major.common.exception.ResponseErrorException;
-import sept.major.common.response.ResponseError;
+import sept.major.common.exception.ValidationErrorException;
+import sept.major.common.response.ValidationError;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.service.HoursService;
 
@@ -43,24 +43,24 @@ public class HoursController {
         try {
             startDate = (startDateString == null ? null : LocalDateTime.parse(startDateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         LocalDateTime endDate;
         try {
             endDate = (endDateString == null ? null : LocalDateTime.parse(endDateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("endDate",INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("endDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         if(startDate == null && endDate == null) {
             return new ResponseEntity(
-                    new ResponseError("date range", "You must provide at least one date in the range"),
+                    new ValidationError("date range", "You must provide at least one date in the range"),
                     HttpStatus.BAD_REQUEST);
         }
 
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            return new ResponseEntity(new ResponseError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -82,8 +82,8 @@ public class HoursController {
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ResponseError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
-        } catch (ResponseErrorException e) {
+            return new ResponseEntity(new ValidationError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+        } catch (ValidationErrorException e) {
             throw new RuntimeException("Received null date when the field is required by the endpoint");
         }
     }

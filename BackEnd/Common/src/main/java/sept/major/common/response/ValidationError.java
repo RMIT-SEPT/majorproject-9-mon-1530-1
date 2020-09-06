@@ -4,18 +4,22 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/*
-    Most responseErrors being found will be implemented in a subclass of this class however some errors are thrown with the
-    generic supper class (This class).
+/**
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * POJO used to store details on a validation error for convenient access to readable when giving as an API response.
+ *
  */
 @Getter
 @EqualsAndHashCode
 @ToString
-public class ResponseError {
+public class ValidationError {
     protected String field;
     protected String message;
 
-    public ResponseError(String field, String message) {
+    public ValidationError(String field, String message) {
         this.field = field;
         this.message = message;
     }
