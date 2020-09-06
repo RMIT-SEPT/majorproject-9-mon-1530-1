@@ -18,19 +18,13 @@ import {
   WorkerRadioButton,
   TimeFlex,
 } from '../Bookings/BookingComponents';
-import {
-  setBookingSelectedWorker,
-  setBookingStartTime,
-  setBookingEndTime,
-  submitBooking,
-  clearBooking,
-} from '../Bookings/Booking';
 import home from '../../../media/home-40px.svg';
 import book from '../../../media/book-40px.svg';
 import calendar from '../../../media/calendar-40px.svg';
 import phone from '../../../media/phone-40px.svg';
 import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
+import { BookingContext } from '../../../Contexts/BookingContext';
 
 // TODO: Use import statement and test
 const axios = require('axios');
@@ -110,14 +104,15 @@ const User = ({ id }) => {
 
   // State changing functions for updating page view
   const bookAppointment = () => {
-    clearBooking();
+    bookingContext.clearBooking();
+    bookingContext.setCustomerId(userId);
     setMain(false);
     setService(false);
     setBooking(true);
   };
 
   const cancelBooking = () => {
-    clearBooking();
+    bookingContext.clearBooking();
     setBooking(false);
     setMain(true);
   };
@@ -128,7 +123,7 @@ const User = ({ id }) => {
   };
 
   const cancelService = () => {
-    clearBooking();
+    bookingContext.clearBooking();
     setService(false);
     setMain(true);
   };
@@ -145,7 +140,7 @@ const User = ({ id }) => {
   );
   const [mutate] = useMutation(
     async () => {
-      await submitBooking(userId);
+      await bookingContext.submitBooking();
     },
     {
       onSuccess: () => {
@@ -155,6 +150,7 @@ const User = ({ id }) => {
   );
 
   const browserContext = useContext(BrowserContext);
+  const bookingContext = useContext(BookingContext);
 
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
@@ -247,7 +243,7 @@ const User = ({ id }) => {
                           worker={worker}
                           key={worker.workerUserName}
                           name="selectWorker"
-                          onChange={setBookingSelectedWorker}
+                          onChange={bookingContext.setWorkerId}
                         ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
@@ -259,11 +255,11 @@ const User = ({ id }) => {
                       <>
                         <DateTimeSelector
                           label="Start time"
-                          onChange={setBookingStartTime}
+                          onChange={bookingContext.setStartTime}
                         ></DateTimeSelector>
                         <DateTimeSelector
                           label="End time"
-                          onChange={setBookingEndTime}
+                          onChange={bookingContext.setEndTime}
                         ></DateTimeSelector>
                       </>
                     )}
