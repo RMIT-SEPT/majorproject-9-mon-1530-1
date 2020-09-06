@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class PostBlackBoxTest extends HoursBlackBoxHelper {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ResponseError("customerUsername", "must not be blank"))));
+        assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))));
 
     }
 }

@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.common.response.FieldIncorrectTypeError;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.users.entity.UserEntity;
 
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -20,7 +20,7 @@ class PostEndpointTests extends UserServiceTestHelper {
     void valid() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         UserEntity inputEntity = createUserEntity(input);
 
         when(mockedUserRepository.findById(username)).thenReturn(Optional.empty());
@@ -37,7 +37,7 @@ class PostEndpointTests extends UserServiceTestHelper {
     void existing() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = randomEntityMap(username);
+        Map<String, String> input = randomEntityMap(username);
         UserEntity inputEntity = createUserEntity(input);
 
         when(mockedUserRepository.findById(username)).thenReturn(Optional.of(createUserEntity(randomEntityMap(username))));
@@ -58,7 +58,7 @@ class PostEndpointTests extends UserServiceTestHelper {
         String phone = randomAlphanumericString(20);
         String address = randomAlphanumericString(20);
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("username", username);
             put("password", password);
             put("name", name);
@@ -70,14 +70,14 @@ class PostEndpointTests extends UserServiceTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new ResponseError("userType", "must not be blank"))));
+        assertThat(result.getBody()).isEqualTo(Arrays.asList(new ValidationError("userType", "must not be blank")));
     }
 
     @Test
     void missingAllValueFields() {
         String username = randomAlphanumericString(20);
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("username", username);
         }};
 
@@ -85,12 +85,12 @@ class PostEndpointTests extends UserServiceTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new ResponseError("password", "must not be blank"),
-                new ResponseError("userType", "must not be blank"),
-                new ResponseError("name", "must not be blank"),
-                new ResponseError("phone", "must not be blank"),
-                new ResponseError("address", "must not be blank")
+        assertTrue(((List) result.getBody()).containsAll(Arrays.asList(
+                new ValidationError("password", "must not be blank"),
+                new ValidationError("userType", "must not be blank"),
+                new ValidationError("name", "must not be blank"),
+                new ValidationError("phone", "must not be blank"),
+                new ValidationError("address", "must not be blank")
         )));
     }
 
@@ -102,7 +102,7 @@ class PostEndpointTests extends UserServiceTestHelper {
         String phone = randomAlphanumericString(20);
         String address = randomAlphanumericString(20);
 
-        Map<String, Object> input = new HashMap<String, Object>() {{
+        Map<String, String> input = new HashMap<String, String>() {{
             put("userType", userType);
             put("password", password);
             put("name", name);
@@ -114,174 +114,31 @@ class PostEndpointTests extends UserServiceTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new ResponseError("username", "must not be blank"))));
+        assertThat(result.getBody()).isEqualTo(Arrays.asList(new ValidationError("username", "must not be blank")));
     }
 
     @Test
     void missingAllFields() {
-        Map<String, Object> input = new HashMap<>();
+        Map<String, String> input = new HashMap<>();
 
         ResponseEntity result = userServiceController.createUser(input);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new ResponseError("username", "must not be blank"),
-                new ResponseError("password", "must not be blank"),
-                new ResponseError("userType", "must not be blank"),
-                new ResponseError("name", "must not be blank"),
-                new ResponseError("phone", "must not be blank"),
-                new ResponseError("address", "must not be blank")
+        assertTrue(((List) result.getBody()).containsAll(Arrays.asList(
+                new ValidationError("username", "must not be blank"),
+                new ValidationError("password", "must not be blank"),
+                new ValidationError("userType", "must not be blank"),
+                new ValidationError("name", "must not be blank"),
+                new ValidationError("phone", "must not be blank"),
+                new ValidationError("address", "must not be blank")
         )));
+
+
     }
 
-
-    @Test
-    void listField() {
-        String username = randomAlphanumericString(20);
-        ArrayList<String> userType = new ArrayList<>(Arrays.asList(randomAlphanumericString(20)));
-        String password = randomAlphanumericString(20);
-        String name = randomAlphanumericString(20);
-        String phone = randomAlphanumericString(20);
-        String address = randomAlphanumericString(20);
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("username", username);
-            put("password", password);
-            put("userType", userType);
-            put("name", name);
-            put("phone", phone);
-            put("address", address);
-        }};
-
-        ResponseEntity result = userServiceController.createUser(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.ArrayList"))));
-    }
-
-    @Test
-    void mapField() {
-        String username = randomAlphanumericString(20);
-        HashMap<String, String> userType = new HashMap<>();
-        userType.put("userType", randomAlphanumericString(20));
-        String password = randomAlphanumericString(20);
-        String name = randomAlphanumericString(20);
-        String phone = randomAlphanumericString(20);
-        String address = randomAlphanumericString(20);
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("username", username);
-            put("password", password);
-            put("userType", userType);
-            put("name", name);
-            put("phone", phone);
-            put("address", address);
-        }};
-
-        ResponseEntity result = userServiceController.createUser(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.HashMap"))));
-    }
-
-    @Test
-    void listIdentifier() {
-        ArrayList<String> username = new ArrayList<>(Arrays.asList(randomAlphanumericString(20)));
-        String password = randomAlphanumericString(20);
-        String userType = randomAlphanumericString(20);
-        String name = randomAlphanumericString(20);
-        String phone = randomAlphanumericString(20);
-        String address = randomAlphanumericString(20);
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("username", username);
-            put("password", password);
-            put("userType", userType);
-            put("name", name);
-            put("phone", phone);
-            put("address", address);
-        }};
-
-        ResponseEntity result = userServiceController.createUser(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new FieldIncorrectTypeError("username", "class java.lang.String", "class java.util.ArrayList"))));
-    }
-
-    @Test
-    void mapIdentifier() {
-        HashMap<String, String> username = new HashMap<>();
-        username.put("username", randomAlphanumericString(20));
-        String password = randomAlphanumericString(20);
-        String userType = randomAlphanumericString(20);
-        String name = randomAlphanumericString(20);
-        String phone = randomAlphanumericString(20);
-        String address = randomAlphanumericString(20);
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("username", username);
-            put("password", password);
-            put("userType", userType);
-            put("name", name);
-            put("phone", phone);
-            put("address", address);
-        }};
-
-        ResponseEntity result = userServiceController.createUser(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(new FieldIncorrectTypeError("username", "class java.lang.String", "class java.util.HashMap"))));
-    }
-
-    @Test
-    void mixedIncorrectType() {
-        HashMap<String, String> username = new HashMap<>();
-        username.put("username", randomAlphanumericString(20));
-
-        HashMap<String, String> userType = new HashMap<>();
-        username.put("userType", randomAlphanumericString(20));
-
-        HashMap<String, String> password = new HashMap<>();
-        username.put("password", randomAlphanumericString(20));
-
-        ArrayList<String> name = new ArrayList<>(Arrays.asList(randomAlphanumericString(20)));
-        ArrayList<String> phone = new ArrayList<>(Arrays.asList(randomAlphanumericString(20)));
-
-        HashMap<String, String> address = new HashMap<>();
-        username.put("address", randomAlphanumericString(20));
-
-        Map<String, Object> input = new HashMap<String, Object>() {{
-            put("username", username);
-            put("password", password);
-            put("userType", userType);
-            put("name", name);
-            put("phone", phone);
-            put("address", address);
-        }};
-
-        ResponseEntity result = userServiceController.createUser(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new HashSet<>(Arrays.asList(
-                new FieldIncorrectTypeError("username", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("password", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("userType", "class java.lang.String", "class java.util.HashMap"),
-                new FieldIncorrectTypeError("name", "class java.lang.String", "class java.util.ArrayList"),
-                new FieldIncorrectTypeError("phone", "class java.lang.String", "class java.util.ArrayList"),
-                new FieldIncorrectTypeError("address", "class java.lang.String", "class java.util.HashMap")
-
-        )));
-    }
-
-
-    private Map<String, Object> randomEntityMap(String username) {
-        return new HashMap<String, Object>() {{
+    private Map<String, String> randomEntityMap(String username) {
+        return new HashMap<String, String>() {{
             put("username", username);
             put("password", randomAlphanumericString(20));
             put("userType", randomAlphanumericString(20));
@@ -291,14 +148,14 @@ class PostEndpointTests extends UserServiceTestHelper {
         }};
     }
 
-    private UserEntity createUserEntity(Map<String, Object> entityMap) {
+    private UserEntity createUserEntity(Map<String, String> entityMap) {
         return new UserEntity(
-                (String) entityMap.get("username"),
-                (String) entityMap.get("password"),
-                (String) entityMap.get("userType"),
-                (String) entityMap.get("name"),
-                (String) entityMap.get("phone"),
-                (String) entityMap.get("address"));
+                entityMap.get("username"),
+                entityMap.get("password"),
+                entityMap.get("userType"),
+                entityMap.get("name"),
+                entityMap.get("phone"),
+                entityMap.get("address"));
     }
 
 }

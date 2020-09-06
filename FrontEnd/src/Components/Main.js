@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import {  Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import big from '../media/big.png';
 import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';

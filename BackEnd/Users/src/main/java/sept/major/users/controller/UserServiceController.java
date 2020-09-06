@@ -1,6 +1,5 @@
 package sept.major.users.controller;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,22 +27,22 @@ public class UserServiceController {
 
     @GetMapping()
     public ResponseEntity getUser(@RequestParam String username) {
-        return userControllerHelper.getEntity(username);
+        return userControllerHelper.getEntity(username, String.class);
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createUser(@RequestBody Map<String, String> requestBody) {
         return userControllerHelper.validateInputAndPost(UserEntity.class, requestBody);
     }
 
     @DeleteMapping
     public ResponseEntity deleteUser(@RequestParam String username) {
-        return userControllerHelper.deleteEntity(username);
+        return userControllerHelper.deleteEntity(username, String.class);
     }
 
     @PatchMapping
-    public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, Object> requestBody) {
-        return userControllerHelper.validateInputAndPatch(UserEntity.class, username, requestBody);
+    public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, String> requestBody) {
+        return userControllerHelper.validateInputAndPatch(UserEntity.class, username, String.class, requestBody);
     }
 
     @GetMapping("/bulk")

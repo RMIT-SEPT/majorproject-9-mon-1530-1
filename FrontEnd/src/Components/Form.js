@@ -77,7 +77,7 @@ const Construction = styled.img`
   background-size: contain;
 `
 const Left = styled.div`
-  height:100vh;
+  height:120vh;
   padding-top: 3%;
   /* flex-grow: 1 ; */
   background-color: black;
@@ -128,7 +128,7 @@ const CssTextField = withStyles({
 // we use normal routing in order to move between pages 
 
 function Form() {
-  const { register, handleSubmit, errors } = useForm()
+  const { register, handleSubmit } = useForm()
   return (
     <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
       <Grid container alignItems="center" justify="center" spacing={0}>

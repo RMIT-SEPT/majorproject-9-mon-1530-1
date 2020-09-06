@@ -6,7 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
-import sept.major.common.response.FieldIncorrectTypeError;
 import org.mockito.Mock.*;
 
 import java.time.LocalDateTime;
