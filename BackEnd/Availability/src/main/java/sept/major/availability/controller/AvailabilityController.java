@@ -1,6 +1,5 @@
 package sept.major.availability.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,9 +44,7 @@ public class AvailabilityController {
 	private static final String HOURS_SERVICE_ENDPOINT = "hours.service.endpoint";
 	private static final String BOOKINGS_SERVICE_ENDPOINT = "bookings.service.endpoint";
 	
-	String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
-	String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
-	String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
+
 
 	/**
 	 * This method will get user's available hours in the range get user's booked times overlay the booking on the availability calculate the result and return
@@ -63,6 +61,9 @@ public class AvailabilityController {
 					@RequestParam(required = false) String creatorUsername) {
 
 		log.info("startDateTime:{}, endDateTime:{}, workerUsername:{}, creatorUsername:{}, ", startDateString, endDateString, workerUsername, creatorUsername);
+		String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
+		String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
+		String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 		
 		try {
 		{//conversion test TODO remove
@@ -112,6 +113,10 @@ public class AvailabilityController {
     	
     	log.info("dateString:{}, workerUsername:{}, creatorUsername:{}, ", dateString, workerUsername, creatorUsername);
     	
+    	String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
+    	String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
+    	String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
+    	
 		try { // conversion test TODO remove
 			{// conversion test TODO remove
 				LocalDateTime sample = LocalDateTime.now();
@@ -152,6 +157,10 @@ public class AvailabilityController {
                                       		@RequestParam(required = false) String creatorUsername) {
     	log.info("workerUsername:{}, creatorUsername:{}, ", workerUsername, creatorUsername);
 
+    	String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
+    	String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
+    	String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
+    	
 		try {
 			Map<String, String> variablesMap = new HashMap<String, String>();
 			variablesMap.put("workerUsename", workerUsername);
@@ -170,5 +179,14 @@ public class AvailabilityController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
 		}
     }
+    
+    /**
+     * There doesn't seem a need for implementing Delete for availability since there is no persistence. The availability is calculated from hours and bookings. 
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete() {
+    	log.info("unimplemented Delete method called");
+			return new ResponseEntity<String>("Availability Delete method is not implemnted ", HttpStatus.NOT_IMPLEMENTED);
+    }
 }
-
