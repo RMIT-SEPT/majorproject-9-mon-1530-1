@@ -127,7 +127,7 @@ const WorkerRadioButton = ({ worker, onChange }) => {
           value={worker.workerUserName}
           name="selectWorker"
           onChange={() => {
-            onChange(worker);
+            onChange(worker.workerUserName);
           }}
         />
         <CardContentsText>

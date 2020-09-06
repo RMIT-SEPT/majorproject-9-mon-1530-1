@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
+import axios from 'axios';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
 import {
   DashboardModule,
@@ -18,22 +19,13 @@ import {
   WorkerRadioButton,
   TimeFlex,
 } from '../Bookings/BookingComponents';
-import {
-  setBookingSelectedWorker,
-  setBookingStartTime,
-  setBookingEndTime,
-  submitBooking,
-  clearBooking,
-} from '../Bookings/Booking';
 import home from '../../../media/home-40px.svg';
 import book from '../../../media/book-40px.svg';
 import calendar from '../../../media/calendar-40px.svg';
 import phone from '../../../media/phone-40px.svg';
 import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
-
-// TODO: Use import statement and test
-const axios = require('axios');
+import { BookingContext } from '../../../Contexts/BookingContext';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
@@ -111,6 +103,7 @@ const User = ({ id }) => {
   // State changing functions for updating page view
   const bookAppointment = () => {
     clearBooking();
+    setCustomerId(userId);
     setMain(false);
     setService(false);
     setBooking(true);
@@ -145,7 +138,7 @@ const User = ({ id }) => {
   );
   const [mutate] = useMutation(
     async () => {
-      await submitBooking(userId);
+      await submitBooking();
     },
     {
       onSuccess: () => {
@@ -154,7 +147,15 @@ const User = ({ id }) => {
     }
   );
 
-  const browserContext = useContext(BrowserContext);
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+  const {
+    setCustomerId,
+    setWorkerId,
+    setStartTime,
+    setEndTime,
+    clearBooking,
+    submitBooking,
+  } = useContext(BookingContext);
 
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
@@ -247,7 +248,7 @@ const User = ({ id }) => {
                           worker={worker}
                           key={worker.workerUserName}
                           name="selectWorker"
-                          onChange={setBookingSelectedWorker}
+                          onChange={setWorkerId}
                         ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
@@ -255,19 +256,19 @@ const User = ({ id }) => {
                 </DashboardGrid>
                 <DashboardModule title="Select times">
                   <TimeFlex>
-                    {browserContext.isChrome && (
+                    {isChrome && (
                       <>
                         <DateTimeSelector
                           label="Start time"
-                          onChange={setBookingStartTime}
+                          onChange={setStartTime}
                         ></DateTimeSelector>
                         <DateTimeSelector
                           label="End time"
-                          onChange={setBookingEndTime}
+                          onChange={setEndTime}
                         ></DateTimeSelector>
                       </>
                     )}
-                    {browserContext.isFirefox && <div>Firefox...</div>}
+                    {isFirefox && <div>Firefox...</div>}
                   </TimeFlex>
                 </DashboardModule>
                 <Button type="button" onClick={mutate}>

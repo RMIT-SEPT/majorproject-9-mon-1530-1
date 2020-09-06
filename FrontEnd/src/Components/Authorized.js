@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Unauthorized.scss';
 
-const Unauthorized = () => {
+const Authorized = () => {
   return (
     <div className='container'>
       <div class="gandalf">
@@ -27,4 +27,4 @@ const Unauthorized = () => {
   )
 }
 
-export default Unauthorized;
+export default Authorized;
