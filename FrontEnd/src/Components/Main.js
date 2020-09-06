@@ -6,15 +6,18 @@ import book from '../media/book.png';
 import hairdresser from '../media/hairdres.png';
 import Toolbar from '../Components/Toolbar.js';
 import TextLoop from "react-text-loop";
-import Find from '../Components/Find.js'
+
 
 const MainWrapper = styled.div`
+
+  height: 100vh;
+  min-width: ${(props) => props.theme.dashboard.defaultWidth};
   background-color:black!important;
   height: 100vh;
   flex-grow: 1;
-  background-color: black;
+  background-color: white;
   color: white;
-padding :1%;
+
 
 `
 const BigFont = styled.div`
@@ -23,7 +26,7 @@ const BigFont = styled.div`
   font-size: 70px;
   line-height: 95px;
   letter-spacing: -0.05em;
-  color: #FFFFFF;
+  color: white;
   margin: 1%;
   margin-left: 5%;
 
@@ -66,7 +69,6 @@ function Main(props) {
         </Grid>
         <Grid item xs={12}>
           {/* implemented  search  for a service  */}
-          <Find></Find>
         </Grid>
         <Grid item xs={12}>
           {/* img and the rolling text  */}
