@@ -5,9 +5,9 @@ WHERE schemaname != 'pg_catalog' AND
 	
 
 
-drop table users;
-drop table bookings;
-drop table public.hours;
+drop table IF EXISTS users;
+drop table IF EXISTS bookings;
+drop table IF EXISTS public.hours;
 
 CREATE TABLE users(
 	username varchar NOT NULL,

@@ -1,3 +1,5 @@
+drop table IF EXISTS users;
+
 CREATE TABLE users(
 	username varchar NOT NULL,
 	"password" varchar NOT NULL,
@@ -6,3 +8,7 @@ CREATE TABLE users(
     phone varchar NULL,
 	address varchar NULL	
 );
+
+
+insert into users (username, "password", userType, "name",phone,address ) 
+VALUES ('ab@gmail.com', '22222', 'S','mariam','0470157714','12 Elizabth');
