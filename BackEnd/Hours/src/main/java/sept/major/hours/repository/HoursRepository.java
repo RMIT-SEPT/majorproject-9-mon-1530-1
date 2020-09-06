@@ -20,9 +20,5 @@ public interface HoursRepository extends JpaRepository<HoursEntity, Integer> {
             "and (h.endDateTime >= :startDateTime and h.endDateTime <= :endDateTime)" +
             ")")
     List<HoursEntity> findConflictingHours(String workerUsername, LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    //    @Query("select h from HoursEntity h where not (" +
-//            "(:startDateTime <= h.startDateTime and :endDateTime <= h.startDateTime) or" +
-//            "(:startDateTime > h.endDateTime))")
 }
 
