@@ -1,5 +1,7 @@
 package sept.major.availability.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import sept.major.common.converter.StringToTimestampConverter;
 import sept.major.common.entity.AbstractEntity;
 
 @Getter
@@ -39,12 +40,10 @@ public class AvailabilityEntity implements AbstractEntity<String> {
     private String customerUsername;
 
     @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String startDateTime;
+    private LocalDateTime startDateTime;
 
     @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String endDateTime;
+    private LocalDateTime endDateTime;
 
     @Override
     public String getID() {

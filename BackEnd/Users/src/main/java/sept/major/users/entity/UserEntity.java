@@ -37,6 +37,12 @@ public class UserEntity implements AbstractEntity<String> {
     @NotBlank
     private String password;
 
+    /** TODO : change to Enum
+     * types : 
+     * C : Customer
+     * S : Supervisor
+     * W : Worker
+     */
     @NotBlank
     @Column(name = "usertype")
     private String userType;
