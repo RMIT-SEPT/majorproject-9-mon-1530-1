@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { DashboardWrapper, MenuBarComponent, MenuIcon } from './Dashboard';
+import axios from 'axios';
+import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -10,26 +11,25 @@ import {
   DashboardGrid,
   AppointmentsGrid,
   PanelGrid,
-} from './DashboardComponents';
+  Button,
+} from '../DashboardComponents';
 import {
-  BackButton,
   ServiceCard,
-  TimeSelector,
-  SubmitButton,
+  DateTimeSelector,
   WorkerRadioButton,
-} from './BookingComponents';
-import {
-  setBookingStartTime,
-  setBookingEndTime,
-  submitBooking,
-} from './Booking';
-import home from '../../media/home-40px.svg';
-import book from '../../media/book-40px.svg';
-import calendar from '../../media/calendar-40px.svg';
-import phone from '../../media/phone-40px.svg';
-import circleAdd from '../../media/plus-circle-20px.svg';
+  TimeFlex,
+} from '../Bookings/BookingComponents';
+import home from '../../../media/home-40px.svg';
+import book from '../../../media/book-40px.svg';
+import calendar from '../../../media/calendar-40px.svg';
+import phone from '../../../media/phone-40px.svg';
+import circleAdd from '../../../media/plus-circle-20px.svg';
+import { BrowserContext } from '../../../Contexts/BrowserContext';
+import { BookingContext } from '../../../Contexts/BookingContext';
 
-const axios = require('axios');
+// User dashboard component for a logged in user. id of user is passed in a pro-
+// ps so that we can reuse the Dashboard component. Here we can handle the logi-
+// c of booking a service and such
 
 const services = [
   {
@@ -102,12 +102,15 @@ const User = ({ id }) => {
 
   // State changing functions for updating page view
   const bookAppointment = () => {
+    clearBooking();
+    setCustomerId(userId);
     setMain(false);
     setService(false);
     setBooking(true);
   };
 
   const cancelBooking = () => {
+    clearBooking();
     setBooking(false);
     setMain(true);
   };
@@ -118,6 +121,7 @@ const User = ({ id }) => {
   };
 
   const cancelService = () => {
+    clearBooking();
     setService(false);
     setMain(true);
   };
@@ -134,7 +138,7 @@ const User = ({ id }) => {
   );
   const [mutate] = useMutation(
     async () => {
-      await submitBooking(userId);
+      await submitBooking();
     },
     {
       onSuccess: () => {
@@ -142,6 +146,16 @@ const User = ({ id }) => {
       },
     }
   );
+
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+  const {
+    setCustomerId,
+    setWorkerId,
+    setStartTime,
+    setEndTime,
+    clearBooking,
+    submitBooking,
+  } = useContext(BookingContext);
 
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
@@ -197,7 +211,9 @@ const User = ({ id }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <BackButton onClick={cancelBooking}>Back</BackButton>
+              <Button type="button" onClick={cancelBooking}>
+                Back
+              </Button>
               <form>
                 <DashboardGrid>
                   <DashboardModule title="Choose a service">
@@ -206,9 +222,8 @@ const User = ({ id }) => {
                         <ServiceCard
                           key={service.serviceName}
                           onClick={selectService}
-                        >
-                          {service}
-                        </ServiceCard>
+                          service={service}
+                        ></ServiceCard>
                       ))}
                     </PanelGrid>
                   </DashboardModule>
@@ -221,7 +236,9 @@ const User = ({ id }) => {
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
               <form>
-                <BackButton onClick={cancelService}>Back</BackButton>
+                <Button type="button" onClick={cancelService}>
+                  Back
+                </Button>
                 <DashboardGrid>
                   <DashboardModule title="Choose a worker">
                     <PanelGrid>
@@ -231,22 +248,32 @@ const User = ({ id }) => {
                           worker={worker}
                           key={worker.workerUserName}
                           name="selectWorker"
+                          onChange={setWorkerId}
                         ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
                   </DashboardModule>
                 </DashboardGrid>
                 <DashboardModule title="Select times">
-                  <TimeSelector
-                    label="Start time"
-                    onChange={setBookingStartTime}
-                  ></TimeSelector>
-                  <TimeSelector
-                    label="End time"
-                    onChange={setBookingEndTime}
-                  ></TimeSelector>
+                  <TimeFlex>
+                    {isChrome && (
+                      <>
+                        <DateTimeSelector
+                          label="Start time"
+                          onChange={setStartTime}
+                        ></DateTimeSelector>
+                        <DateTimeSelector
+                          label="End time"
+                          onChange={setEndTime}
+                        ></DateTimeSelector>
+                      </>
+                    )}
+                    {isFirefox && <div>Firefox...</div>}
+                  </TimeFlex>
                 </DashboardModule>
-                <SubmitButton onClick={mutate}>Submit</SubmitButton>
+                <Button type="button" onClick={mutate}>
+                  Submit
+                </Button>
               </form>
             </Content>
           )}

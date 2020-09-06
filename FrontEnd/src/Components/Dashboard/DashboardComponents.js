@@ -5,6 +5,8 @@ import watch from '../../media/watch-16px.svg';
 import clock from '../../media/clock-16px.svg';
 import user from '../../media/user-16px.svg';
 
+// Components defined here are specifically used for dashboard appointments
+
 const Heading = styled.div`
   font-weight: bold;
   font-size: 56px;
@@ -24,21 +26,20 @@ const Content = styled.div`
 const DashboardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 24px;
-  row-gap: 24px;
+  gap: 20px;
   margin: 24px 0px;
 `;
 
 const AppointmentsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 280px);
-  gap: 24px;
+  gap: 20px;
 `;
 
 const PanelGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 840px);
-  gap: 24px;
+  gap: 20px;
 `;
 
 const StyledDashboardModule = styled.div`
@@ -56,7 +57,7 @@ const ClickableSpan = styled.span`
 `;
 
 const Title = styled.span`
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 24px;
 `;
 
@@ -89,7 +90,7 @@ const CardContent = styled.div`
 `;
 
 const Strong = styled.span`
-  font-weight: 550;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
 
 const AppointmentCardLogo = styled.img`
@@ -97,6 +98,31 @@ const AppointmentCardLogo = styled.img`
   right: 2px;
   top: 3px;
   margin-right: 4px;
+`;
+
+const Button = styled.button`
+  margin-top: 24px;
+  padding: 4px 24px;
+  font-family: ${(props) => props.theme.font.primary};
+  font-size: 16px;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  color: white;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  background-color: ${(props) => props.theme.colours.greenPrimary};
+  outline: 0px;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colours.greenSecondary};
+  }
+
+  &:active {
+    background-color: ${(props) => props.theme.colours.greenTertiary};
+    border: 2px solid black;
+    position: relative;
+    top: 4px;
+  }
 `;
 
 const DashboardModule = ({ children, title, icon, action }) => {
@@ -124,7 +150,7 @@ const UpcomingAppointmentCard = ({ children }) => {
   const [endTime] = useState(new Date(children.endDateTime));
 
   return (
-    // TODO: Solve responsive grid layout for these components when there are many elements in a single row
+    // TODO: Solve responsive flex layout for these components when there are many elements in a single row
     <StyledAppointmentCard>
       <CardImage src={hairdresserImage} alt="Hairdresser image" />
       <CardContent>
@@ -156,4 +182,5 @@ export {
   AppointmentsGrid,
   PanelGrid,
   Title,
+  Button,
 };
