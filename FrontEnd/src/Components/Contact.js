@@ -51,7 +51,7 @@ const Construction = styled.img`
   background-size: contain;
 `
 const Left = styled.div`
-  height:100vh;
+  height:200vh;
   padding-top: 3%;
   /* flex-grow: 1 ; */
   background-color: black;
@@ -59,8 +59,6 @@ const Left = styled.div`
 `
 
 const Logo = styled.img`
-  width: 40%;
-  height: auto;
   background-repeat: no-repeat;
   background-size: contain;
   /* padding-left: 10%; */
