@@ -77,7 +77,7 @@ const Construction = styled.img`
   background-size: contain;
 `
 const Left = styled.div`
-  height:200vh;
+  height:120vh;
   padding-top: 3%;
   /* flex-grow: 1 ; */
   background-color: black;
