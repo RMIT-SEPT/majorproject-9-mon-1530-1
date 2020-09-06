@@ -1,4 +1,4 @@
-package sept.major.bookings;
+package sept.major.bookings.unit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeleteEndpointTests extends BookingServiceTestHelper {
+public class DeleteEndpointTests extends UnitTestHelper {
 
     @Test
     void valid() {

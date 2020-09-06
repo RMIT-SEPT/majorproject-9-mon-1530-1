@@ -1,4 +1,4 @@
-package sept.major.bookings;
+package sept.major.bookings.unit;
 
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
@@ -6,16 +6,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
-import org.mockito.Mock.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static sept.major.bookings.BookingsTestHelper.*;
 
 @SpringBootTest
-public class PostEndpointTests extends BookingServiceTestHelper {
+public class PostEndpointTests extends UnitTestHelper {
 
     @Test
     void valid() {
