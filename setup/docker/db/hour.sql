@@ -11,4 +11,7 @@ CREATE TABLE public.hours
 
 
 insert into public.hours (customer_username, worker_username, start_time, end_time ) 
-VALUES ('john@gmail.com', 'jerry@gmail.com','2020-01-01 00:00:00','2020-01-03 23:59:59');
+VALUES ('c1@gmail.com', 'w1@gmail.com','2020-01-01 00:00:00','2020-01-03 23:59:59');
+
+insert into public.hours (customer_username, worker_username, start_time, end_time ) 
+VALUES ('c1@gmail.com', 'w1@gmail.com','2020-11-01 00:00:00','2020-11-10 23:59:59');

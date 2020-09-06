@@ -11,3 +11,7 @@ CREATE TABLE bookings (
 
 insert into bookings (customer_username, worker_username, start_date_time, end_date_time ) 
 VALUES ('john@gmail.com', 'jerry@gmail.com','2020-01-01 00:00:00','2020-01-01 23:59:59');
+
+
+insert into bookings (customer_username, worker_username, start_date_time, end_date_time ) 
+VALUES ('john@gmail.com', 'jerry@gmail.com','2020-11-02 00:00:00','2020-11-03 23:59:59');
