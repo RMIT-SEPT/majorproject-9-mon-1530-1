@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import axios from 'axios';
 import { mount } from 'enzyme';
 import BookingProvider, { BookingContext } from './BookingContext';
-import { useContext } from 'react';
 
 const defaultData = {
   customerId: 'rw22448',
@@ -72,6 +72,31 @@ describe('BookingContext', () => {
       wrapper.find('[data-testid="clearButton"]').simulate('click');
 
       expect(wrapper.find('[data-testid="customerId"]').text()).toEqual('');
+    });
+  });
+
+  describe('submitBooking', () => {
+    let spy;
+
+    beforeEach(() => {
+      spy = jest.spyOn(axios, 'post');
+    });
+
+    afterEach(() => {
+      spy.mockRestore();
+    });
+
+    it('should submit a booking with all details required', () => {
+      const wrapper = mount(
+        <BookingProvider>
+          <TestComponent />
+        </BookingProvider>
+      );
+
+      wrapper.find('[data-testid="fillButton"]').simulate('click');
+      wrapper.find('[data-testid="submitButton"]').simulate('click');
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

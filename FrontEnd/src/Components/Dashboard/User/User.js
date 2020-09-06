@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
+import axios from 'axios';
 import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
 import {
   DashboardModule,
@@ -25,9 +26,6 @@ import phone from '../../../media/phone-40px.svg';
 import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
-
-// TODO: Use import statement and test
-const axios = require('axios');
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-

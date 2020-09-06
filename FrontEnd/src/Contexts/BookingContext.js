@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react';
-
-const axios = require('axios');
+import axios from 'axios';
 
 export const BookingContext = createContext();
 
