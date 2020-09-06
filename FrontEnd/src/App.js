@@ -8,18 +8,11 @@ import Contact from './Components/Contact';
 import User from './Components/Dashboard/User/User';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-<<<<<<< HEAD
-import ProtectedRoute from './Components/protected.route.js';
-import Landing from './Components/logintest';
-import Dashboard from './Components/logout';
-import Unauthorized from './Components/Unauthorized';
 import BrowserContext from './Contexts/BrowserContext';
 import BookingContext from './Contexts/BookingContext';
-=======
-import {ProtectedRoute} from './Components/ProtectedRoute.js'
+import { ProtectedRoute } from './Components/ProtectedRoute.js';
 import Unauthorized from './Components/Unauthorized';
 import Authorized from './Components/Authorized';
->>>>>>> develop
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -67,16 +60,24 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <div className="App">
-          <Router>
-            <Route exact path="/" component={Main} />
-            <Route exact path="/form" component={Form} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/about" component={About} />
-            <Route exact path="/contactus" component={Contact} />
-            <Route exact path="/user" component={User} />
-            <Route exact path='/unauthorized' component={Unauthorized} />
-            <ProtectedRoute exact path='/authorized' component={Authorized} />
-          </Router>
+          <BrowserContext>
+            <BookingContext>
+              <Router>
+                <Route exact path="/" component={Main} />
+                <Route exact path="/form" component={Form} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/about" component={About} />
+                <Route exact path="/contactus" component={Contact} />
+                <Route exact path="/user" component={User} />
+                <Route exact path="/unauthorized" component={Unauthorized} />
+                <ProtectedRoute
+                  exact
+                  path="/authorized"
+                  component={Authorized}
+                />
+              </Router>
+            </BookingContext>
+          </BrowserContext>
         </div>
       </ThemeProvider>
     </>
