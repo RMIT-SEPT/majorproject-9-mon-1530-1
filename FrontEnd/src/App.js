@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import {ProtectedRoute} from './Components/ProtectedRoute.js'
 import Unauthorized from './Components/Unauthorized';
-
+import Authorized from './Components/Authorized';
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -53,10 +53,11 @@ function App() {
             <Route exact path="/" component={Main} />
             <Route exact path="/form" component={Form} />
             <Route exact path="/login" component={Login} />
-            <ProtectedRoute exact path="/about" component={About} />
+            <Route exact path="/about" component={About} />
             <Route exact path="/contactus" component={Contact} />
             <Route exact path="/user" component={User} />
             <Route exact path='/unauthorized' component={Unauthorized} />
+            <ProtectedRoute exact path='/authorized' component={Authorized} />
           </Router>
         </div>
       </ThemeProvider>

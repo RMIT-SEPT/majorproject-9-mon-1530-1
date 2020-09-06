@@ -1,16 +1,16 @@
 $black: #000;
-$semi-black: #1a2130;
+$backg: #1a2130;
 $white: #fff;
-$dress: #ededed;
-$dress-dark: darken($dress, 10%);
-$sword: #e6e6e6;
-$staff: #bf5507;
+$cloths: #ededed;
+$cloths-dark: darken($cloths, 10%);
+$metal: #e6e6e6;
+$red: #bf5507;
 $skin: #ffd8ad;
 $hair: #c2beb5;
-$hair-dark: darken($hair, 10%);
-$lips: pink;
-$fire: black, #6C1305, #DE8531, #EFAC41;
-$fire-reverse:#EFAC41, #DE8531, #6C1305, black;
+$darkerHair: darken($hair, 10%);
+$mouth: pink;
+$ground: black, #6C1305, #DE8531, #EFAC41;
+$ground-reverse:#EFAC41, #DE8531, #6C1305, black;
  
 @keyframes floating {
   to {
@@ -52,30 +52,30 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
     left: 0;
     width: 400px;
     height: 400px;
-    background-color: $semi-black;
+    background-color: $backg;
     border-radius: 50%;
   }
-  .fireball {
+  .groundball {
     bottom: -10px;
     left: 50px;
     width: 300px;
     height: 100px;
     border-radius: 50%;
-    background: radial-gradient($fire-reverse);
+    background: radial-gradient($ground-reverse);
     border: 5px solid $black;
   }
   .skirt {
     bottom: 50px;
     left: 100px;
-    border-bottom: 230px solid $dress;
+    border-bottom: 230px solid $cloths;
     border-left: 100px solid transparent;
     border-right: 100px solid transparent;
-    filter: drop-shadow(0 0 6px $dress-dark);
+    filter: drop-shadow(0 0 6px $cloths-dark);
  
     &::before {
       content: "";
       position: absolute;
-      background-color: $dress;
+      background-color: $cloths;
       width: 100px;
       height: 21px;
       top: 230px;
@@ -86,7 +86,7 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
     &::after {
       content: "";
       position: absolute;
-      background-color: $dress;
+      background-color: $cloths;
       width: 100px;
       height: 28px;
       top: 230px;
@@ -101,8 +101,8 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
       // sleeves
       content: "";
       position: absolute;
-      border-bottom: 70px solid $dress;
-      filter: drop-shadow(0 0 6px $dress-dark);
+      border-bottom: 70px solid $cloths;
+      filter: drop-shadow(0 0 6px $cloths-dark);
     }
     &::before {
       // sleeve left
@@ -122,7 +122,7 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
     }
   }
   .shoulders {
-    background-color: $dress;
+    background-color: $cloths;
     border-radius: 50%;
     width: 100px;
     height: 130px;
@@ -139,7 +139,7 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
       left: -70px;
       transform: rotate(-20deg);
       &::after {
-        // sword
+        // metal
         content: "";
     position: absolute;
     background-color: #e6e6e6;
@@ -156,10 +156,10 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
       right: -70px;
       transform: rotate(20deg);
       &::after {
-        // staff
+        // red
         content: "";
         position: absolute;
-        background-color: $staff;
+        background-color: $red;
         width: 250px;
         height: 5px;
         border-radius: 2.5px;
@@ -217,7 +217,7 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
         content: "";
         position: absolute;
         background-color: $hair;
-        filter: drop-shadow(2px 5px 0 $hair-dark);
+        filter: drop-shadow(2px 5px 0 $darkerHair);
       }
  
       &::before {
@@ -252,13 +252,13 @@ $fire-reverse:#EFAC41, #DE8531, #6C1305, black;
       border-left: 35px solid transparent;
       border-right: 35px solid transparent;
       border-radius: 30px;
-      filter: drop-shadow(2px 5px 0 $hair-dark);
+      filter: drop-shadow(2px 5px 0 $darkerHair);
       
       &::before {
         // mouth
         content: "";
     position: absolute;
-    background-color: $lips;
+    background-color: $mouth;
     width: 20px;
     height: 5px;
     border-radius: 40%;
