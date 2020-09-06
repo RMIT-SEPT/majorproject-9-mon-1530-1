@@ -104,15 +104,15 @@ const User = ({ id }) => {
 
   // State changing functions for updating page view
   const bookAppointment = () => {
-    bookingContext.clearBooking();
-    bookingContext.setCustomerId(userId);
+    clearBooking();
+    setCustomerId(userId);
     setMain(false);
     setService(false);
     setBooking(true);
   };
 
   const cancelBooking = () => {
-    bookingContext.clearBooking();
+    clearBooking();
     setBooking(false);
     setMain(true);
   };
@@ -123,7 +123,7 @@ const User = ({ id }) => {
   };
 
   const cancelService = () => {
-    bookingContext.clearBooking();
+    clearBooking();
     setService(false);
     setMain(true);
   };
@@ -140,7 +140,7 @@ const User = ({ id }) => {
   );
   const [mutate] = useMutation(
     async () => {
-      await bookingContext.submitBooking();
+      await submitBooking();
     },
     {
       onSuccess: () => {
@@ -149,8 +149,15 @@ const User = ({ id }) => {
     }
   );
 
-  const browserContext = useContext(BrowserContext);
-  const bookingContext = useContext(BookingContext);
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+  const {
+    setCustomerId,
+    setWorkerId,
+    setStartTime,
+    setEndTime,
+    clearBooking,
+    submitBooking,
+  } = useContext(BookingContext);
 
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
@@ -243,7 +250,7 @@ const User = ({ id }) => {
                           worker={worker}
                           key={worker.workerUserName}
                           name="selectWorker"
-                          onChange={bookingContext.setWorkerId}
+                          onChange={setWorkerId}
                         ></WorkerRadioButton>
                       ))}
                     </PanelGrid>
@@ -251,19 +258,19 @@ const User = ({ id }) => {
                 </DashboardGrid>
                 <DashboardModule title="Select times">
                   <TimeFlex>
-                    {browserContext.isChrome && (
+                    {isChrome && (
                       <>
                         <DateTimeSelector
                           label="Start time"
-                          onChange={bookingContext.setStartTime}
+                          onChange={setStartTime}
                         ></DateTimeSelector>
                         <DateTimeSelector
                           label="End time"
-                          onChange={bookingContext.setEndTime}
+                          onChange={setEndTime}
                         ></DateTimeSelector>
                       </>
                     )}
-                    {browserContext.isFirefox && <div>Firefox...</div>}
+                    {isFirefox && <div>Firefox...</div>}
                   </TimeFlex>
                 </DashboardModule>
                 <Button type="button" onClick={mutate}>
