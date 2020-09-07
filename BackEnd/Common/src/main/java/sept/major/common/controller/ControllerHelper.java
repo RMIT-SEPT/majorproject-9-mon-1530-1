@@ -1,47 +1,95 @@
 package sept.major.common.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sept.major.common.annotation.ReadOnly;
 import sept.major.common.entity.AbstractEntity;
 import sept.major.common.exception.*;
 import sept.major.common.patch.PatchValue;
-import sept.major.common.response.FieldIncorrectTypeError;
-import sept.major.common.response.ResponseError;
+import sept.major.common.response.ValidationError;
 import sept.major.common.service.CrudService;
 
+import javax.persistence.Id;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 import static sept.major.common.reflection.ReflectionUtils.*;
 
+/**
+ *
+ * @author Brodey Yendall
+ * @version %I%, %G%
+ * @since 1.0.9
+ *
+ * Used to assist with implementing basic CRUD functionality, both with generic implementations and helper methods to make
+ * developers lives easier and controllers shorter with less duplication.
+ *
+ * @param <E> This is the class of the entity that will be used to transfer data; The entity that will be created, retrieved, updated and deleted.
+ * @param <ID> The class of the @Id field within the {@code <E>} parameter.
+ */
 public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
 
-    private HashMap<String, Method> setterMethods = new HashMap<>(); // All the setter methods for the entity this class implements
-    private HashMap<String, Method> getterMethods = new HashMap<>(); // All the getter methods for the entity this class implements
-
-    /*
-        Method for retrieving the linked CrudService in a generic fashion.
-        Implemented of this class is expected to also implement their CrudService and as such they may specify it here.
-      */
-    public abstract CrudService<E, ID> getService();
-
-    /*
-        Code for a generic get entity by identifier endpoint.
-        Provide value of the identifying field and a API response will be provided.
+    /**
+     * Used to link field names to the {@link Field} and getter/setter {@link Method} of the field by using {@link FieldReflectionResults}
      */
-    public ResponseEntity getEntity(ID id) {
-        try {
-            E entity = getService().read(id); // Call the service's implementation of retrieving a record.
-            return new ResponseEntity(entity, HttpStatus.OK);
-        } catch (RecordNotFoundException e) {
-            // No record was found so return a 404 with a message stating a record wasn't found.
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+    private HashMap<String, FieldReflectionResults> valueFieldsReflection = new HashMap<>();
+
+    /**
+     * The name of the identifier field in the {@code <E>} entity
+     */
+    private String identifierFieldName;
+
+    /**
+     *
+     * Converts provided string to the class provided. Currently converts to any of Integer, Double, LocalDate or LocalDateTime
+     *
+     * @param classToConvertTo The class to convert to
+     * @param toConvert The string to covert
+     * @return The string convert to the class provided
+     * @throws FailedConversionException Failed to covert the string to the class provided.
+     */
+    public static Object convertString(Class classToConvertTo, String toConvert) throws FailedConversionException {
+        if(classToConvertTo.equals(Integer.class)) {
+            try {
+                return new Integer(toConvert);
+            } catch (NumberFormatException e) {
+                throw new FailedConversionException("must be an integer (whole number)");
+            }
+        } else if(classToConvertTo.equals(Double.class)) {
+            try {
+                return new Double(toConvert);
+            } catch (NumberFormatException e) {
+                throw new FailedConversionException("must be numeric");
+            }
+        } else if(classToConvertTo.equals(LocalDate.class)) {
+            try {
+                return LocalDate.parse(toConvert);
+            } catch (DateTimeParseException e) {
+                throw new FailedConversionException("must be formatted yyyy/mm/dd");
+            }
+        } else if(classToConvertTo.equals(LocalDateTime.class)) {
+            try {
+                return LocalDateTime.parse(toConvert);
+            } catch (DateTimeParseException e) {
+                throw new FailedConversionException("must be formatted yyyy/MM/ddTHH:mm:ss.SSSSSSSSS");
+            }
         }
+        return new FailedConversionException(String.format("Conversion to %s has not been implemented", classToConvertTo));
     }
+
+    /**
+     * This class provides generic implementations of CRUD functionality, it does this by calling relevant methods in
+     * the service after validating the input. This method is how this class accesses these methods.
+     *
+     * @return The {@link CrudService} which this class with call methods on when providing generic implementations
+     */
+    public abstract CrudService<E, ID> getService();
 
     /*
         Used for validating input data for used for creating an entity.
@@ -53,12 +101,48 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             * RecordAlreadyExistsException: Record already exists with the same identifying field provided in the map
             * ResponseErrorException: A field is missing or an incorrect type.
      */
-    public E validatePostInput(Class<E> entityClass, Map<String, Object> responseBody) throws RecordAlreadyExistsException, ResponseErrorException {
+
+    /**
+     * The generic implementation of retrieve by id functionality
+     *
+     * @param identifierString The id value as a {@link String}
+     * @param identifierClass The class which the id value should be in
+     * @return An API response based on the results of the retrieve by id
+     */
+    public ResponseEntity getEntity(String identifierString, Class<ID> identifierClass) {
+        ID id;
+        try {
+            id = convertIdentifier(identifierString, identifierClass);
+        } catch (FailedConversionException e) {
+            String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
+            return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            E entity = getService().read(id); // Call the service's implementation of retrieving a record.
+            return new ResponseEntity(entity, HttpStatus.OK);
+        } catch (RecordNotFoundException e) {
+            // No record was found so return a 404 with a message stating a record wasn't found.
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     *
+     * Validates the post body input (provided in the form a map) and returns an entity created from the input.
+     * Does not call any {@link #getService()} methods, only validates the input.
+     *
+     * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
+     * @param responseBody Maps field name to field value. Typically sourced from JSON provided in a request body.
+     * @return An entity constructed from the map provided. Fields are assigned the values provided by the map
+     * @throws RecordAlreadyExistsException A record already exists with the id provided in the {@code responseBody} parameter
+     * @throws ValidationErrorException There was a validation error in entity created from the map provided.
+     */
+    public E validatePostInput(Class<E> entityClass, Map<String, String> responseBody) throws RecordAlreadyExistsException, ValidationErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-        Set<ResponseError> responseErrors = new HashSet<>();
+        List<ValidationError> validationErrors = new ArrayList<>();
 
         E entity;
         try {
@@ -70,45 +154,62 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             throw new InvalidEntityException("Provided entity of class " + entityClass.toString() + " does not have accessible constructor");
         }
 
-        findMethods(entityClass); // Gets the getters and setters of the entity this class implements through the use of Reflection
+        getReflectionOfEntity(entityClass);
 
-        /*
-            Increments through the setter methods of the entity this class implements.
-            For each setter we see if the provided map has a vale for it, if so check that types match, if they don't then add an error to the list.
-            Every valid value provided by the map is set in the entity created above.
-         */
-        for (Map.Entry<String, Method> entry : setterMethods.entrySet()) {
-            Object responseBodyValue = responseBody.get(entry.getKey()); // The value in the map for the field this setter represents.
-            if (responseBodyValue != null) {
-                try {
-                    // Get the expected type of the field but getting the type of the parameter of the setter. (Setters only have one parameter)
-                    Class expectedType = entry.getValue().getParameterTypes()[0];
-                    if (!responseBodyValue.getClass().equals(expectedType)) {
-                        responseErrors.add(new FieldIncorrectTypeError(entry.getKey(), expectedType.toString(), responseBodyValue.getClass().toString()));
-                    } else {
-                        // Set the value in the entity but involving the setter method on our created entity.
-                        entry.getValue().invoke(entity, responseBodyValue);
-                    }
+        for(Map.Entry<String, FieldReflectionResults> fieldReflectionResultsEntry: valueFieldsReflection.entrySet()) {
+            FieldReflectionResults fieldReflectionResult = fieldReflectionResultsEntry.getValue();
 
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new InvalidEntityException("Received method that is invokable. Only invokable methods should be here");
+            Field field = fieldReflectionResult.getField();
+            String fieldKey = getKeyForField(field);
+            if(field.getAnnotation(ReadOnly.class) != null) {
+                if(responseBody.get(fieldKey) != null) {
+                    validationErrors.add(new ValidationError(fieldKey, "value cannot be set because field is read only"));
+                    continue;
                 }
             }
+
+            Object value = responseBody.get(fieldKey);
+            if(value != null) {
+                Class<?> fieldType = field.getType();
+                if(!fieldType.equals(String.class)) {
+                    try {
+                        value = convertString(fieldType, responseBody.get(fieldKey));
+                    } catch (FailedConversionException e) {
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
+                    }
+                }
+
+                Method setterMethod = fieldReflectionResult.getSetterMethod();
+                if(setterMethod == null) {
+                    throw new InvalidEntityException("no setter found for field " + fieldKey);
+                } else {
+                    try {
+                        setterMethod.invoke(entity, value);
+                    } catch (IllegalAccessException | InvocationTargetException e ) {
+                        throw new InvalidEntityException("no setter found for field " + fieldKey);
+                    }
+                }
+            }
+
         }
 
-        if (!responseErrors.isEmpty()) {
-            throw new ResponseErrorException(responseErrors);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationErrorException(validationErrors);
         }
         return entity;
     }
 
-
-    /*
-        A convenience method which conducts a generic POST.
-        Calls validatePostInput() to validate the input and calls the generic create method in the provided service.
-        Handles all exceptions and returns an appropriate API response
+    /**
+     *
+     * Provides generic implementation of create entity functionality.
+     * Creates and validates entity constructed from the provided responseBody map and
+     * then calls the relevant method in the {@link #getService() service}.
+     *
+     * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
+     * @param responseBody Maps field name to field value. Typically sourced from JSON provided in a request body.
+     * @return An API response based on the results of the create entity
      */
-    public ResponseEntity validateInputAndPost(Class<E> entityClass, Map<String, Object> responseBody) {
+    public ResponseEntity validateInputAndPost(Class<E> entityClass, Map<String, String> responseBody) {
         try {
             E entity = validatePostInput(entityClass, responseBody);
 
@@ -117,28 +218,27 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(createdEntity, HttpStatus.OK);
 
         } catch (RecordAlreadyExistsException e) {
-            return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
-        } catch (ResponseErrorException e) {
-            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (ValidationErrorException e) {
+            return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    /*
-        Used for validating input data for used for updating an entity.
-        Values provided:
-            * Class of the entity this class implements. Done because you cannot get the class of a generic
-            * The value of the identifying field for the entity being updated
-            * A map which links field name to field value. Normally translated from JSON
-         Returns: A map which links field name to field value, the setter for the field and the getter for the field.
-         Throws:
-            * ResponseErrorException: A field is an incorrect type.
+    /**
+     *
+     * Validates values provided by the {@code responseBody} against requirements of the entity {@code <E>}
+     *
+     * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
+     * @param responseBody Maps field name to field value for fields to update. Typically sourced from JSON provided in a request body.
+     * @return A list of values to update along with the {@link Field} to assign the value to and the getter/setter {@link Method} for the field
+     * @throws ValidationErrorException There was a validation error in one of the values provided
      */
-   public HashMap<String, PatchValue> validatePatchInput(Class<E> entityClass, ID id, Map<String, Object> responseBody) throws ResponseErrorException {
+    public List<PatchValue> validatePatchInput(Class<E> entityClass, Map<String, String> responseBody) throws ValidationErrorException {
          /*
             Used to keep track of errors in the provided map.
             These are stored in a set instead of instantly thrown for user convenience.
          */
-       Set<ResponseError> responseErrors = new HashSet<>();
+        List<ValidationError> validationErrors = new ArrayList<>();
 
         /*
             Maps field name to the
@@ -146,70 +246,111 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                 * The getter for the field
                 * The setter for the field
          */
-       HashMap<String, PatchValue> patchValues = new HashMap<>();
+        List<PatchValue> patchValues = new ArrayList<>();
 
-       findMethods(entityClass); // Gets the getters and setters of the entity this class implements through the use of Reflection
+        getReflectionOfEntity(entityClass);
 
-       for (Map.Entry<String, Method> entry : setterMethods.entrySet()) {
+        for(Map.Entry<String, FieldReflectionResults> fieldReflectionResultsEntry: valueFieldsReflection.entrySet()) {
+            FieldReflectionResults fieldReflectionResult = fieldReflectionResultsEntry.getValue();
 
-           String attributeName = entry.getKey(); // Get the field name based on the setters/getters of the entity this class implements
+            Field field = fieldReflectionResult.getField();
+            String fieldKey = getKeyForField(field);
+            if(field.getAnnotation(ReadOnly.class) != null) {
+                if(responseBody.get(fieldKey) != null) {
+                    validationErrors.add(new ValidationError(fieldKey, "value cannot be updated because field is read only"));
+                    continue;
+                }
+            }
 
-           Object responseBodyValue = responseBody.get(attributeName); // The value for the field
-           if (responseBodyValue != null) { // There was value provided for the field
-               try {
-                   // Get the expected type of the field but getting the type of the parameter of the setter. (Setters only have one parameter)
-                   Class expectedType = entry.getValue().getParameterTypes()[0];
-                   if (!responseBodyValue.getClass().equals(expectedType)) {
-                       responseErrors.add(new FieldIncorrectTypeError(attributeName, expectedType.toString(), responseBodyValue.getClass().toString()));
-                   } else {
-                       // Add a mapping for the field name to it's value, getter and setter.
-                       patchValues.put(attributeName,
-                               new PatchValue(setterMethods.get(attributeName), getterMethods.get(attributeName), responseBodyValue));
-                   }
-               } catch (Exception e) {
-                   // This shouldn't happen because only accessible getters and setters are used.
-                   throw new InvalidEntityException("Received method that is invokable. Only invokable methods should be here");
-               }
-           }
-       }
-
-       if (!responseErrors.isEmpty()) {
-           throw new ResponseErrorException(responseErrors);
-       }
-
-       return patchValues;
-   }
+            Object value = responseBody.get(fieldKey);
+            if(value != null) {
+                Class<?> fieldType = field.getType();
+                if(!fieldType.equals(String.class)) {
+                    try {
+                        value = convertString(fieldType, responseBody.get(fieldKey));
+                    } catch (FailedConversionException e) {
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
+                    }
+                }
 
 
-    /*
-         A convenience method which conducts a generic PATCH.
-         Calls validatePatchInput() to validate the input and calls the generic patch method in the provided service.
-         Handles all exceptions and returns an appropriate API response
-      */
-    public ResponseEntity validateInputAndPatch(Class<E> entityClass, ID id, Map<String, Object> responseBody) {
+                Method setterMethod = fieldReflectionResult.getSetterMethod();
+                if(setterMethod == null) {
+                    throw new InvalidEntityException("no setter found for field " + fieldKey);
+                } else {
+                    Method getterMethod = fieldReflectionResult.getGetterMethod();
+                    if(getterMethod == null) {
+                        throw new InvalidEntityException("no getter found for field " + fieldKey);
+                    } else {
+                        patchValues.add(new PatchValue(field, setterMethod, getterMethod, value));
+                    }
+                }
+            }
+
+        }
+
+
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationErrorException(validationErrors);
+        }
+
+        return patchValues;
+    }
+
+    /**
+     *
+     * The generic implementation of update entity functionality.
+     * Validates the values provided and if correct, changes the values of the existing entity to the values provided.
+     *
+     * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
+     * @param identifierString The id value of the entity to be updated as a {@link String}
+     * @param identifierClass The class which the id value should be in
+     * @param responseBody Maps field name to field value for fields to update. Typically sourced from JSON provided in a request body.
+     * @return An api response based on the success of the update
+     */
+    public ResponseEntity validateInputAndPatch(Class<E> entityClass, String identifierString, Class<ID> identifierClass, Map<String, String> responseBody) {
+        ID id = null;
+        try {
+            id = convertIdentifier(identifierString, identifierClass);
+        } catch (FailedConversionException e) {
+            return new ResponseEntity(new ValidationError(identifierFieldName, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
 
         try {
-            HashMap<String, PatchValue> patchValues = validatePatchInput(entityClass, id, responseBody);
+            List<PatchValue> patchValues = validatePatchInput(entityClass, responseBody);
 
             // Calls the service's implementation of the PATCH endpoint
             E patchedEntity = getService().patch(id, patchValues);
             return new ResponseEntity(patchedEntity, HttpStatus.OK);
 
-        } catch (ResponseErrorException e) {
-            return new ResponseEntity(e.getResponseErrors(), HttpStatus.BAD_REQUEST);
+        } catch (ValidationErrorException e) {
+            return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(new ResponseError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ValidationError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IdentifierUpdateException e) {
-            return new ResponseEntity(new ResponseError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
+        } catch (RecordAlreadyExistsException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }
 
-    /*
-        Code for a generic delete entity by identifier endpoint.
-        Provide value of the identifying field and a API response will be provided.
+    /**
+     *
+     * The generic implementation of delete entity functionality. Will delete the entity with the provided id
+     *
+     * @param identifierString The id value of the entity to be deleted as a {@link String}
+     * @param identifierClass The class which the id value should be in
+     * @return An api response based on the success of the deletion
      */
-    public ResponseEntity deleteEntity(ID id) {
+    public ResponseEntity deleteEntity(String identifierString, Class<ID> identifierClass) {
+        ID id = null;
+        try {
+            id = convertIdentifier(identifierString, identifierClass);
+        } catch (FailedConversionException e) {
+            String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
+            return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
         try {
             getService().delete(id);
             return new ResponseEntity("Record successfully deleted", HttpStatus.OK);
@@ -218,29 +359,84 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         }
     }
 
-    // Finds the getters and setters for classes of the entity which this class implements.
-    private void findMethods(Class<E> entityClass) {
+    /**
+     *
+     * Gets the {@link Field} and getter/setter {@link Method} for every field in the entity {@code <E>}.
+     * Stores results in {@link #valueFieldsReflection}, also finds and assigns {@link #identifierFieldName}
+     *
+     * @param entityClass Class of {@code <E>}. Needed because you cannot get the class of a generic
+     */
+    private void getReflectionOfEntity(Class<E> entityClass) {
         /*
             Firstly we check if methods have already been found, this is done because retrieving methods with reflect is
             expensive and should be done as little as possible.
          */
-        if (setterMethods.size() == 0) {
-            setterMethods = new HashMap<>();
-            Method[] methods = entityClass.getDeclaredMethods(); // Get the methods for the entity with reflection
+        if (identifierFieldName == null) {
+            HashMap<String, Method> setterMethods = new HashMap<>();
+            HashMap<String, Method> getterMethods = new HashMap<>();
+            Method[] methods = entityClass.getMethods(); // Get the methods for the entity with reflection
 
             for (Method method : methods) {
                 if (isSetter(method)) {
-                    setterMethods.put(removePrefixFromMethod(method, "set"), method);
+                    setterMethods.put(removePrefixFromSetter(method), method);
                 } else if (isGetter(method)) {
-                    getterMethods.put(removePrefixFromMethod(method, "get"), method);
+                    getterMethods.put(removePrefixFromGetter(method), method);
                 }
             }
-            if (getterMethods.size() == 0 || setterMethods.size() == 0) {
-                throw new InvalidEntityException(String.format("Provided entity of class %s has no accessible getter/setter methods", entityClass));
+
+            for (Field field : entityClass.getDeclaredFields()) {
+                String fieldName = field.getName();
+                if (field.getAnnotation(Id.class) != null) {
+                    if (identifierFieldName == null) {
+                        identifierFieldName = fieldName;
+                    } else {
+                        throw new MultipleIdentifiersException(entityClass);
+                    }
+                }
+                if(setterMethods.get(fieldName) != null && getterMethods.get(fieldName) != null) {
+                    valueFieldsReflection.put(fieldName, new FieldReflectionResults(field, setterMethods.get(fieldName), getterMethods.get(fieldName)));
+                }
+            }
+
+
+        }
+    }
+
+    /**
+     *
+     * Gets the key for the field which when used in a value map such as the response body in {@link #validatePatchInput(Class, Map)} and {@link #validatePatchInput(Class, Map)}
+     * will get the value for the field provided.
+     *
+     * @param field The field to get the key for
+     * @return The key for the field
+     */
+    private String getKeyForField(Field field) {
+        JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
+        if (jsonProperty == null) {
+            return field.getName();
+        } else {
+            return jsonProperty.value();
+        }
+    }
+
+    /**
+     *
+     * Converts the identifier in {@link String} form to {@code <ID>} class
+     *
+     * @param identifierString The identifier to convert
+     * @param identifierType The class to convert to. Needed because we cannot get the class of a generic
+     * @return The identifier after being converted
+     * @throws FailedConversionException Failed to convert the identifier to the {@code <ID>} class
+     */
+    private ID convertIdentifier(String identifierString, Class<ID> identifierType) throws FailedConversionException {
+        if(identifierType.equals(String.class)) {
+            return (ID)identifierString;
+        } else {
+            try {
+                return (ID) convertString(identifierType, identifierString);
+            } catch (FailedConversionException e) {
+                throw new FailedConversionException(String.format("Conversion to %s has not been implemented", identifierType));
             }
         }
-
-        // getId() method as provided by AbstractEntity interface should be ignored.
-        getterMethods.remove("iD");
     }
 }

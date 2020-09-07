@@ -1,19 +1,19 @@
 package sept.major.users.controller;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.service.UserService;
+import sept.major.users.unit.service.UserService;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserServiceController {
 
     UserService userService;
@@ -27,22 +27,22 @@ public class UserServiceController {
 
     @GetMapping()
     public ResponseEntity getUser(@RequestParam String username) {
-        return userControllerHelper.getEntity(username);
+        return userControllerHelper.getEntity(username, String.class);
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity createUser(@RequestBody Map<String, String> requestBody) {
         return userControllerHelper.validateInputAndPost(UserEntity.class, requestBody);
     }
 
     @DeleteMapping
     public ResponseEntity deleteUser(@RequestParam String username) {
-        return userControllerHelper.deleteEntity(username);
+        return userControllerHelper.deleteEntity(username, String.class);
     }
 
     @PatchMapping
-    public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, Object> requestBody) {
-        return userControllerHelper.validateInputAndPatch(UserEntity.class, username, requestBody);
+    public ResponseEntity updateUser(@RequestParam String username, @RequestBody Map<String, String> requestBody) {
+        return userControllerHelper.validateInputAndPatch(UserEntity.class, username, String.class, requestBody);
     }
 
     @GetMapping("/bulk")
@@ -63,22 +63,20 @@ public class UserServiceController {
      * @param newPassword
      * @return
      */
-	@GetMapping("/password") //TODO change to put
+    @PatchMapping("/password") //TODO change to put
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
 		try {
-			userService.updatePassword(username,hashPassword( oldPassword),hashPassword( newPassword));
+			userService.updatePassword(username, oldPassword, newPassword);
 			return new ResponseEntity("place holder message: password updated" + " username:" + username
-					+ " oldPassword:" + oldPassword, HttpStatus.ACCEPTED);
+                    + " oldPassword:" + oldPassword, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			return new ResponseEntity("place holder message: provided input is incorrect" + " username:" + username
 					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
 		}
-	}
-	private String hashPassword(String plainTextPassword){
-		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+	
 	}
 	
-	
+
     /**
      * Endpoint to receive user password compare calls
      * @param username
@@ -88,8 +86,8 @@ public class UserServiceController {
     @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
-    	boolean result = userService.comparePassword(username,hashPassword( password));
-    	
-        return new ResponseEntity("inpput," + "username:"+ username + " password:" + password + ", password compare:" + result, HttpStatus.ACCEPTED);
+    	boolean result = userService.comparePassword(username,password);
+
+        return new ResponseEntity("input," + "username:" + username + " password:" + password + ", password compare:" + result, HttpStatus.OK);
     }
 }

@@ -12,7 +12,13 @@ import java.util.List;
 
 @Table(name = "bookings")
 @Repository
-public interface BookingsRepository extends JpaRepository<BookingEntity, String> {
-    @Query("select b from BookingEntity b where b.startTime >= :startTime and b.endTime <= :endTime")
-    List<BookingEntity> findAllBetweenDates(LocalDateTime startTime, LocalDateTime endTime);
+public interface BookingsRepository extends JpaRepository<BookingEntity, Integer> {
+    List<BookingEntity> findAllByStartDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    @Query("select b from BookingEntity b where (" +
+            "(:workerUsername =  b.workerUsername)" +
+            "and (b.startDateTime >= :startDateTime and b.startDateTime <= :endDateTime)" +
+            "and (b.endDateTime >= :startDateTime and b.endDateTime <= :endDateTime)" +
+            ")")
+    List<BookingEntity> findConflictingHours(String workerUsername, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

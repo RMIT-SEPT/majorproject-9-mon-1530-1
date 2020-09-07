@@ -25,7 +25,7 @@ const Bold = styled.div`
   font-size: 35px;
   line-height: 95px;
   letter-spacing: -0.05em;
-  color: #FFFFFF;
+  color: white;
   margin: 5%;
   white-space: 'pre-wrap';
 `
@@ -34,9 +34,8 @@ const MainWrapper = styled.div`
   background-color:black!important;
   height: 100vh;
   flex-grow: 1;
-  background-color: black;
   color: white;
-padding :1%;
+
 
 `
 //this is the about us  page, it contains a tool bar 

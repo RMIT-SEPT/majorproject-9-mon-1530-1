@@ -16,6 +16,9 @@ import sept.major.users.entity.UserEntity;
 public interface UsersRepository extends JpaRepository<UserEntity, String> {
     List<UserEntity> findAllByUserType(String userType);
 
-    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+    Optional<UserEntity> findByUsername(String username);
     
+    
+    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+
 }
