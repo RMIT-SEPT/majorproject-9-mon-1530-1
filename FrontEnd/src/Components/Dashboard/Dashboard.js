@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import seclogo from '../../media/seclogo.png';
-import logout from '../../media/log-out-40px.svg';
-import chevronDown from '../../media/chevron-down-28px.svg';
+import { LogOut, ChevronDown } from 'react-feather';
+import { theme } from '../../App';
+import logoAlt from '../../media/logo-alt.png';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
 // idea is to allow for cohesive re-use of the same component, simply by provid-
@@ -38,6 +38,7 @@ const MenuContainer = styled.div`
   flex-direction: column;
   margin: 20px 0px;
   height: calc(100% - 40px);
+  align-items: center;
 `;
 
 const StyledNavBar = styled.nav`
@@ -55,7 +56,7 @@ const StyledLogoLink = styled.a`
 
 const GreenNavLink = styled.div`
   flex: none;
-  color: ${(props) => props.theme.colours.greenPrimary};
+  color: ${(props) => props.theme.colours.green.primary};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 28px;
   margin: 0px 30px 4px 30px;
@@ -64,13 +65,13 @@ const GreenNavLink = styled.div`
   &:hover {
     cursor: pointer;
     text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenSecondary};
+    color: ${(props) => props.theme.colours.green.secondary};
   }
 
   &:active {
     cursor: pointer;
     text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenTertiary};
+    color: ${(props) => props.theme.colours.green.tertiary};
   }
 `;
 
@@ -85,7 +86,7 @@ const Logo = styled.div`
   flex: none;
   width: 56px;
   height: 56px;
-  background-color: ${(props) => props.theme.colours.greenPrimary};
+  background-color: ${(props) => props.theme.colours.green.primary};
   border-radius: 28px;
   margin: 0px 12px 0px 24px;
 `;
@@ -102,7 +103,7 @@ const UserName = styled.div`
 
 const Role = styled.div`
   text-align: right;
-  color: ${(props) => props.theme.colours.greenPrimary};
+  color: ${(props) => props.theme.colours.green.primary};
   font-size: 16px;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   text-transform: capitalize;
@@ -122,7 +123,7 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
       <StyledDashboardNav>
         <StyledNavBar>
           <StyledLogoLink href="/">
-            <img src={seclogo} alt="logo" />
+            <img src={logoAlt} alt="AGEM black logo" />
           </StyledLogoLink>
           <GreenNavLink onClick={actions.bookingLink}>New Booking</GreenNavLink>
           <GreenNavLink>Appointments</GreenNavLink>
@@ -134,7 +135,7 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
               <Role>{role || 'empty'}</Role>
             </StyledUserTagName>
             <Logo></Logo>
-            <img src={chevronDown} alt="Chevron drop down button" />
+            <ChevronDown size={28} />
           </StyledUserTag>
         </StyledNavBar>
       </StyledDashboardNav>
@@ -150,7 +151,11 @@ const MenuBarComponent = ({ children }) => {
     <MenuBar>
       <MenuContainer>
         {children}
-        <MenuIcon src={logout} alt="Log out icon" />
+        <LogOut
+          className="menuIcon"
+          color={theme.colours.grey.primary}
+          size={theme.icons.size.medium}
+        />
       </MenuContainer>
     </MenuBar>
   );

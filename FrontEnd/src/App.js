@@ -18,13 +18,39 @@ const GlobalStyle = createGlobalStyle`
   body, html{
     font-family: Nunito Sans;
   }
+
+  .menuIcon {
+    margin: 20px 0px;
+    transition: stroke ${(props) => props.theme.transition.short};
+
+    &:hover {
+      cursor: pointer;
+      stroke: ${(props) => props.theme.colours.green.primary};
+    }
+
+    &:active {
+      stroke: ${(props) => props.theme.colours.green.tertiary};
+    }
+  }
+
+  .upcomingAppointmentsCardIcon {
+    position: relative;
+    right: 2px;
+    top: 3px;
+    margin-right: 4px;
+  }
 `;
 
 const theme = {
   colours: {
-    greenPrimary: '#5ac490',
-    greenSecondary: '#369668',
-    greenTertiary: '#1b4b34',
+    green: {
+      primary: '#5ac490',
+      secondary: '#369668',
+      tertiary: '#1b4b34',
+    },
+    grey: {
+      primary: '#707070',
+    },
   },
   dashboard: {
     defaultWidth: '1304px',
@@ -40,6 +66,12 @@ const theme = {
   },
   shadow: {
     defaultBoxShadow: '0px 4px 8px rgba(0, 0, 0, 0.25)',
+  },
+  icons: {
+    size: {
+      small: '16px',
+      medium: '40px',
+    },
   },
 };
 
