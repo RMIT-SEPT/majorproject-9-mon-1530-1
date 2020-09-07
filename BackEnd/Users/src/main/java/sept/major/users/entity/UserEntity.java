@@ -38,6 +38,12 @@ public class UserEntity implements AbstractEntity<String> {
 	@JsonIgnore // Won't be returned when a user is retrieved
     private String password;
 
+    /** TODO : change to Enum
+     * types : 
+     * C : Customer
+     * S : Supervisor
+     * W : Worker
+     */
     @NotBlank
     @Column(name = "usertype")
     private String userType;
