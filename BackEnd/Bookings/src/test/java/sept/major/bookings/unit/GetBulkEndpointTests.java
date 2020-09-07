@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
+import sept.major.common.response.ValidationError;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -48,7 +49,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
                 new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime)
         );
 
-        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(expected);
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime.toLocalDate().atStartOfDay(), endTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1))).thenReturn(expected);
 
         ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
@@ -77,7 +78,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
 
         List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
 
-        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(expected);
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime.toLocalDate().atStartOfDay(), endTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1))).thenReturn(expected);
 
         ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
@@ -109,8 +110,8 @@ public class GetBulkEndpointTests extends UnitTestHelper {
         ResponseEntity result = bookingServiceController.getRange(endTime.toString(), startTime.toString(), null, null);
 
         assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(result.getBody()).isEqualTo(String.format("No records between %s and %s were found", endTime, startTime));
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(result.getBody()).isEqualTo(new ValidationError("date range", "start date must be above the end date"));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(result.getBody()).isEqualTo(String.format("No records between %s and %s were found", startTime, endTime));
+        assertThat(result.getBody()).isEqualTo(String.format("No records between %s and %s were found", startTime.toLocalDate().atStartOfDay(), endTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1)));
     }
 
     @Test
@@ -148,7 +149,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isNull();
+        assertThat(result.getBody()).isEqualTo(new ValidationError("startDate", bookingServiceController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE));
     }
 
     @Test
@@ -162,7 +163,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isNull();
+        assertThat(result.getBody()).isEqualTo(new ValidationError("startDate", bookingServiceController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE));
     }
 
     @Test
