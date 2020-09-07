@@ -1,19 +1,19 @@
 package sept.major.users.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.mindrot.jbcrypt.BCrypt;
+import sept.major.common.entity.AbstractEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import org.mindrot.jbcrypt.BCrypt;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import sept.major.common.entity.AbstractEntity;
 
 @Getter
 @Setter
@@ -35,6 +35,7 @@ public class UserEntity implements AbstractEntity<String> {
 	 * never saved
 	 */
     @NotBlank
+	@JsonIgnore // Won't be returned when a user is retrieved
     private String password;
 
     /** TODO : change to Enum

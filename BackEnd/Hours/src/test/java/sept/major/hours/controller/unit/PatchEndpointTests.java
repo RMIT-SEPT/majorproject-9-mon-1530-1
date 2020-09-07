@@ -26,7 +26,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity existing = entityMapToEntity(existingMap);
 
         HashMap patchValues = new HashMap() {{
-            put("customerUsername", randomAlphanumericString(20));
+            put("creatorUsername", randomAlphanumericString(20));
         }};
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
@@ -42,7 +42,7 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity existing = entityMapToEntity(existingMap);
 
         HashMap patchValues = new HashMap() {{
-            put("customerUsername", randomAlphanumericString(20));
+            put("creatorUsername", randomAlphanumericString(20));
         }};
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
@@ -58,12 +58,12 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity existing = entityMapToEntity(existingMap);
 
         HashMap patchValues = new HashMap() {{
-            put("customerUsername", " ");
+            put("creatorUsername", " ");
         }};
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
         runTest(hoursId, patchValues, Optional.of(existing), patchedEntity,
-                new ResponseEntity(new HashSet<>(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))), HttpStatus.BAD_REQUEST));
+                new ResponseEntity(new HashSet<>(Arrays.asList(new ValidationError("creatorUsername", "must not be blank"))), HttpStatus.BAD_REQUEST));
     }
 
     @Test
@@ -75,14 +75,14 @@ class PatchEndpointTests extends HoursUnitTestHelper {
         HoursEntity existing = entityMapToEntity(existingMap);
 
         HashMap patchValues = new HashMap() {{
-            put("customerUsername", " ");
+            put("creatorUsername", " ");
             put("workerUsername", " ");
         }};
         HoursEntity patchedEntity = patchEntity(existing, patchValues);
 
         runTest(hoursId, patchValues, Optional.of(existing), patchedEntity,
                 new ResponseEntity(new HashSet<>(Arrays.asList(
-                        new ValidationError("customerUsername", "must not be blank"),
+                        new ValidationError("creatorUsername", "must not be blank"),
                         new ValidationError("workerUsername", "must not be blank")
                 )), HttpStatus.BAD_REQUEST));
     }
@@ -111,8 +111,8 @@ class PatchEndpointTests extends HoursUnitTestHelper {
             newEntity.setWorkerUsername(patchValues.get("workerUsername"));
         }
 
-        if(patchValues.get("customerUsername") != null) {
-            newEntity.setCreatorUsername(patchValues.get("customerUsername"));
+        if (patchValues.get("creatorUsername") != null) {
+            newEntity.setCreatorUsername(patchValues.get("creatorUsername"));
         }
 
         if(patchValues.get("startDateTime") != null) {

@@ -59,7 +59,7 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
 
     private void runTestsWithUsernameFilters(ResponseEntity expected, List<HoursEntity> returned, String date) {
         testWorkerUsernameFilter(expected, returned, date);
-        testCustomerUsernameFilter(expected, returned, date);
+        testcreatorUsernameFilter(expected, returned, date);
         testCustomerAndWorkerUsernameFilter(expected, returned, date);
     }
 
@@ -74,28 +74,28 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
         runTest(updateExpectedWithUsername(expected, workerUsername, null), workerUsernameEntities, date, workerUsername, null);
     }
 
-    private void testCustomerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String date) {
-        String customerUsername = randomAlphanumericString(20);
+    private void testcreatorUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String date) {
+        String creatorUsername = randomAlphanumericString(20);
 
-        List<HoursEntity> customerUsernameEntities = deepCopy(returned);
-        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
+        List<HoursEntity> creatorUsernameEntities = deepCopy(returned);
+        creatorUsernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(creatorUsername));
 
-        customerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
+        creatorUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
-        runTest(updateExpectedWithUsername(expected, null, customerUsername), customerUsernameEntities, date, null, customerUsername);
+        runTest(updateExpectedWithUsername(expected, null, creatorUsername), creatorUsernameEntities, date, null, creatorUsername);
     }
 
     private void testCustomerAndWorkerUsernameFilter(ResponseEntity expected, List<HoursEntity> returned, String date) {
-        String customerUsername = randomAlphanumericString(20);
+        String creatorUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
         List<HoursEntity> usernameEntities = deepCopy(returned);
-        usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(customerUsername));
+        usernameEntities.forEach(hoursEntity -> hoursEntity.setCreatorUsername(creatorUsername));
         usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
 
-        HoursEntity customerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
-        customerUsernameEntity.setCreatorUsername(customerUsername);
-        usernameEntities.add(customerUsernameEntity);
+        HoursEntity creatorUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
+        creatorUsernameEntity.setCreatorUsername(creatorUsername);
+        usernameEntities.add(creatorUsernameEntity);
 
         HoursEntity workerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
         workerUsernameEntity.setWorkerUsername(workerUsername);
@@ -103,35 +103,35 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
 
         usernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
 
-        runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), usernameEntities, date, workerUsername, customerUsername);
+        runTest(updateExpectedWithUsername(expected, workerUsername, creatorUsername), usernameEntities, date, workerUsername, creatorUsername);
     }
 
 
-    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String date, String workerUsername, String customerUsername) {
+    private void runTest(ResponseEntity expected, List<HoursEntity> returned, String date, String workerUsername, String creatorUsername) {
         try {
             if (date != null) {
                 LocalDate parsedDate = LocalDate.parse(date);
-                when(mockedUserRepository.findAllBetweenDates(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
+                when(mockedUserRepository.findAllByStartDateTimeBetween(parsedDate.atStartOfDay(), parsedDate.plusDays(1).atStartOfDay())).thenReturn(returned);
             }
         } catch (DateTimeParseException e) {
 
         }
-        ResponseEntity result = hoursController.getHoursInDate(date, workerUsername, customerUsername);
+        ResponseEntity result = hoursController.getHoursInDate(date, workerUsername, creatorUsername);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(expected.getStatusCode());
         assertThat(expected.getBody()).isEqualTo(result.getBody());
     }
 
-    private ResponseEntity updateExpectedWithUsername(ResponseEntity expected, String workerUsername, String customerUsername) {
+    private ResponseEntity updateExpectedWithUsername(ResponseEntity expected, String workerUsername, String creatorUsername) {
         Object expectedBody = expected.getBody();
         if(expectedBody instanceof HoursEntity) {
             HoursEntity hoursEntity = (HoursEntity) expectedBody;
             if(workerUsername != null) {
                 hoursEntity.setWorkerUsername(workerUsername);
             }
-            if(customerUsername != null) {
-                hoursEntity.setCreatorUsername(customerUsername);
+            if (creatorUsername != null) {
+                hoursEntity.setCreatorUsername(creatorUsername);
             }
             return new ResponseEntity(hoursEntity, expected.getStatusCode());
         }
@@ -141,8 +141,8 @@ class GetOnDateEndpointTests extends HoursUnitTestHelper {
                 if(workerUsername != null) {
                     hoursEntity.setWorkerUsername(workerUsername);
                 }
-                if(customerUsername != null) {
-                    hoursEntity.setCreatorUsername(customerUsername);
+                if (creatorUsername != null) {
+                    hoursEntity.setCreatorUsername(creatorUsername);
                 }
             });
 

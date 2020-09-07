@@ -1,24 +1,21 @@
-package sept.major.bookings;
+package sept.major.bookings.unit;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static sept.major.bookings.BookingsTestHelper.randomAlphanumericString;
 
-public class GetBulkEndpointTests extends BookingServiceTestHelper {
+public class GetBulkEndpointTests extends UnitTestHelper {
 
     @Test
     void validTimesWithinRange() {
@@ -31,7 +28,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
                 new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime)
         );
 
-        when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(expected);
 
         ResponseEntity result = bookingServiceController.getRange(startTime.toString(), endTime.toString(), null, null);
 
@@ -51,7 +48,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
                 new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime)
         );
 
-        when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(expected);
 
         ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
@@ -80,7 +77,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
         List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
 
-        when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(expected);
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(expected);
 
         ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
@@ -107,7 +104,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
                 new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
         );
 
-        when(mockedBookingRepository.findAllBetweenDates(endTime, startTime)).thenReturn(Arrays.asList());
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(endTime, startTime)).thenReturn(Arrays.asList());
 
         ResponseEntity result = bookingServiceController.getRange(endTime.toString(), startTime.toString(), null, null);
 
@@ -132,7 +129,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
                 new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
         );
 
-        when(mockedBookingRepository.findAllBetweenDates(startTime, endTime)).thenReturn(Arrays.asList());
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(Arrays.asList());
 
         ResponseEntity result = bookingServiceController.getDate(startTime.toLocalDate().toString(), null, null);
 
@@ -145,7 +142,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
     void notDateTypeOnDate() {
         String date = "Today";
 
-        when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
         ResponseEntity result = bookingServiceController.getDate(date, null, null);
 
@@ -159,7 +156,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
         String startTime = "Today";
         String endTime = "Tomorrow";
 
-        when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
         ResponseEntity result = bookingServiceController.getRange(startTime, endTime, null, null);
 
@@ -170,7 +167,7 @@ public class GetBulkEndpointTests extends BookingServiceTestHelper {
 
     @Test
     void nullDate() {
-        when(mockedBookingRepository.findAllBetweenDates(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
 
         ResponseEntity result = bookingServiceController.getDate(null, null, null);
 

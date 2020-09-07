@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sept.major.common.exception.RecordNotFoundException;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.service.BookingService;
+import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.response.ValidationError;
 
 import java.time.LocalDate;
@@ -40,16 +40,20 @@ public class BookingServiceController {
     ) {
         LocalDateTime startDateTime;
         try {
-            startDateTime = (startDateTimeString == null ? null : LocalDateTime.parse(startDateTimeString));
+            startDateTime = LocalDateTime.parse(startDateTimeString);
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
 
         LocalDateTime endDateTime;
         try {
-            endDateTime = (endDateTimeString == null ? null : LocalDateTime.parse(endDateTimeString));
+            endDateTime = LocalDateTime.parse(endDateTimeString);
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ValidationError("endDate",INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+        }
+
+        if (endDateTime.isBefore(startDateTime)) {
+            return new ResponseEntity(new ValidationError("date range", "start date must be above the end date"), HttpStatus.BAD_REQUEST);
         }
 
         try {

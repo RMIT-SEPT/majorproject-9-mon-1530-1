@@ -1,4 +1,4 @@
-package sept.major.users;
+package sept.major.users.unit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static sept.major.users.UserServiceTestHelper.randomAlphanumericString;
 
 @SpringBootTest
 class GetBulkEndpointTests extends UserServiceTestHelper {

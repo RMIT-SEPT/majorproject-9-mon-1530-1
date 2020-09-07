@@ -1,4 +1,4 @@
-package sept.major.hours.blackbox;
+package sept.major.bookings.blackbox;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static sept.major.hours.HoursTestHelper.pastDateTime;
-import static sept.major.hours.HoursTestHelper.randomEntityMap;
+import static sept.major.bookings.BookingsTestHelper.pastDateTime;
+import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
 
-public class PostBlackBoxTest extends HoursBlackBoxHelper {
+public class PostBlackBoxTest extends BookingBlackBoxHelper {
 
     @Test
     void valid() {
@@ -25,27 +25,27 @@ public class PostBlackBoxTest extends HoursBlackBoxHelper {
     @Test
     void existing() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
-        firstPostMap.remove("hoursId");
+        firstPostMap.remove("bookingId");
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).startsWith("Hours provided conflicts with existing hours:");
+        assertThat(result.getBody()).startsWith("Booking provided conflicts with existing booking: ");
     }
 
     @Test
     void missingField() throws JsonProcessingException {
         Map<String, String> randomEntityMap = randomEntityMap();
-        randomEntityMap.remove("creatorUsername");
+        randomEntityMap.remove("customerUsername");
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("creatorUsername", "must not be blank"))));
+        assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))));
     }
 
     @Test
     void incorrectFieldTypeList() {
         Map<String, Object> randomEntityMap = new HashMap<>(randomEntityMap());
-        randomEntityMap.put("creatorUsername", Arrays.asList("an incorrect value"));
+        randomEntityMap.put("customerUsername", Arrays.asList("an incorrect value"));
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -56,7 +56,7 @@ public class PostBlackBoxTest extends HoursBlackBoxHelper {
         Map<String, Object> randomEntityMap = new HashMap<>(randomEntityMap());
         Map<String, String> incorrectField = new HashMap<>();
         incorrectField.put("incorrect", "field");
-        randomEntityMap.put("creatorUsername", incorrectField);
+        randomEntityMap.put("customerUsername", incorrectField);
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

@@ -6,7 +6,7 @@
 
     <groupId>sept.major</groupId>
     <artifactId>common</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 
     <dependencies>
         <dependency>
@@ -128,7 +128,6 @@
                 <version>3.0.0</version>
                 <configuration>
                     <source>1.8</source>
-                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

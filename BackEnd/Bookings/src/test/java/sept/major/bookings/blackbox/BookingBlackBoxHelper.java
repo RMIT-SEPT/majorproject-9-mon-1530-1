@@ -1,4 +1,4 @@
-package sept.major.hours.blackbox;
+package sept.major.bookings.blackbox;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,19 +21,19 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
+public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
     @Override
     public String getInitScriptName() {
-        return "hour.sql";
+        return "booking.sql";
     }
 
     @Override
     public String getApiExtension() {
-        return "hours";
+        return "bookings";
     }
 
 
@@ -49,7 +49,7 @@ public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
             });
 
             HashMap<String, String> entityMapCopy = new HashMap<>(entityMap);
-            entityMapCopy.put("hoursId", resultMap.get("hoursId"));
+            entityMapCopy.put("bookingId", resultMap.get("bookingId"));
 
             System.out.println("Comparing " + resultMap + " to " + entityMapCopy);
             assertThat(resultMap.size()).isEqualTo(entityMapCopy.size());
@@ -72,7 +72,7 @@ public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
         HashMap<String, String> postResult = successfulPost(entityMap);
 
         List<RequestParameter> requestParameters = Arrays.asList(
-                new RequestParameter("hoursId", postResult.get("hoursId"))
+                new RequestParameter("bookingId", postResult.get("bookingId"))
         );
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity

@@ -17,10 +17,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static sept.major.common.reflection.ReflectionUtils.*;
 
@@ -178,7 +175,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
                     }
                 }
 
@@ -221,7 +218,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(createdEntity, HttpStatus.OK);
 
         } catch (RecordAlreadyExistsException e) {
-            return new ResponseEntity("Failed to create entity because an entity with it's identifier already exists", HttpStatus.CONFLICT);
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         } catch (ValidationErrorException e) {
             return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         }
@@ -272,7 +269,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
                     try {
                         value = convertString(fieldType, responseBody.get(fieldKey));
                     } catch (FailedConversionException e) {
-                        validationErrors.add(new ValidationError(fieldKey, e.getMessage()));
+                        throw new ValidationErrorException(Arrays.asList(new ValidationError(fieldKey, e.getMessage())));
                     }
                 }
 
@@ -332,6 +329,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(new ValidationError("Identifier field", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IdentifierUpdateException e) {
             return new ResponseEntity(new ValidationError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
+        } catch (RecordAlreadyExistsException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }

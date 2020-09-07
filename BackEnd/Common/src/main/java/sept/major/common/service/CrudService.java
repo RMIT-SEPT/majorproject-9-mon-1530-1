@@ -66,15 +66,14 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
      * @throws RecordAlreadyExistsException A record with the same identifying value as the entity provided already exists.
      */
     public E create(E entity) throws ValidationErrorException, RecordAlreadyExistsException {
-        validateEntity(entity); // Validate entity and return responseErrorException
         if(entity.getID() != null) {
             try {
                 read(entity.getID());
             } catch (RecordNotFoundException e) {
-                return getRepository().save(entity);
+                return saveEntity(entity);
             }
         } else {
-            return getRepository().save(entity);
+            return saveEntity(entity);
         }
 
         throw new RecordAlreadyExistsException();
@@ -91,7 +90,7 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
      * @throws IdentifierUpdateException There was an attempt to update the identifying field the entity.
      * @throws ValidationErrorException There were validation errors in the entity after being updated
      */
-    public E patch(ID id, List<PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ValidationErrorException {
+    public E patch(ID id, List<PatchValue> patchValues) throws RecordNotFoundException, IdentifierUpdateException, ValidationErrorException, RecordAlreadyExistsException {
 
         // Gets the existing record by calling the generic read method implemented in this class. Returns RecordNotFoundException if record doesn't exist.
         E existingEntity = read(id);
@@ -128,10 +127,20 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
             }
         }
 
-        validateEntity(existingEntity);
+        return saveEntity(existingEntity);
+    }
 
-        // Use the generic create entity logic implemented in this class. Done so there is no repeated logic.
-        return getRepository().save(existingEntity);
+    /**
+     * @param entity The entity to validate and save
+     * @return The entity after being validated and saved
+     * @throws ValidationErrorException     There were validation errors in the entity after being updated
+     * @throws RecordAlreadyExistsException Entity provided conflicts with an existing one. Generic implementation does not use this but implementations might
+     * @since 1.1.1
+     * Validates the provided entity and then saves it to the repository ({@link #getRepository()}
+     */
+    protected E saveEntity(E entity) throws ValidationErrorException, RecordAlreadyExistsException {
+        validateEntity(entity);
+        return getRepository().save(entity);
     }
 
     /**
@@ -158,7 +167,7 @@ public abstract class CrudService<E extends AbstractEntity<ID>, ID> {
      * @param entity The entity to validate
      * @throws ValidationErrorException There were validation errors in the provided entity
      */
-    private void validateEntity(E entity) throws ValidationErrorException {
+    protected void validateEntity(E entity) throws ValidationErrorException {
         /*
             Validates the provided entity with JSR 380/Bean Validation 2.0
             Allows developers to annotate fields with validation such as NotBlank for convenient field validation.

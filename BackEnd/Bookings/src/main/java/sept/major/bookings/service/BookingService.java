@@ -3,17 +3,18 @@ package sept.major.bookings.service;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sept.major.common.exception.RecordNotFoundException;
-import sept.major.common.service.CrudService;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.repository.BookingsRepository;
+import sept.major.common.exception.RecordAlreadyExistsException;
+import sept.major.common.exception.RecordNotFoundException;
+import sept.major.common.exception.ValidationErrorException;
+import sept.major.common.response.ValidationError;
+import sept.major.common.service.CrudService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
         if (startTime == null) {
             throw new IllegalArgumentException("No start time was defined");
         } else {
-            entityList = getRepository().findAllBetweenDates(startTime, endTime);
+            entityList = getRepository().findAllByStartDateTimeBetween(startTime, endTime);
         }
 
         if (entityList == null || entityList.size() == 0) {
@@ -121,5 +122,25 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
         }
 
         return result;
+    }
+
+    @Override
+    protected BookingEntity saveEntity(BookingEntity entity) throws RecordAlreadyExistsException, ValidationErrorException {
+        if (entity.getEndDateTime().isBefore(entity.getStartDateTime())) {
+            throw new ValidationErrorException(Arrays.asList(new ValidationError("endDateTime", "must be after startDateTime")));
+        }
+
+        List<BookingEntity> duplicateEntities = repository.findConflictingHours(entity.getWorkerUsername(),
+                entity.getStartDateTime(), entity.getEndDateTime());
+        if (duplicateEntities == null) {
+            return super.saveEntity(entity);
+        } else {
+            duplicateEntities.removeIf((BookingEntity bookingEntity) -> bookingEntity.getID().equals(entity.getID()));
+            if (duplicateEntities.isEmpty()) {
+                return super.saveEntity(entity);
+            } else {
+                throw new RecordAlreadyExistsException("Booking provided conflicts with existing booking: " + duplicateEntities.get(0));
+            }
+        }
     }
 }

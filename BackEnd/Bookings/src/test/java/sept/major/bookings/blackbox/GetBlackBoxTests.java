@@ -1,11 +1,10 @@
-package sept.major.hours.blackbox;
+package sept.major.bookings.blackbox;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import sept.major.common.testing.RequestParameter;
-import sept.major.hours.HoursTestHelper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static sept.major.hours.HoursTestHelper.*;
+import static sept.major.bookings.BookingsTestHelper.*;
 
-public class GetBlackBoxTests extends HoursBlackBoxHelper {
+public class GetBlackBoxTests extends BookingBlackBoxHelper {
 
     @Test
     public void getById() {
         List<Map<String, String>> postResults = Arrays.asList(successfulPost(randomEntityMap()), successfulPost(randomEntityMap()));
 
-        List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("hoursId", "1"));
+        List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("bookingId", "1"));
 
         successfulGet(postResults.get(0), getUrl(requestParameters));
     }
@@ -32,14 +31,14 @@ public class GetBlackBoxTests extends HoursBlackBoxHelper {
     @Test
     public void getAll() throws JsonProcessingException {
         String workerUsername = randomAlphanumericString(20);
-        String creatorUsername = randomAlphanumericString(20);
+        String customerUsername = randomAlphanumericString(20);
 
-        HashMap<String, String> first = postWithUsernames(randomEntityMap(), workerUsername, creatorUsername);
-        HashMap<String, String> second = postWithUsernames(randomEntityMap(pastDateTime(0, 0, 1)), workerUsername, creatorUsername);
+        HashMap<String, String> first = postWithUsernames(randomEntityMap(), workerUsername, customerUsername);
+        HashMap<String, String> second = postWithUsernames(randomEntityMap(pastDateTime(0, 0, 1)), workerUsername, customerUsername);
 
         List<RequestParameter> requestParameters = Arrays.asList(
                 new RequestParameter("workerUsername", workerUsername),
-                new RequestParameter("creatorUsername", creatorUsername)
+                new RequestParameter("customerUsername", customerUsername)
 
         );
 
@@ -50,26 +49,26 @@ public class GetBlackBoxTests extends HoursBlackBoxHelper {
     public void getDate() throws JsonProcessingException {
 
         String workerUsername = randomAlphanumericString(20);
-        String creatorUsername = randomAlphanumericString(20);
+        String customerUsername = randomAlphanumericString(20);
 
         Map<String, String> pastDate = randomEntityMap();
-        pastDate.put("startDateTime", HoursTestHelper.pastDateTime(0, 0, 1).toString());
-        pastDate.put("endDateTime", HoursTestHelper.pastDateTime(0, 0, 1).toString());
+        pastDate.put("startDateTime", pastDateTime(0, 0, 1).toString());
+        pastDate.put("endDateTime", pastDateTime(0, 0, 1).toString());
 
         Map<String, String> futureDate = randomEntityMap();
-        futureDate.put("startDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
-        futureDate.put("endDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
+        futureDate.put("startDateTime", futureDateTime(0, 0, 1).toString());
+        futureDate.put("endDateTime", futureDateTime(0, 0, 1).toString());
 
         Map<String, String> onDate = randomEntityMap();
 
-        postWithUsernames(pastDate, workerUsername, creatorUsername);
-        postWithUsernames(futureDate, workerUsername, creatorUsername);
-        HashMap<String, String> expected = postWithUsernames(onDate, workerUsername, creatorUsername);
+        postWithUsernames(pastDate, workerUsername, customerUsername);
+        postWithUsernames(futureDate, workerUsername, customerUsername);
+        HashMap<String, String> expected = postWithUsernames(onDate, workerUsername, customerUsername);
 
         List<RequestParameter> requestParameters = Arrays.asList(
                 new RequestParameter("date", LocalDate.now().toString()),
                 new RequestParameter("workerUsername", workerUsername),
-                new RequestParameter("creatorUsername", creatorUsername)
+                new RequestParameter("customerUsername", customerUsername)
         );
 
         successfulGetList(Arrays.asList(expected), getUrl("date", requestParameters));
@@ -79,15 +78,15 @@ public class GetBlackBoxTests extends HoursBlackBoxHelper {
     public void getRange() throws JsonProcessingException {
 
         String workerUsername = randomAlphanumericString(20);
-        String creatorUsername = randomAlphanumericString(20);
+        String customerUsername = randomAlphanumericString(20);
 
         Map<String, String> pastDate = randomEntityMap();
-        pastDate.put("startDateTime", HoursTestHelper.pastDateTime(0, 0, 3).toString());
-        pastDate.put("endDateTime", HoursTestHelper.pastDateTime(0, 0, 3).toString());
+        pastDate.put("startDateTime", pastDateTime(0, 0, 3).toString());
+        pastDate.put("endDateTime", pastDateTime(0, 0, 3).toString());
 
         Map<String, String> futureDate = randomEntityMap();
-        futureDate.put("startDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
-        futureDate.put("endDateTime", HoursTestHelper.futureDateTime(0, 0, 1).toString());
+        futureDate.put("startDateTime", futureDateTime(0, 0, 1).toString());
+        futureDate.put("endDateTime", futureDateTime(0, 0, 1).toString());
 
         Map<String, String> correctDayPastTime = randomEntityMap();
         correctDayPastTime.put("startDateTime", LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(7, 30, 0)).toString());
@@ -109,26 +108,26 @@ public class GetBlackBoxTests extends HoursBlackBoxHelper {
         thirdDateInRange.put("startDateTime", LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(1, 0)).toString());
         thirdDateInRange.put("endDateTime", LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(2, 0, 0)).toString());
 
-        postWithUsernames(pastDate, workerUsername, creatorUsername);
-        postWithUsernames(futureDate, workerUsername, creatorUsername);
-        postWithUsernames(correctDayPastTime, workerUsername, creatorUsername);
-        postWithUsernames(correctDayFutureTime, workerUsername, creatorUsername);
-        HashMap<String, String> firstExpected = postWithUsernames(firstDateInRange, workerUsername, creatorUsername);
-        HashMap<String, String> secondExpected = postWithUsernames(secondDateInRange, workerUsername, creatorUsername);
-        HashMap<String, String> thirdExpected = postWithUsernames(thirdDateInRange, workerUsername, creatorUsername);
+        postWithUsernames(pastDate, workerUsername, customerUsername);
+        postWithUsernames(futureDate, workerUsername, customerUsername);
+        postWithUsernames(correctDayPastTime, workerUsername, customerUsername);
+        postWithUsernames(correctDayFutureTime, workerUsername, customerUsername);
+        HashMap<String, String> firstExpected = postWithUsernames(firstDateInRange, workerUsername, customerUsername);
+        HashMap<String, String> secondExpected = postWithUsernames(secondDateInRange, workerUsername, customerUsername);
+        HashMap<String, String> thirdExpected = postWithUsernames(thirdDateInRange, workerUsername, customerUsername);
 
         List<RequestParameter> requestParameters = Arrays.asList(
                 new RequestParameter("startDateTime", LocalDateTime.of(pastDate(0, 0, 2), LocalTime.of(9, 30, 0)).toString()),
                 new RequestParameter("endDateTime", LocalDateTime.of(pastDate(0, 0, 1), LocalTime.of(17, 30, 0)).toString()),
                 new RequestParameter("workerUsername", workerUsername),
-                new RequestParameter("creatorUsername", creatorUsername)
+                new RequestParameter("customerUsername", customerUsername)
         );
 
         successfulGetList(Arrays.asList(firstExpected, secondExpected, thirdExpected), getUrl("range", requestParameters));
     }
 
     @Test
-    public void endDateBeforeEndDate() throws JsonProcessingException {
+    public void endDateBeforeStartDate() throws JsonProcessingException {
         List<RequestParameter> requestParameters = Arrays.asList(
                 new RequestParameter("startDateTime", pastDateTime(0, 0, 1).toString()),
                 new RequestParameter("endDateTime", pastDateTime(0, 0, 3).toString())
@@ -140,16 +139,15 @@ public class GetBlackBoxTests extends HoursBlackBoxHelper {
         assertThat(getResult.getBody()).isEqualTo("{\"field\":\"date range\",\"message\":\"start date must be above the end date\"}");
     }
 
-    private HashMap<String, String> postWithUsernames(Map<String, String> post, String workerUsername, String creatorUsername) {
+    private HashMap<String, String> postWithUsernames(Map<String, String> post, String workerUsername, String customerUsername) {
         successfulPost(post);
 
         HashMap<String, String> bothUsername = new HashMap<>(post);
         bothUsername.put("workerUsername", workerUsername);
-        bothUsername.put("creatorUsername", creatorUsername);
+        bothUsername.put("customerUsername", customerUsername);
         return successfulPost(bothUsername);
 
     }
-
 
 
 }
