@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.common.response.ValidationError;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -88,6 +89,153 @@ public class GetBulkEndpointTests extends UnitTestHelper {
     }
 
     @Test
+    void getAllBookings() {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        when(mockedBookingRepository.findAll()).thenReturn(data);
+
+        ResponseEntity result = bookingServiceController.getAllBookings(null, null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isEqualTo(data);
+    }
+
+    @Test
+    void getAllBookingsUser() {
+        String workerUsername = randomAlphanumericString(20);
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(workerUsername, randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(workerUsername, randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
+
+        when(mockedBookingRepository.findAll()).thenReturn(data);
+
+        ResponseEntity result = bookingServiceController.getAllBookings(workerUsername, null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isEqualTo(expected);
+    }
+
+    @Test
+    void getAllBookingsCustomer() {
+        String customerUsername = randomAlphanumericString(20);
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(randomAlphanumericString(20), customerUsername, startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), customerUsername, nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
+
+        when(mockedBookingRepository.findAll()).thenReturn(data);
+
+        ResponseEntity result = bookingServiceController.getAllBookings(null, customerUsername);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isEqualTo(expected);
+    }
+
+    @Test
+    void getAllBookingsNoneCustomerExist() {
+        String customerUsername = randomAlphanumericString(20);
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(randomAlphanumericString(20),randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
+
+        when(mockedBookingRepository.findAll()).thenReturn(data);
+
+        ResponseEntity result = bookingServiceController.getAllBookings(null, customerUsername);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(result.getBody()).isEqualTo("No records within provided bounds were found");
+    }
+
+    @Test
+    void getAllBookingsNoneWorkerExist() {
+        String workerUsername = randomAlphanumericString(20);
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(randomAlphanumericString(20),randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), startTime, endTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        List<BookingEntity> expected = Arrays.asList(data.get(0), data.get(1));
+
+        when(mockedBookingRepository.findAll()).thenReturn(data);
+
+        ResponseEntity result = bookingServiceController.getAllBookings(workerUsername,null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(result.getBody()).isEqualTo("No records within provided bounds were found");
+    }
+
+    @Test
     void startTimeAndEndTimeSwapped() {
         LocalDateTime startTime = LocalDateTime.now();
         LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
@@ -153,7 +301,7 @@ public class GetBulkEndpointTests extends UnitTestHelper {
     }
 
     @Test
-    void notDateTypeOnDateRange() {
+    void badStartDate() {
         String startTime = "Today";
         String endTime = "Tomorrow";
 
