@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -37,10 +38,10 @@ public class BookingEntity implements AbstractEntity<String> { //TODO This class
     @NotBlank
     private String customerId;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime startTime;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime endTime;
 
     @Override
