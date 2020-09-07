@@ -1,18 +1,15 @@
 import styled from 'styled-components';
 
 const StyledNav = styled.div`
-  background-color: white;
   min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
 const StyledNavWhite = styled(StyledNav)`
   background-color: white;
-  min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
-const StyledNavBlack = styled.div`
+const StyledNavBlack = styled(StyledNav)`
   background-color: black;
-  min-width: ${(props) => props.theme.dashboard.defaultWidth};
 `;
 
 const StyledNavBar = styled.nav`
