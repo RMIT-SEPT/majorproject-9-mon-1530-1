@@ -1,43 +1,49 @@
 package sept.major.hours.entity;
 
 import lombok.*;
-import sept.major.common.converter.StringToTimestampConverter;
+import sept.major.common.annotation.ReadOnly;
 import sept.major.common.entity.AbstractEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
 @Table(name = "hours")
-public class HoursEntity implements AbstractEntity<String> {
+@Entity
+public class HoursEntity implements AbstractEntity<Integer> {
 
     @Id
-    @Setter(onMethod = @__(@Id))
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String hoursId;
+    @ReadOnly
+    private Integer hoursId;
 
     @NotBlank
     private String workerUsername;
 
     @NotBlank
-    private String customerUsername;
+    private String creatorUsername;
 
-    @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String startDateTime;
+    @NotNull
+    private LocalDateTime startDateTime;
 
-    @NotBlank
-    @Convert(converter = StringToTimestampConverter.class)
-    private String endDateTime;
+    @NotNull
+    private LocalDateTime endDateTime;
+
+    public HoursEntity(String workerUsername, String creatorUsername, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        this.workerUsername = workerUsername;
+        this.creatorUsername = creatorUsername;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+    }
 
     @Override
-    public String getID() {
+    public Integer getID() {
         return hoursId;
     }
 }

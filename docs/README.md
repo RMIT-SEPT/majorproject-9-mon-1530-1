@@ -53,3 +53,37 @@ To start the docker container use the following. This command will only work if 
 ```
 docker start sept-db
 ```
+
+------------------- rebuild database container:
+docker stop sept-db
+docker rm sept-db
+docker build .
+docker run --name sept-db -p 5432:5432 <container hash>
+
+
+--------------- use PGADMIN
+download and install pgadmin (postgreSql admin client)
+run pgAdmin from your local machine
+open a browser and go to 
+http://127.0.0.1:54501/browser/
+Note the port might be sometimes different
+
+add the local server to pgAdmin 
+name: sept-db
+Connection.host:localhost
+Connection.port:5432
+Connection.username: postgres
+Connection.password: postgres
+
+-- to run a query in pgAdmin:
+in pgadmin, 
+first make sure you have connected to sept-db server, as described above
+click on the sept database (under databases)
+at the top, click on tools, then "query tool"
+you can run your sql queries from here.
+you can use the database.sql file (under setup) to populate the database
+----- see all tables
+SELECT *
+FROM pg_catalog.pg_tables
+WHERE schemaname != 'pg_catalog' AND 
+    schemaname != 'information_schema';
