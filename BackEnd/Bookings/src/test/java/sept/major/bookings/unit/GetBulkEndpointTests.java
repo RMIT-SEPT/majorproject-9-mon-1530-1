@@ -301,6 +301,31 @@ public class GetBulkEndpointTests extends UnitTestHelper {
     }
 
     @Test
+    void noRecordOnDateRange() {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+        LocalDateTime prevDayStartTime = startTime.toLocalDate().minusDays(2).atStartOfDay();
+        LocalDateTime prevDayEndTime = prevDayStartTime.toLocalDate().plusDays(1).atStartOfDay().minusSeconds(1);
+        LocalDateTime nextDayStartTime = startTime.toLocalDate().plusDays(2).atStartOfDay();
+        LocalDateTime nextDayEndTime = nextDayStartTime.toLocalDate().atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<BookingEntity> data = Arrays.asList(
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), nextDayStartTime, nextDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime),
+                new BookingEntity(randomAlphanumericString(20), randomAlphanumericString(20), prevDayStartTime, prevDayEndTime)
+        );
+
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(startTime, endTime)).thenReturn(Arrays.asList());
+
+        ResponseEntity result = bookingServiceController.getRange(startTime.toString(), endTime.toString(), null, null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(result.getBody()).isEqualTo(String.format("No records between %s and %s were found", startTime, endTime));
+    }
+
+    @Test
     void badStartDate() {
         String startTime = "Today";
         String endTime = "Tomorrow";
@@ -312,6 +337,20 @@ public class GetBulkEndpointTests extends UnitTestHelper {
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(result.getBody()).isEqualTo(new ValidationError("startDate", bookingServiceController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE));
+    }
+
+    @Test
+    void badEndDate() {
+        String startTime = "Today";
+        String endTime = "Tomorrow";
+
+        when(mockedBookingRepository.findAllByStartDateTimeBetween(any(LocalDateTime.class), any(LocalDateTime.class))).thenThrow(new IllegalArgumentException());
+
+        ResponseEntity result = bookingServiceController.getRange(LocalDateTime.now().toString(), endTime, null, null);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(result.getBody()).isEqualTo(new ValidationError("endDate", bookingServiceController.INCORRECT_DATE_TIME_FORMAT_ERROR_MESSAGE));
     }
 
     @Test
