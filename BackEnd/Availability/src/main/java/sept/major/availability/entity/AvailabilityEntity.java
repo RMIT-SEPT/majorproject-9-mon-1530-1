@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -39,10 +40,10 @@ public class AvailabilityEntity implements AbstractEntity<String> {
     @NotBlank
     private String customerUsername;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime startDateTime;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime endDateTime;
 
     @Override
