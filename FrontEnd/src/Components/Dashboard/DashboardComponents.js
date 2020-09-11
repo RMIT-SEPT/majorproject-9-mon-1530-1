@@ -88,6 +88,7 @@ const Button = styled.button`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
   background-color: ${(props) => props.theme.colours.green.primary};
   outline: 0px;
+  transition: background-color ${(props) => props.theme.transition.short};
 
   &:hover {
     background-color: ${(props) => props.theme.colours.green.secondary};
