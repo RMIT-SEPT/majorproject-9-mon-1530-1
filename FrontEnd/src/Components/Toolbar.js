@@ -5,7 +5,6 @@ import {
   StyledLogoLink,
   GreenNavLink,
   RightFlexElements,
-  StyledFormButton,
 } from './Navigation/Nav';
 import logo from '../media/logo.png';
 import login from '../media/login.png';
