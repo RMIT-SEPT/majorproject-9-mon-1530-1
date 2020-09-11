@@ -42,16 +42,16 @@ const toolbar = () => {
           <GreenNavLink>About</GreenNavLink>
         </a>
         <RightFlexElements>
-          <StyledFormButton>
+          <GreenNavLink>
             <a href="http://localhost:3000/login">
-              <img className="login" src={login} alt="login" />
+              <img className="login" src={login} alt="login" />{' '}
             </a>
-          </StyledFormButton>
-          <StyledFormButton>
+          </GreenNavLink>
+          <GreenNavLink>
             <a href="http://localhost:3000/form">
-              <img className="small" src={small} alt="small" />
+              <img className="small" src={small} alt="small" />{' '}
             </a>
-          </StyledFormButton>
+          </GreenNavLink>
         </RightFlexElements>
       </StyledNavBar>
     </StyledNavBlack>

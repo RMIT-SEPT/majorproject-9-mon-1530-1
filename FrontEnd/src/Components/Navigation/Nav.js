@@ -30,7 +30,7 @@ const StyledLogoLink = styled.a`
 
 const GreenNavLink = styled.div`
   flex: none;
-  color: ${(props) => props.theme.colours.greenPrimary};
+  color: ${(props) => props.theme.colours.green.primary};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 28px;
   margin: 0px 30px 4px 30px;
@@ -39,13 +39,13 @@ const GreenNavLink = styled.div`
   &:hover {
     cursor: pointer;
     text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenSecondary};
+    color: ${(props) => props.theme.colours.green.secondary};
   }
 
   &:active {
     cursor: pointer;
     text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenTertiary};
+    color: ${(props) => props.theme.colours.green.tertiary};
   }
 `;
 
