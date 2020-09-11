@@ -173,7 +173,7 @@ const User = ({ id }) => {
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
-          userName={data.name}
+          userName={userName}
           role={role}
           actions={{ bookingLink: bookAppointment }}
         >

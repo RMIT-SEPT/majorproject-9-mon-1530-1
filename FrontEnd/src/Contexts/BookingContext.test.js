@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import axios from 'axios';
 import { mount } from 'enzyme';
-import BookingProvider, { BookingContext } from './BookingContext';
+import BookingContextProvider, { BookingContext } from './BookingContext';
 
 const defaultData = {
   customerId: 'rw22448',
@@ -58,9 +58,9 @@ describe('BookingContext', () => {
   describe('clearBooking', () => {
     it('should clear state of all booking attributes', () => {
       const wrapper = mount(
-        <BookingProvider>
+        <BookingContextProvider>
           <TestComponent />
-        </BookingProvider>
+        </BookingContextProvider>
       );
 
       wrapper.find('[data-testid="fillButton"]').simulate('click');
@@ -88,9 +88,9 @@ describe('BookingContext', () => {
 
     it('should submit a booking with all details required', () => {
       const wrapper = mount(
-        <BookingProvider>
+        <BookingContextProvider>
           <TestComponent />
-        </BookingProvider>
+        </BookingContextProvider>
       );
 
       wrapper.find('[data-testid="fillButton"]').simulate('click');
