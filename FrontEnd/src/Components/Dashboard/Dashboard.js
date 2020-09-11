@@ -3,6 +3,14 @@ import styled from 'styled-components';
 import { LogOut, ChevronDown } from 'react-feather';
 import { theme } from '../../App';
 import logoAlt from '../../media/logo-alt.png';
+import {
+  StyledNavWhite,
+  StyledNavBarBorder,
+  StyledLogoLink,
+  GreenNavLink,
+  RightFlexElements,
+  StyledUserTagName,
+} from '../Navigation/Nav';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
 // idea is to allow for cohesive re-use of the same component, simply by provid-
@@ -41,47 +49,6 @@ const MenuContainer = styled.div`
   align-items: center;
 `;
 
-const StyledNavBar = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 38px 12px 38px;
-  outline: 2px solid #cccccc;
-`;
-
-const StyledLogoLink = styled.a`
-  flex: none;
-  margin-right: 20px;
-`;
-
-const GreenNavLink = styled.div`
-  flex: none;
-  color: ${(props) => props.theme.colours.green.primary};
-  font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  font-size: 28px;
-  margin: 0px 30px 4px 30px;
-  transition: color ${(props) => props.theme.transition.short};
-
-  &:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    color: ${(props) => props.theme.colours.green.secondary};
-  }
-
-  &:active {
-    cursor: pointer;
-    text-decoration: underline;
-    color: ${(props) => props.theme.colours.green.tertiary};
-  }
-`;
-
-const StyledUserTag = styled.div`
-  margin: 0px 0px 4px auto;
-  padding-left: 30px;
-  display: flex;
-  align-items: center;
-`;
-
 const Logo = styled.div`
   flex: none;
   width: 56px;
@@ -89,10 +56,6 @@ const Logo = styled.div`
   background-color: ${(props) => props.theme.colours.green.primary};
   border-radius: 28px;
   margin: 0px 12px 0px 24px;
-`;
-
-const StyledUserTagName = styled.div`
-  flex: none;
 `;
 
 const UserName = styled.div`
@@ -109,19 +72,14 @@ const Role = styled.div`
   text-transform: capitalize;
 `;
 
-const StyledDashboardNav = styled.div`
-  background-color: white;
-  min-width: ${(props) => props.theme.dashboard.defaultWidth};
-`;
-
 // props gets passed in to the DashboardWrapper component to access dynamic ele-
 // ments such as the userName and role
 
 const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
     <StyledPageWrapper>
-      <StyledDashboardNav>
-        <StyledNavBar>
+      <StyledNavWhite>
+        <StyledNavBarBorder>
           <StyledLogoLink href="/">
             <img src={logoAlt} alt="AGEM black logo" />
           </StyledLogoLink>
@@ -129,16 +87,16 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
           <GreenNavLink>Appointments</GreenNavLink>
           <GreenNavLink>Contact-us</GreenNavLink>
           <GreenNavLink>About</GreenNavLink>
-          <StyledUserTag>
+          <RightFlexElements>
             <StyledUserTagName>
               <UserName>{userName || 'empty'}</UserName>
               <Role>{role || 'empty'}</Role>
             </StyledUserTagName>
             <Logo></Logo>
             <ChevronDown size={28} />
-          </StyledUserTag>
-        </StyledNavBar>
-      </StyledDashboardNav>
+          </RightFlexElements>
+        </StyledNavBarBorder>
+      </StyledNavWhite>
       <FlexContainer>{children}</FlexContainer>
     </StyledPageWrapper>
   );
