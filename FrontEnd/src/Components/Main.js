@@ -58,7 +58,6 @@ const Hairdresser = styled.img`
 
 function Main(props) {
   document.body.style = 'background:black;'
-
   return (
     <MainWrapper>
       {/* this is the main grid that holds every element */}
