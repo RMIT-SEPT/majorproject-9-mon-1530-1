@@ -5,20 +5,24 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../App';
 
 
-import Main from '../Components/Main';
+import Toolbar from '../Components/Toolbar';
 global.MutationObserver = window.MutationObserver;
 
 const renderComponent = (component) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
-describe('Main', () => {
-  it('should render Main', () => {
+describe('Toolbar', () => {
+  it('should render Toolbar', () => {
     const { getByText } = renderComponent(
-      <Main ></Main>
+      <Toolbar ></Toolbar>
     );
 
-    expect(getByText('Barbers')).toBeTruthy();
+    expect(getByText('New Booking')).toBeTruthy();
+    expect(getByText('Contact-us')).toBeTruthy();
+    expect(getByText('Appointments')).toBeTruthy();
+    expect(getByText('About')).toBeTruthy();
+
 
   });
 
