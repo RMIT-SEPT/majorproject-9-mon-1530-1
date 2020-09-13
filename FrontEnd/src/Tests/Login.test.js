@@ -1,15 +1,9 @@
 
 import React from 'react';
 import 'mutationobserver-shim';
-import { render,fireEvent,act } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import Login from '../Components/Login';
 
-global.MutationObserver = window.MutationObserver;
-const testService = {
-  username: "liza",
-  password: 'liza',
-
-};
 describe('Form', () => {
   it('should render a link to log in', () => {
     const { getByText } = render(<Login />);
@@ -26,7 +20,7 @@ describe('Form', () => {
 
   // it('should simulate On SUbmit event', () => {
   //   const onSubmitSpy = jest.fn();
-    
+
   //   const { getByText } = render(
   //     //how do i fix this 
   //    <
@@ -50,7 +44,7 @@ describe('Form', () => {
     const password = container.querySelector(
       "input[name='password']"
     );
-  
+
     fireEvent.input(newLogin, {
       target: {
         value: mockUsername
@@ -65,5 +59,5 @@ describe('Form', () => {
     expect(password.value).toEqual(mockPwd);
     // expect(mockChangeValue).toBeCalledTimes(1);
   });
- })
+})
 
