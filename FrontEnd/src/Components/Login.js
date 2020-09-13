@@ -197,7 +197,9 @@ export const Login = props =>{
                 <CssTextFieldGreen required name='username' inputRef={
                   register({
                     required: 'username is Required'
-                  })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  })} id="outlined-full-width" 
+                  data-testid="username-field"
+                  style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
                 {errors.username && <span>This field is required</span>}
               </Grid>
@@ -206,14 +208,16 @@ export const Login = props =>{
                 <CssTextField required type="password" name='password' inputRef={
                   register({
                     required: 'password is Required'
-                  })} id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
+                  })} 
+                  data-testid="password-field"
+                  id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
                 {errors.password && <span>This field is required</span>}
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>
                 {loginerror}
-                <ColorButton type="submit" variant="contained" color="#ffffff" > Submit
+                <ColorButton type="submit" variant="contained" color="default" > Submit
                 
                 
                 </ColorButton>
