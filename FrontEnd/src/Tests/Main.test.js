@@ -17,10 +17,6 @@ describe('Main', () => {
     const { getByText } = renderComponent(
       <Main ></Main>
     );
-
     expect(getByText('Barbers')).toBeTruthy();
-
   });
-
-
 });
