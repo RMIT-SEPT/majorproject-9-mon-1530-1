@@ -90,6 +90,17 @@ class PatchEndpointTests extends UnitTestHelper {
                 )), HttpStatus.BAD_REQUEST));
     }
 
+    @Test
+    void idInvalid() {
+        String hoursId = "foo";
+
+        ResponseEntity result = bookingServiceController.updateHours(hoursId, new HashMap());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isEqualTo(new ValidationError("id", "must be an integer (whole number)"));
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
 
     private void runTest(Integer hoursId, Map<String, String> patchValues, Optional<BookingEntity> existing, BookingEntity patchedEntity, ResponseEntity expected) {
         when(mockedBookingRepository.findById(hoursId)).thenReturn(existing);
