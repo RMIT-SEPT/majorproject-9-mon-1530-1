@@ -220,7 +220,7 @@ const User = ({ id }) => {
                       <UpcomingAppointmentCard
                         key={booking.bookingId}
                         booking={booking}
-                      ></UpcomingAppointmentCard>
+                      />
                     ))}
                   </AppointmentsGrid>
                 </DashboardModule>

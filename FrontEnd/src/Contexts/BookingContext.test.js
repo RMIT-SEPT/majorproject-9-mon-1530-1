@@ -88,7 +88,7 @@ describe('BookingContext', () => {
     });
 
     afterEach(() => {
-      spy.mockRestore();
+      jest.clearAllMocks();
     });
 
     it('should submit a booking with all details required', () => {

@@ -20,7 +20,7 @@ describe('Dashboard', () => {
     const actions = { bookingLink: bookingMock };
 
     afterEach(() => {
-      jest.resetAllMocks();
+      jest.clearAllMocks();
     });
 
     it('should render a new Dashboard successfully when passing in required props', () => {
