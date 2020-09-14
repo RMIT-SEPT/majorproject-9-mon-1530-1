@@ -142,7 +142,10 @@ const UpcomingAppointmentCard = ({ booking }) => {
             className="upcomingAppointmentsCardIcon"
             size={theme.icons.size.small}
           />
-          {startTime.toLocaleTimeString()} to {endTime.toLocaleTimeString()}
+          <span>
+            <span>{startTime.toLocaleTimeString()}</span> to{' '}
+            <span>{endTime.toLocaleTimeString()}</span>
+          </span>
         </div>
       </CardContent>
     </StyledAppointmentCard>
