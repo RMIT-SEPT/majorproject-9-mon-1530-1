@@ -6,5 +6,5 @@ orbs:
 workflows:
   maven_test:
     jobs:
-      - maven/test
       working_directory: ~/BackEnd/Common
+      - maven/test
