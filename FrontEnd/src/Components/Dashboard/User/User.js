@@ -132,7 +132,7 @@ const User = ({ id }) => {
     setMain(true);
   };
 
-  const { data, isSuccess, isLoading, isError } = useQuery(
+  const { isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
     fetchUserData,
     {
