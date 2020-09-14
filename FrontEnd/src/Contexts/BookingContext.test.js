@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import axios from 'axios';
 import { mount } from 'enzyme';
-import BookingProvider, { BookingContext } from './BookingContext';
+import BookingContextProvider, { BookingContext } from './BookingContext';
+
+// Mock default data returned from BookingContext
 
 const defaultData = {
   customerId: 'rw22448',
@@ -9,6 +11,9 @@ const defaultData = {
   startTime: '2020-08-29T12:00:00',
   endTime: '2020-08-29T13:00:00',
 };
+
+// Wrapped a component to test the context, since it needs a vehicle to test ag-
+// ainst
 
 const TestComponent = () => {
   const {
@@ -58,9 +63,9 @@ describe('BookingContext', () => {
   describe('clearBooking', () => {
     it('should clear state of all booking attributes', () => {
       const wrapper = mount(
-        <BookingProvider>
+        <BookingContextProvider>
           <TestComponent />
-        </BookingProvider>
+        </BookingContextProvider>
       );
 
       wrapper.find('[data-testid="fillButton"]').simulate('click');
@@ -83,14 +88,14 @@ describe('BookingContext', () => {
     });
 
     afterEach(() => {
-      spy.mockRestore();
+      jest.clearAllMocks();
     });
 
     it('should submit a booking with all details required', () => {
       const wrapper = mount(
-        <BookingProvider>
+        <BookingContextProvider>
           <TestComponent />
-        </BookingProvider>
+        </BookingContextProvider>
       );
 
       wrapper.find('[data-testid="fillButton"]').simulate('click');

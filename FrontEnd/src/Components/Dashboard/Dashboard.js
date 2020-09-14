@@ -111,6 +111,7 @@ const MenuBarComponent = ({ children }) => {
         {children}
         <LogOut
           className="menuIcon"
+          data-testid="logOutIcon"
           color={theme.colours.grey.primary}
           size={theme.icons.size.medium}
         />
