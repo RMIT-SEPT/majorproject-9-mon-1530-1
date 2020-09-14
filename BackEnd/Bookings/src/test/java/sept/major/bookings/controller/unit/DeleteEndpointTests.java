@@ -1,10 +1,11 @@
-package sept.major.bookings.unit;
+package sept.major.bookings.controller.unit;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sept.major.common.response.ValidationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,5 +35,14 @@ public class DeleteEndpointTests extends UnitTestHelper {
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(result.getBody()).isEqualTo(String.format("No record with a identifier of %s was found", bookingId));
+    }
+
+    @Test
+    void IdInvalid() {
+        ResponseEntity result = bookingServiceController.deleteBooking("foo");
+
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(result.getBody()).isEqualTo(new ValidationError("id", "must be an integer (whole number)"));
     }
 }

@@ -75,7 +75,7 @@ public class BookingServiceController {
         try {
             date = (dateString == null ? null : LocalDate.parse(dateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
         try {
             List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);

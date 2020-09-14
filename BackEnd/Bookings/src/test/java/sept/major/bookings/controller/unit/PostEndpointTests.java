@@ -1,6 +1,5 @@
-package sept.major.bookings.unit;
+package sept.major.bookings.controller.unit;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -33,32 +32,16 @@ public class PostEndpointTests extends UnitTestHelper {
         assertThat(result.getBody()).isEqualTo(inputEntity);
     }
 
-    @Ignore
     @Test
-    void existing() {
-        Map<String, String> input = randomEntityMap();
-        BookingEntity inputEntity = createBookingEntity(input);
-
-        when(mockedBookingRepository.findById(inputEntity.getBookingId())).thenReturn(Optional.of(inputEntity));
-        when(mockedBookingRepository.save(inputEntity)).thenReturn(inputEntity);
-
-        ResponseEntity result = bookingServiceController.createBooking(input);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).isEqualTo("Failed to create entity because an entity with it's identifier already exists");
-    }
-
-    @Test
-    void missingCustomerId() {
+    void missingCustomerUsername() {
         String bookingId = randomAlphanumericString(5);
-        String workerId = randomAlphanumericString(5);
+        String workerUsername = randomAlphanumericString(5);
         String startTime = LocalDateTime.now().toString();
         String endTime = LocalDateTime.now().plusHours(4).toString();
 
         Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
-            put("workerId", workerId);
+            put("workerUsername", workerUsername);
             put("startDateTime", startTime);
             put("endDateTime", endTime);
         }};
@@ -70,15 +53,15 @@ public class PostEndpointTests extends UnitTestHelper {
     }
 
     @Test
-    void missingWorkerId() {
+    void missingWorkerUsername() {
         String bookingId = randomAlphanumericString(5);
-        String customerId = randomAlphanumericString(5);
+        String customerUsername = randomAlphanumericString(5);
         String startTime = LocalDateTime.now().toString();
         String endTime = LocalDateTime.now().plusHours(4).toString();
 
         Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
-            put("customerId", customerId);
+            put("customerUsername", customerUsername);
             put("startDateTime", startTime);
             put("endDateTime", endTime);
         }};
@@ -92,14 +75,14 @@ public class PostEndpointTests extends UnitTestHelper {
     @Test
     void missingStartTime() {
         String bookingId = randomAlphanumericString(5);
-        String workerId = randomAlphanumericString(5);
-        String customerId = randomAlphanumericString(5);
+        String workerUsername = randomAlphanumericString(5);
+        String customerUsername = randomAlphanumericString(5);
         String endTime = LocalDateTime.now().plusHours(4).toString();
 
         Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
-            put("workerId", workerId);
-            put("customerId", customerId);
+            put("workerUsername", workerUsername);
+            put("customerUsername", customerUsername);
             put("endDateTime", endTime);
         }};
 
@@ -112,14 +95,14 @@ public class PostEndpointTests extends UnitTestHelper {
     @Test
     void missingEndTime() {
         String bookingId = randomAlphanumericString(5);
-        String workerId = randomAlphanumericString(5);
-        String customerId = randomAlphanumericString(5);
+        String workerUsername = randomAlphanumericString(5);
+        String customerUsername = randomAlphanumericString(5);
         String startTime = LocalDateTime.now().toString();
 
         Map<String, String> input = new HashMap<String, String>() {{
             put("bookingId", bookingId);
-            put("workerId", workerId);
-            put("customerId", customerId);
+            put("workerUsername", workerUsername);
+            put("customerUsername", customerUsername);
             put("startDateTime", startTime);
         }};
 

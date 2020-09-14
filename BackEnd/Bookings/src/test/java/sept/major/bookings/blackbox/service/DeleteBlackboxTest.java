@@ -1,10 +1,11 @@
-package sept.major.bookings.blackbox;
+package sept.major.bookings.blackbox.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sept.major.bookings.blackbox.BookingBlackBoxHelper;
 import sept.major.common.testing.RequestParameter;
 
 import java.util.Arrays;

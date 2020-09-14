@@ -51,7 +51,7 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
         if (startTime == null) {
             throw new IllegalArgumentException("No start time was defined");
         } else {
-            entityList = getRepository().findAllByStartDateTimeBetween(startTime, endTime);
+            entityList = getRepository().findAllInRange(startTime, endTime);
         }
 
         if (entityList == null || entityList.size() == 0) {
@@ -130,7 +130,7 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
             throw new ValidationErrorException(Arrays.asList(new ValidationError("endDateTime", "must be after startDateTime")));
         }
 
-        List<BookingEntity> duplicateEntities = repository.findConflictingHours(entity.getWorkerUsername(),
+        List<BookingEntity> duplicateEntities = repository.findConflictingHours(entity.getWorkerUsername(), entity.getCustomerUsername(),
                 entity.getStartDateTime(), entity.getEndDateTime());
         if (duplicateEntities == null) {
             return super.saveEntity(entity);
