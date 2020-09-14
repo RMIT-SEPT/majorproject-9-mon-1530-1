@@ -113,9 +113,9 @@ const DashboardModule = ({ children, title }) => {
   );
 };
 
-const UpcomingAppointmentCard = ({ children }) => {
-  const [startTime] = useState(new Date(children.startDateTime));
-  const [endTime] = useState(new Date(children.endDateTime));
+const UpcomingAppointmentCard = ({ booking }) => {
+  const [startTime] = useState(new Date(booking.startDateTime));
+  const [endTime] = useState(new Date(booking.endDateTime));
 
   return (
     // TODO: Solve responsive flex layout for these components when there are many elements in a single row
@@ -127,7 +127,7 @@ const UpcomingAppointmentCard = ({ children }) => {
             className="upcomingAppointmentsCardIcon"
             size={theme.icons.size.small}
           />
-          <Strong>{children.workerUsername}</Strong>
+          <Strong>{booking.workerUsername}</Strong>
         </div>
         <br />
         <div>
