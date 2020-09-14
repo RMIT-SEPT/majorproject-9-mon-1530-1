@@ -9,6 +9,9 @@ import {
 } from './BookingComponents';
 import { theme } from '../../../App';
 
+// Added this render method to wrap components rendered in Theme tag to prevent
+// test failing
+
 const renderComponent = (component) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };

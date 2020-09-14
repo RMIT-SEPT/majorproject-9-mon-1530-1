@@ -3,12 +3,17 @@ import axios from 'axios';
 import { mount } from 'enzyme';
 import BookingContextProvider, { BookingContext } from './BookingContext';
 
+// Mock default data returned from BookingContext
+
 const defaultData = {
   customerId: 'rw22448',
   workerId: 'jeffOak',
   startTime: '2020-08-29T12:00:00',
   endTime: '2020-08-29T13:00:00',
 };
+
+// Wrapped a component to test the context, since it needs a vehicle to test ag-
+// ainst
 
 const TestComponent = () => {
   const {
