@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
+import styled from 'styled-components';
 import axios from 'axios';
 import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -27,6 +29,13 @@ import { BookingContext } from '../../../Contexts/BookingContext';
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
+
+const StyledStateContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+`;
 
 const services = [
   {
@@ -92,8 +101,10 @@ const User = ({ id }) => {
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
+      .then((response) => response)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
+        throw error;
       });
 
     return data;
@@ -140,6 +151,7 @@ const User = ({ id }) => {
         setUserName(data.name);
         setRole(data.userType);
       },
+      retry: 3,
     }
   );
   const [mutate] = useMutation(
@@ -175,8 +187,16 @@ const User = ({ id }) => {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Error...</div>}
+      {isLoading && (
+        <StyledStateContainer>
+          <BarLoader
+            height={8}
+            width={200}
+            color={theme.colours.green.primary}
+          />
+        </StyledStateContainer>
+      )}
+      {isError && <StyledStateContainer>Error...</StyledStateContainer>}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}
