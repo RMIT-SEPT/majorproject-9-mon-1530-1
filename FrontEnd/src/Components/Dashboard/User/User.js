@@ -302,7 +302,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'JJSmith',
+  id: 'jeffOak',
 };
 
 export default User;
