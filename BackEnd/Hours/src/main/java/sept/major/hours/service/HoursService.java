@@ -1,5 +1,6 @@
 package sept.major.hours.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -54,15 +55,15 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
     private List<HoursEntity> filterUsernames(List<HoursEntity> hoursList, String workerUsername, String creatorUsername) throws RecordNotFoundException {
         List<HoursEntity> result;
 
-        if (workerUsername != null && creatorUsername != null) {
+        if (StringUtils.isNotBlank(workerUsername) && StringUtils.isNotBlank(creatorUsername)) {
             result = hoursList.stream()
                     .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()) && creatorUsername.equals(hoursEntity.getCreatorUsername()))
                     .collect(Collectors.toList());
-        } else if (workerUsername != null) {
+        } else if (StringUtils.isNotBlank(workerUsername)) {
             result = hoursList.stream()
                     .filter(hoursEntity -> workerUsername.equals(hoursEntity.getWorkerUsername()))
                     .collect(Collectors.toList());
-        } else if (creatorUsername != null) {
+        } else if (StringUtils.isNotBlank(creatorUsername)) {
             result = hoursList.stream()
                     .filter(hoursEntity -> creatorUsername.equals(hoursEntity.getCreatorUsername()))
                     .collect(Collectors.toList());

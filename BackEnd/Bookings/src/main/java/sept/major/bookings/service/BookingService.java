@@ -1,6 +1,7 @@
 package sept.major.bookings.service;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sept.major.bookings.entity.BookingEntity;
@@ -42,7 +43,7 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
         if (date == null) {
             throw new IllegalArgumentException("No start time was defined");
         }
-        return getBookingsInRange(date.atStartOfDay(), date.atTime(23,59), workerUsername, customerUsername);
+        return getBookingsInRange(date.atStartOfDay(), date.atStartOfDay().plusDays(1).minusSeconds(1), workerUsername, customerUsername);
     }
 
     public List<BookingEntity> getBookingsInRange(LocalDateTime startTime, LocalDateTime endTime, String workerUsername, String customerUsername) throws IllegalArgumentException, RecordNotFoundException {
@@ -101,15 +102,15 @@ public class BookingService extends CrudService<BookingEntity, Integer> {
     private List<BookingEntity> filterUsernames(List<BookingEntity> bookingList, String workerUsername, String customerUsername) throws RecordNotFoundException {
         List<BookingEntity> result;
 
-        if (workerUsername != null && customerUsername != null) {
+        if (StringUtils.isNotBlank(workerUsername) && StringUtils.isNotBlank(customerUsername)) {
             result = bookingList.stream()
                     .filter(bookingEntity -> workerUsername.equals(bookingEntity.getWorkerUsername()) && customerUsername.equals(bookingEntity.getCustomerUsername()))
                     .collect(Collectors.toList());
-        } else if (workerUsername != null) {
+        } else if (StringUtils.isNotBlank(workerUsername)) {
             result = bookingList.stream()
                     .filter(bookingEntity -> workerUsername.equals(bookingEntity.getWorkerUsername()))
                     .collect(Collectors.toList());
-        } else if (customerUsername != null) {
+        } else if (StringUtils.isNotBlank(customerUsername)) {
             result = bookingList.stream()
                     .filter(bookingEntity -> customerUsername.equals(bookingEntity.getCustomerUsername()))
                     .collect(Collectors.toList());

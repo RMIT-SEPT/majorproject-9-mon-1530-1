@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
+import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { theme } from '../../../App';
+import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -19,11 +21,6 @@ import {
   WorkerRadioButton,
   TimeFlex,
 } from '../Bookings/BookingComponents';
-import home from '../../../media/home-40px.svg';
-import book from '../../../media/book-40px.svg';
-import calendar from '../../../media/calendar-40px.svg';
-import phone from '../../../media/phone-40px.svg';
-import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
 
@@ -76,12 +73,14 @@ const workers = [
 
 const tempBookings = [
   {
+    bookingId: '1',
     workerUsername: 'jeffOak',
     customerUsername: 'rw22448',
     startDateTime: '2020-08-29T12:00',
     endDateTime: '2020-08-29T13:00',
   },
   {
+    bookingId: '2',
     workerUsername: 'jeffOak',
     customerUsername: 'anthony',
     startDateTime: '2020-08-31T14:00',
@@ -109,6 +108,13 @@ const User = ({ id }) => {
     setBooking(true);
   };
 
+  const returnHome = () => {
+    clearBooking();
+    setBooking(false);
+    setService(false);
+    setMain(true);
+  };
+
   const cancelBooking = () => {
     clearBooking();
     setBooking(false);
@@ -126,7 +132,7 @@ const User = ({ id }) => {
     setMain(true);
   };
 
-  const { data, isSuccess, isLoading, isError } = useQuery(
+  const { isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
     fetchUserData,
     {
@@ -173,34 +179,48 @@ const User = ({ id }) => {
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
-          userName={data.name}
+          userName={userName}
           role={role}
           actions={{ bookingLink: bookAppointment }}
         >
           <MenuBarComponent>
-            <MenuIcon src={home} alt="Home icon" />
-            <MenuIcon src={book} alt="Book icon" />
-            <MenuIcon src={phone} alt="Phone icon" />
-            <MenuIcon src={calendar} alt="Calendar icon" />
+            <Home
+              onClick={returnHome}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <PlusCircle
+              onClick={bookAppointment}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Phone
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Calendar
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
           </MenuBarComponent>
           {main && (
             <Content>
               <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
               <DashboardGrid>
-                <DashboardModule
-                  title="Upcoming appointments"
-                  icon={circleAdd}
-                  action={bookAppointment}
-                >
+                <DashboardModule title="Upcoming appointments">
                   {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
                   <AppointmentsGrid>
                     {tempBookings.map((booking) => (
-                      <UpcomingAppointmentCard key={booking.customerUsername}>
-                        {/* TODO: Potentially provide a bookingId to use as key for uniqueness? */}
-                        {booking}
-                      </UpcomingAppointmentCard>
+                      <UpcomingAppointmentCard
+                        key={booking.bookingId}
+                        booking={booking}
+                      />
                     ))}
                   </AppointmentsGrid>
                 </DashboardModule>

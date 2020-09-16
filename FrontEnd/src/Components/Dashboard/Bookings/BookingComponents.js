@@ -26,14 +26,14 @@ const CardContents = styled.div`
   &:hover {
     cursor: pointer;
     text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenPrimary};
+    color: ${(props) => props.theme.colours.green.primary};
   }
 `;
 
 const TempServiceIcon = styled.div`
   width: 74px;
   height: 74px;
-  background-color: ${(props) => props.theme.colours.greenPrimary};
+  background-color: ${(props) => props.theme.colours.green.primary};
   border-radius: 37px;
 `;
 
@@ -65,7 +65,7 @@ const StyledRadioInput = styled.input`
   top: 2px;
 
   &:checked {
-    border: 12px solid ${(props) => props.theme.colours.greenPrimary};
+    border: 12px solid ${(props) => props.theme.colours.green.primary};
   }
 `;
 

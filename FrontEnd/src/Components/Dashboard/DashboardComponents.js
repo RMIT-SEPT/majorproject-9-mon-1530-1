@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Watch, Clock, User } from 'react-feather';
+import { theme } from '../../App';
 import hairdresserImage from '../../media/hairdresser-card.png';
-import watch from '../../media/watch-16px.svg';
-import clock from '../../media/clock-16px.svg';
-import user from '../../media/user-16px.svg';
 
 // Components defined here are specifically used for dashboard appointments
 
@@ -46,16 +45,6 @@ const StyledDashboardModule = styled.div`
   grid-column: span 2;
 `;
 
-const ClickableSpan = styled.span`
-  transition: color ${(props) => props.theme.transition.short};
-
-  &:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    color: ${(props) => props.theme.colours.greenPrimary};
-  }
-`;
-
 const Title = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-size: 24px;
@@ -63,12 +52,6 @@ const Title = styled.span`
 
 const Children = styled.div`
   margin-top: 8px;
-`;
-
-const TitleIcon = styled.img`
-  position: relative;
-  top: 2px;
-  left: 8px;
 `;
 
 const CardImage = styled.img`
@@ -93,13 +76,6 @@ const Strong = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
 
-const AppointmentCardLogo = styled.img`
-  position: relative;
-  right: 2px;
-  top: 3px;
-  margin-right: 4px;
-`;
-
 const Button = styled.button`
   margin-top: 24px;
   padding: 4px 24px;
@@ -110,44 +86,36 @@ const Button = styled.button`
   border: 2px solid transparent;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => props.theme.colours.greenPrimary};
+  background-color: ${(props) => props.theme.colours.green.primary};
   outline: 0px;
+  transition: background-color ${(props) => props.theme.transition.short};
 
   &:hover {
-    background-color: ${(props) => props.theme.colours.greenSecondary};
+    background-color: ${(props) => props.theme.colours.green.secondary};
   }
 
   &:active {
-    background-color: ${(props) => props.theme.colours.greenTertiary};
+    background-color: ${(props) => props.theme.colours.green.tertiary};
     border: 2px solid black;
     position: relative;
     top: 4px;
   }
 `;
 
-const DashboardModule = ({ children, title, icon, action }) => {
+const DashboardModule = ({ children, title }) => {
   return (
     <StyledDashboardModule>
-      {action && (
-        <ClickableSpan onClick={action}>
-          <Title>{title}</Title>
-          <TitleIcon src={icon} />
-        </ClickableSpan>
-      )}
-      {!action && (
-        <span>
-          <Title>{title}</Title>
-          <TitleIcon src={icon} />
-        </span>
-      )}
+      <span>
+        <Title>{title}</Title>
+      </span>
       <Children>{children}</Children>
     </StyledDashboardModule>
   );
 };
 
-const UpcomingAppointmentCard = ({ children }) => {
-  const [startTime] = useState(new Date(children.startDateTime));
-  const [endTime] = useState(new Date(children.endDateTime));
+const UpcomingAppointmentCard = ({ booking }) => {
+  const [startTime] = useState(new Date(booking.startDateTime));
+  const [endTime] = useState(new Date(booking.endDateTime));
 
   return (
     // TODO: Solve responsive flex layout for these components when there are many elements in a single row
@@ -155,17 +123,29 @@ const UpcomingAppointmentCard = ({ children }) => {
       <CardImage src={hairdresserImage} alt="Hairdresser image" />
       <CardContent>
         <div>
-          <AppointmentCardLogo src={user} alt="User logo" />
-          <Strong>{children.workerUsername}</Strong>
+          <User
+            className="upcomingAppointmentsCardIcon"
+            size={theme.icons.size.small}
+          />
+          <Strong>{booking.workerUsername}</Strong>
         </div>
         <br />
         <div>
-          <AppointmentCardLogo src={watch} alt="Watch logo" />
+          <Watch
+            className="upcomingAppointmentsCardIcon"
+            size={theme.icons.size.small}
+          />
           {startTime.toLocaleDateString()}
         </div>
         <div>
-          <AppointmentCardLogo src={clock} alt="Clock logo" />
-          {startTime.toLocaleTimeString()} to {endTime.toLocaleTimeString()}
+          <Clock
+            className="upcomingAppointmentsCardIcon"
+            size={theme.icons.size.small}
+          />
+          <span>
+            <span>{startTime.toLocaleTimeString()}</span> to{' '}
+            <span>{endTime.toLocaleTimeString()}</span>
+          </span>
         </div>
       </CardContent>
     </StyledAppointmentCard>

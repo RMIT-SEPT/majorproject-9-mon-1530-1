@@ -19,8 +19,8 @@ const Authorized = () => {
         </div>
       </div>
       <div class="message">
-        <h1>403 - You Shall Not Pass</h1>
-        <p>Oh NOOO!, Gandalf is blocking your way!<br />Maybe you have a typo in the url? Or you meant to go to a different location? Like...Hobbiton?</p>
+        <h1>403 - You Shall Pass</h1>
+        <p>Welcome!<br /></p>
       </div>
       <p><Link to='/'>Back to Home</Link></p>
     </div>
