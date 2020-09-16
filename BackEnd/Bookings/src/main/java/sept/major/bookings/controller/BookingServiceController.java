@@ -38,6 +38,13 @@ public class BookingServiceController {
                                    @RequestParam(required = false) String workerUsername,
                                    @RequestParam(required = false) String customerUsername
     ) {
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (customerUsername != null && customerUsername.equals("null")) {
+            customerUsername = null;
+        }
+
         LocalDateTime startDateTime;
         try {
             startDateTime = LocalDateTime.parse(startDateTimeString);
@@ -71,6 +78,13 @@ public class BookingServiceController {
     public ResponseEntity getDate(@RequestParam(name = "date") String dateString,
                                    @RequestParam(required = false) String workerUsername,
                                    @RequestParam(required = false) String customerUsername) {
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (customerUsername != null && customerUsername.equals("null")) {
+            customerUsername = null;
+        }
+
         LocalDate date;
         try {
             date = (dateString == null ? null : LocalDate.parse(dateString));
@@ -91,6 +105,13 @@ public class BookingServiceController {
     @GetMapping("/all")
     public ResponseEntity getAllBookings(@RequestParam(required = false) String workerUsername,
                                          @RequestParam(required = false) String customerUsername) {
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (customerUsername != null && customerUsername.equals("null")) {
+            customerUsername = null;
+        }
+
         try {
             List<BookingEntity> entityList = bookingService.getBookingsFor(workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
