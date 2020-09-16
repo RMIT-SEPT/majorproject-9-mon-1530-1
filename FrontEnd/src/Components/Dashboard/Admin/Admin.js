@@ -74,7 +74,7 @@ import {
                     </MenuBarComponent>
                     <Content>
                         <Heading>Welcome back, {userName}!</Heading>
-                        <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                        <SubHeading>Today is {date.toLocaleDateString('en-AU')}</SubHeading>
                         //this would be where the main decor would go under
                     </Content>
                 </DashboardWrapper>
