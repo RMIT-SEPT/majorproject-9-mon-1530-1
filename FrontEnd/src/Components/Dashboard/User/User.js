@@ -104,14 +104,16 @@ const User = ({ id }) => {
     clearBooking();
     setCustomerId(userId);
     setMain(false);
-    setService(false);
-    setBooking(true);
+    setBooking(false);
+    setWorker(false);
+    setService(true);
   };
 
   const returnHome = () => {
     clearBooking();
     setBooking(false);
     setService(false);
+    setWorker(false);
     setMain(true);
   };
 
@@ -121,15 +123,25 @@ const User = ({ id }) => {
     setMain(true);
   };
 
-  const selectService = () => {
-    setBooking(false);
-    setService(true);
+  const selectBooking = () => {
+    setService(false);
+    setBooking(true);
   };
 
   const cancelService = () => {
     clearBooking();
     setService(false);
     setMain(true);
+  };
+
+  const selectWorker = () => {
+    setBooking(false);
+    setWorker(true);
+  };
+
+  const cancelWorker = () => {
+    setWorker(false);
+    setBooking(true);
   };
 
   const { isSuccess, isLoading, isError } = useQuery(
@@ -170,8 +182,9 @@ const User = ({ id }) => {
 
   // Page states for updating current view
   const [main, setMain] = useState(true);
-  const [booking, setBooking] = useState(false);
   const [service, setService] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [worker, setWorker] = useState(false);
 
   return (
     <>
@@ -227,6 +240,28 @@ const User = ({ id }) => {
               </DashboardGrid>
             </Content>
           )}
+          {service && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={cancelService}>
+                Back
+              </Button>
+              <DashboardGrid>
+                <DashboardModule title="Choose a service">
+                  <PanelGrid>
+                    {services.map((service) => (
+                      <ServiceCard
+                        key={service.serviceName}
+                        onClick={selectBooking}
+                        service={service}
+                      ></ServiceCard>
+                    ))}
+                  </PanelGrid>
+                </DashboardModule>
+              </DashboardGrid>
+            </Content>
+          )}
           {booking && (
             <Content>
               <Heading>New booking</Heading>
@@ -234,67 +269,51 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelBooking}>
                 Back
               </Button>
-              <form>
-                <DashboardGrid>
-                  <DashboardModule title="Choose a service">
-                    <PanelGrid>
-                      {services.map((service) => (
-                        <ServiceCard
-                          key={service.serviceName}
-                          onClick={selectService}
-                          service={service}
-                        ></ServiceCard>
-                      ))}
-                    </PanelGrid>
-                  </DashboardModule>
-                </DashboardGrid>
-              </form>
+              <DashboardGrid>
+                <DashboardModule title="Choose a worker">
+                  <PanelGrid>
+                    {workers.map((worker) => (
+                      <WorkerRadioButton
+                        type="radio"
+                        worker={worker}
+                        key={worker.workerUserName}
+                        name="selectWorker"
+                        onChange={setWorkerId}
+                        onClick={selectWorker}
+                      ></WorkerRadioButton>
+                    ))}
+                  </PanelGrid>
+                </DashboardModule>
+              </DashboardGrid>
             </Content>
           )}
-          {service && (
+          {worker && (
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <form>
-                <Button type="button" onClick={cancelService}>
-                  Back
-                </Button>
-                <DashboardGrid>
-                  <DashboardModule title="Choose a worker">
-                    <PanelGrid>
-                      {workers.map((worker) => (
-                        <WorkerRadioButton
-                          type="radio"
-                          worker={worker}
-                          key={worker.workerUserName}
-                          name="selectWorker"
-                          onChange={setWorkerId}
-                        ></WorkerRadioButton>
-                      ))}
-                    </PanelGrid>
-                  </DashboardModule>
-                </DashboardGrid>
-                <DashboardModule title="Select times">
-                  <TimeFlex>
-                    {isChrome && (
-                      <>
-                        <DateTimeSelector
-                          label="Start time"
-                          onChange={setStartTime}
-                        ></DateTimeSelector>
-                        <DateTimeSelector
-                          label="End time"
-                          onChange={setEndTime}
-                        ></DateTimeSelector>
-                      </>
-                    )}
-                    {isFirefox && <div>Firefox...</div>}
-                  </TimeFlex>
-                </DashboardModule>
-                <Button type="button" onClick={mutate}>
-                  Submit
-                </Button>
-              </form>
+              <Button type="button" onClick={cancelWorker}>
+                Back
+              </Button>
+              <DashboardModule title="Select times">
+                <TimeFlex>
+                  {isChrome && (
+                    <>
+                      <DateTimeSelector
+                        label="Start time"
+                        onChange={setStartTime}
+                      ></DateTimeSelector>
+                      <DateTimeSelector
+                        label="End time"
+                        onChange={setEndTime}
+                      ></DateTimeSelector>
+                    </>
+                  )}
+                  {isFirefox && <div>Firefox...</div>}
+                </TimeFlex>
+              </DashboardModule>
+              <Button type="button" onClick={mutate}>
+                Submit
+              </Button>
             </Content>
           )}
         </DashboardWrapper>

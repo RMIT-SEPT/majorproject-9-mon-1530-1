@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Title } from '../DashboardComponents';
 
@@ -115,7 +115,7 @@ const ServiceCard = ({ service, onClick }) => {
   );
 };
 
-const WorkerRadioButton = ({ worker, onChange }) => {
+const WorkerRadioButton = ({ worker, onChange, onClick }) => {
   return (
     <StyledWorkerCard>
       <CardContents>
@@ -129,6 +129,9 @@ const WorkerRadioButton = ({ worker, onChange }) => {
           onChange={() => {
             onChange(worker.workerUserName);
           }}
+          onClick={() => {
+            onClick();
+          }}
         />
         <CardContentsText>
           <StyledLabel htmlFor={worker.workerUserName}>
@@ -141,6 +144,10 @@ const WorkerRadioButton = ({ worker, onChange }) => {
 };
 
 const DateTimeSelector = ({ label, onChange }) => {
+  useEffect(() => {
+    console.log(label);
+  });
+
   return (
     <DateTimeSelectorWrapper>
       <label htmlFor={label}>{label}</label>

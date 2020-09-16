@@ -26,7 +26,6 @@ const DashboardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin: 24px 0px;
 `;
 
 const AppointmentsGrid = styled.div`
@@ -43,6 +42,7 @@ const PanelGrid = styled.div`
 
 const StyledDashboardModule = styled.div`
   grid-column: span 2;
+  margin-top: 24px;
 `;
 
 const Title = styled.span`
