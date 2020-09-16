@@ -21,7 +21,8 @@ import {
 } from '../Bookings/BookingComponents';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
-
+import FormDetails from '../../FormDetails';
+import { Grid } from '@material-ui/core';
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
@@ -218,9 +219,17 @@ const Admin = ({ id }) => {
                             <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
                             <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                             <DashboardGrid>
-                                <Button type="button" onClick={goBack}>
+                               <Grid>
+                               <Grid item xs={12}>
+                               <Button type="button" onClick={goBack}>
                                     Back
               </Button>
+              </Grid>
+              <Grid item xs={12}>
+              <FormDetails/> 
+              </Grid>
+                               </Grid>
+
                             </DashboardGrid>
                         </Content>
                     )}
