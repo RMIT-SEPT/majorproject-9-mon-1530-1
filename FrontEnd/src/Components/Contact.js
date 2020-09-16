@@ -51,7 +51,7 @@ const Construction = styled.img`
   background-size: contain;
 `
 const Left = styled.div`
-  height:200vh;
+  height:120vh;
   padding-top: 3%;
   /* flex-grow: 1 ; */
   background-color: black;
@@ -61,6 +61,7 @@ const Left = styled.div`
 const Logo = styled.img`
   background-repeat: no-repeat;
   background-size: contain;
+  padding-top: 3%;
   /* padding-left: 10%; */
 `
 
@@ -104,6 +105,7 @@ const CssTextFieldGreen = withStyles({
 // we use normal routing in order to move between pages 
 
 const contact = (props) => {
+  
   return (
     // this is the main grid that holds every element 
     <Grid container alignItems="center" justify="center" spacing={0}>
