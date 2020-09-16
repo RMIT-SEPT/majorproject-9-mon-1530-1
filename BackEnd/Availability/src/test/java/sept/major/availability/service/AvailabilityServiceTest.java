@@ -1,20 +1,18 @@
 package sept.major.availability.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import sept.major.availability.entity.AvailabilityEntity;
+import sept.major.availability.entity.BookingResponse;
+import sept.major.availability.entity.HoursResponse;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import sept.major.availability.entity.AvailabilityEntity;
-import sept.major.availability.entity.BookingEntity;
-import sept.major.availability.entity.HoursEntity;
+import static org.junit.Assert.*;
 
 @SpringBootTest
 public class AvailabilityServiceTest {
@@ -25,8 +23,8 @@ public class AvailabilityServiceTest {
 	@Test //no hours and no bookings
 	void checkAllAvailabilities_empty() {
 
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -36,13 +34,13 @@ public class AvailabilityServiceTest {
 
 	@Test //no hours and just bookings
 	void checkAllAvailabilities_bookingsOnly() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 		
 		LocalDateTime now = LocalDateTime.now();
-		
-		bookings.add(new BookingEntity("", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+
+		bookings.add(new BookingResponse("", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -53,16 +51,16 @@ public class AvailabilityServiceTest {
 
 	@Test //full overlap of hours and bookings
 	void checkAllAvailabilities_fullOverlap() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -72,13 +70,13 @@ public class AvailabilityServiceTest {
 	
 	@Test // only hours 
 	void checkAllAvailabilities_hoursOnly() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("2", "", "", now.plus(5, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("2", "", "", now.plus(5, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -90,18 +88,18 @@ public class AvailabilityServiceTest {
 	
 	@Test // no overlap
 	void checkAllAvailabilities_noOverlap() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
-		
-		bookings.add(new BookingEntity("1", "", "", now.minus(10, ChronoUnit.HOURS), now.minus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(10, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("3", "", "", now.plus(15, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("4", "", "", now.plus(20, ChronoUnit.HOURS), now.plus(25, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+
+		bookings.add(new BookingResponse("1", "", "", now.minus(10, ChronoUnit.HOURS), now.minus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(10, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("3", "", "", now.plus(15, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("4", "", "", now.plus(20, ChronoUnit.HOURS), now.plus(25, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -117,13 +115,13 @@ public class AvailabilityServiceTest {
 
 	@Test // partial overlap at the start
 	void checkAllAvailabilities_partialStartOverlap() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursEntity("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("1", "", "", now.minus(3, ChronoUnit.HOURS), now.plus(2, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("1", "", "", now.minus(3, ChronoUnit.HOURS), now.plus(2, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -136,13 +134,13 @@ public class AvailabilityServiceTest {
 	
 	@Test // partial overlap at the end 
 	void checkAllAvailabilities_partialEndOverlap() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursEntity("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingEntity("1", "", "", base.plus(3, ChronoUnit.HOURS), base.plus(6, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse("1", "", "", base.plus(3, ChronoUnit.HOURS), base.plus(6, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
@@ -156,14 +154,14 @@ public class AvailabilityServiceTest {
 	
 	@Test // partial overlap at the start 
 	void checkAllAvailabilities_bookingWithingHours() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursEntity("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
-		
-		bookings.add(new BookingEntity("1", "", "", base.plus(2, ChronoUnit.HOURS), base.plus(3, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
+
+		bookings.add(new BookingResponse("1", "", "", base.plus(2, ChronoUnit.HOURS), base.plus(3, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
@@ -179,26 +177,26 @@ public class AvailabilityServiceTest {
 	
 	@Test // partial overlap at the start 
 	void checkAllAvailabilities_complex() {
-		List<HoursEntity> hours = new ArrayList<>();
-		List<BookingEntity> bookings = new ArrayList<>();
+		List<HoursResponse> hours = new ArrayList<>();
+		List<BookingResponse> bookings = new ArrayList<>();
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursEntity("1", "", "", base.plus(00, ChronoUnit.HOURS), base.plus(05, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(25, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("4", "", "", base.plus(30, ChronoUnit.HOURS), base.plus(35, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("5", "", "", base.plus(40, ChronoUnit.HOURS), base.plus(45, ChronoUnit.HOURS)));
-		hours.add(new HoursEntity("5", "", "", base.plus(50, ChronoUnit.HOURS), base.plus(55, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("1", "", "", base.plus(00, ChronoUnit.HOURS), base.plus(05, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(25, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("4", "", "", base.plus(30, ChronoUnit.HOURS), base.plus(35, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("5", "", "", base.plus(40, ChronoUnit.HOURS), base.plus(45, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse("5", "", "", base.plus(50, ChronoUnit.HOURS), base.plus(55, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingEntity("1", "", "",base.minus(10, ChronoUnit.HOURS), base.minus(5, ChronoUnit.HOURS))); 	//no overlap
-		bookings.add(new BookingEntity("1", "", "",base.minus(05, ChronoUnit.HOURS), base.minus(0, ChronoUnit.HOURS))); 	//no overlap
-		bookings.add(new BookingEntity("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));    	// full overlap
-		bookings.add(new BookingEntity("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(23, ChronoUnit.HOURS)));   	// partial start overlap
-		bookings.add(new BookingEntity("3", "", "", base.plus(32, ChronoUnit.HOURS), base.plus(36, ChronoUnit.HOURS)));   	// partial end overlap
-		bookings.add(new BookingEntity("3", "", "", base.plus(42, ChronoUnit.HOURS), base.plus(44, ChronoUnit.HOURS)));   	// middle overlap
-		bookings.add(new BookingEntity("3", "", "", base.plus(55, ChronoUnit.HOURS), base.plus(60, ChronoUnit.HOURS)));   	// no overlap
-		bookings.add(new BookingEntity("3", "", "", base.plus(60, ChronoUnit.HOURS), base.plus(65, ChronoUnit.HOURS)));   	// no overlap
+		bookings.add(new BookingResponse("1", "", "", base.minus(10, ChronoUnit.HOURS), base.minus(5, ChronoUnit.HOURS)));    //no overlap
+		bookings.add(new BookingResponse("1", "", "", base.minus(05, ChronoUnit.HOURS), base.minus(0, ChronoUnit.HOURS)));    //no overlap
+		bookings.add(new BookingResponse("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));        // full overlap
+		bookings.add(new BookingResponse("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(23, ChronoUnit.HOURS)));    // partial start overlap
+		bookings.add(new BookingResponse("3", "", "", base.plus(32, ChronoUnit.HOURS), base.plus(36, ChronoUnit.HOURS)));    // partial end overlap
+		bookings.add(new BookingResponse("3", "", "", base.plus(42, ChronoUnit.HOURS), base.plus(44, ChronoUnit.HOURS)));    // middle overlap
+		bookings.add(new BookingResponse("3", "", "", base.plus(55, ChronoUnit.HOURS), base.plus(60, ChronoUnit.HOURS)));    // no overlap
+		bookings.add(new BookingResponse("3", "", "", base.plus(60, ChronoUnit.HOURS), base.plus(65, ChronoUnit.HOURS)));    // no overlap
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
