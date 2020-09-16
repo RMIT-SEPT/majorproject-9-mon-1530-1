@@ -16,13 +16,5 @@ public class HoursResponse {
     private String creatorUsername;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-
-    public HoursResponse(Object hoursId, Object workerUsername, Object creatorUsername, Object startDateTime, Object endDateTime) {
-        this.hoursId = hoursId == null ? null : Integer.parseInt(hoursId.toString());
-        this.workerUsername = workerUsername == null ? null : workerUsername.toString();
-        this.creatorUsername = creatorUsername == null ? null : creatorUsername.toString();
-        this.startDateTime = startDateTime == null ? null : LocalDateTime.parse(startDateTime.toString());
-        this.endDateTime = endDateTime == null ? null : LocalDateTime.parse(endDateTime.toString());
-    }
 }
 

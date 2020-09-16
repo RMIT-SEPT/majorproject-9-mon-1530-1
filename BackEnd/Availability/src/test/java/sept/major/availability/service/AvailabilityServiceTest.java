@@ -39,8 +39,8 @@ public class AvailabilityServiceTest {
 		
 		LocalDateTime now = LocalDateTime.now();
 
-		bookings.add(new BookingResponse("", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(null, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(null, "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -56,11 +56,11 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(2, "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(1, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(2, "", "", now.plus(9, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -75,8 +75,8 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("2", "", "", now.plus(5, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(2, "", "", now.plus(5, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -93,13 +93,13 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("2", "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(2, "", "", now.plus(10, ChronoUnit.HOURS), now.plus(15, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingResponse("1", "", "", now.minus(10, ChronoUnit.HOURS), now.minus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("2", "", "", now.plus(9, ChronoUnit.HOURS), now.plus(10, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("3", "", "", now.plus(15, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("4", "", "", now.plus(20, ChronoUnit.HOURS), now.plus(25, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(1, "", "", now.minus(10, ChronoUnit.HOURS), now.minus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(2, "", "", now.plus(9, ChronoUnit.HOURS), now.plus(10, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(3, "", "", now.plus(15, ChronoUnit.HOURS), now.plus(16, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(4, "", "", now.plus(20, ChronoUnit.HOURS), now.plus(25, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -120,8 +120,8 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		hours.add(new HoursResponse("1", "", "", now, now.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("1", "", "", now.minus(3, ChronoUnit.HOURS), now.plus(2, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", now, now.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(1, "", "", now.minus(3, ChronoUnit.HOURS), now.plus(2, ChronoUnit.HOURS)));
 
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 
@@ -139,8 +139,8 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursResponse("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
-		bookings.add(new BookingResponse("1", "", "", base.plus(3, ChronoUnit.HOURS), base.plus(6, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", base, base.plus(5, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(1, "", "", base.plus(3, ChronoUnit.HOURS), base.plus(6, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
@@ -159,9 +159,9 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursResponse("1", "", "", base, base.plus(5, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", base, base.plus(5, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingResponse("1", "", "", base.plus(2, ChronoUnit.HOURS), base.plus(3, ChronoUnit.HOURS)));
+		bookings.add(new BookingResponse(1, "", "", base.plus(2, ChronoUnit.HOURS), base.plus(3, ChronoUnit.HOURS)));
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
@@ -182,21 +182,21 @@ public class AvailabilityServiceTest {
 
 		LocalDateTime base = LocalDateTime.of(2021, 01, 01, 0, 0, 0);
 
-		hours.add(new HoursResponse("1", "", "", base.plus(00, ChronoUnit.HOURS), base.plus(05, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(25, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("4", "", "", base.plus(30, ChronoUnit.HOURS), base.plus(35, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("5", "", "", base.plus(40, ChronoUnit.HOURS), base.plus(45, ChronoUnit.HOURS)));
-		hours.add(new HoursResponse("5", "", "", base.plus(50, ChronoUnit.HOURS), base.plus(55, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(1, "", "", base.plus(00, ChronoUnit.HOURS), base.plus(05, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(2, "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(3, "", "", base.plus(20, ChronoUnit.HOURS), base.plus(25, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(4, "", "", base.plus(30, ChronoUnit.HOURS), base.plus(35, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(5, "", "", base.plus(40, ChronoUnit.HOURS), base.plus(45, ChronoUnit.HOURS)));
+		hours.add(new HoursResponse(6, "", "", base.plus(50, ChronoUnit.HOURS), base.plus(55, ChronoUnit.HOURS)));
 
-		bookings.add(new BookingResponse("1", "", "", base.minus(10, ChronoUnit.HOURS), base.minus(5, ChronoUnit.HOURS)));    //no overlap
-		bookings.add(new BookingResponse("1", "", "", base.minus(05, ChronoUnit.HOURS), base.minus(0, ChronoUnit.HOURS)));    //no overlap
-		bookings.add(new BookingResponse("2", "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));        // full overlap
-		bookings.add(new BookingResponse("3", "", "", base.plus(20, ChronoUnit.HOURS), base.plus(23, ChronoUnit.HOURS)));    // partial start overlap
-		bookings.add(new BookingResponse("3", "", "", base.plus(32, ChronoUnit.HOURS), base.plus(36, ChronoUnit.HOURS)));    // partial end overlap
-		bookings.add(new BookingResponse("3", "", "", base.plus(42, ChronoUnit.HOURS), base.plus(44, ChronoUnit.HOURS)));    // middle overlap
-		bookings.add(new BookingResponse("3", "", "", base.plus(55, ChronoUnit.HOURS), base.plus(60, ChronoUnit.HOURS)));    // no overlap
-		bookings.add(new BookingResponse("3", "", "", base.plus(60, ChronoUnit.HOURS), base.plus(65, ChronoUnit.HOURS)));    // no overlap
+		bookings.add(new BookingResponse(1, "", "", base.minus(10, ChronoUnit.HOURS), base.minus(5, ChronoUnit.HOURS)));    //no overlap
+		bookings.add(new BookingResponse(1, "", "", base.minus(05, ChronoUnit.HOURS), base.minus(0, ChronoUnit.HOURS)));    //no overlap
+		bookings.add(new BookingResponse(2, "", "", base.plus(10, ChronoUnit.HOURS), base.plus(15, ChronoUnit.HOURS)));        // full overlap
+		bookings.add(new BookingResponse(3, "", "", base.plus(20, ChronoUnit.HOURS), base.plus(23, ChronoUnit.HOURS)));    // partial start overlap
+		bookings.add(new BookingResponse(3, "", "", base.plus(32, ChronoUnit.HOURS), base.plus(36, ChronoUnit.HOURS)));    // partial end overlap
+		bookings.add(new BookingResponse(3, "", "", base.plus(42, ChronoUnit.HOURS), base.plus(44, ChronoUnit.HOURS)));    // middle overlap
+		bookings.add(new BookingResponse(3, "", "", base.plus(55, ChronoUnit.HOURS), base.plus(60, ChronoUnit.HOURS)));    // no overlap
+		bookings.add(new BookingResponse(3, "", "", base.plus(60, ChronoUnit.HOURS), base.plus(65, ChronoUnit.HOURS)));    // no overlap
 		
 		List<AvailabilityEntity> availabilities = availabilityService.checkAllAvailabilities(hours, bookings);
 		
