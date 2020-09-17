@@ -35,7 +35,7 @@ import {
     );
 
     const [date] = useState(new Date());
-    const [role, setRole] = useState('User');
+    const [role, setRole] = useState('Admin');
     const [userName, setUserName] = useState();
 
     return (
