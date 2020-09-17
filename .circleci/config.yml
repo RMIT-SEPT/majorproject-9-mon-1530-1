@@ -18,6 +18,8 @@ jobs: # a collection of steps
 
       - checkout # check out source code to working directory
 
+      - run: ls -l
+      - run: cd sept9
       - run: cd BackEnd/Common
       - run: pwd
 
