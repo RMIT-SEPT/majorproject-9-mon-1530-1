@@ -73,6 +73,8 @@ jobs: # a collection of steps
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
       
+      - run: ls -l
+      - run: ls dependency -l
       
       - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
       
