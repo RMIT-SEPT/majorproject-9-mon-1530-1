@@ -75,6 +75,7 @@ jobs: # a collection of steps
       
       - run: ls -l
       - run: ls dependency -l
+      - mvn deploy:deploy-file -Durl=file://dependency/ -Dfile=common-1.1.1.jar -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
       - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
       
