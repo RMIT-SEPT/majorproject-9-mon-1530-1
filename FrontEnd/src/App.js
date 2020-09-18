@@ -6,7 +6,8 @@ import Main from './Components/Main';
 import Login from './Components/Login';
 import Contact from './Components/Contact';
 import User from './Components/Dashboard/User/User';
-import Admin from './Components/Dashboard/Admin/Admin'
+import Admin from './Components/Dashboard/Admin/Admin';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import BrowserContext from './Contexts/BrowserContext';

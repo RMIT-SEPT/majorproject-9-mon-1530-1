@@ -1,90 +1,125 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { theme } from '../../../App';
 import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
-    Heading,
-    SubHeading,
-    Content
-  } from '../DashboardComponents';
+  Heading,
+  SubHeading,
+  Content,
+  DashboardGrid,
+  Button,
+} from '../DashboardComponents';
+import FormDetails from '../../FormDetails';
+// User dashboard component for a logged in user. id of user is passed in a pro-
+// ps so that we can reuse the Dashboard component. Here we can handle the logi-
+// c of booking a service and such
 
-  
-  const Admin = ({ id }) => {
+const Admin = ({ id }) => {
+  const fetchUserData = async (key, id) => {
+    const { data } = await axios
+      .get(`http://localhost:8083/users?username=${id}`)
+      .catch((error) => {
+        console.log('Error fetching user data: ' + error);
+      });
 
-    const fetchUserData = async (key, id) => {
-        const { data } = await axios
-        .get(`http://localhost:8083/users?username=${id}`)
-        .catch((error) => {
-            console.log('Error fetching user data: ' + error);
-        });
-        
-        return data;
-    };
+    return data;
+  };
 
-    const { isSuccess, isLoading, isError } = useQuery(
-        ['userData', id],
-        fetchUserData,
-        {
-        onSuccess: (data) => {
-            setUserName(data.name);
-            setRole(data.userType);
-        },
-        }
-    );
+  // State changing functions for updating page view
+  const returnHome = () => {
+    setMain(true);
+    setAdd(false);
+  };
 
-    const [date] = useState(new Date());
-    const [role, setRole] = useState('Admin');
-    const [userName, setUserName] = useState();
+  const addEmployee = () => {
+    setMain(false);
+    setAdd(true);
+  };
 
-    return (
-        <>
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>Error...</div>}
-            {isSuccess && (
-                <DashboardWrapper
-                    userName={userName}
-                    role={role}
-                    actions=""
-                >
-                    <MenuBarComponent>
-                        <Home
-                            //onClick={returnHome}
-                            className="menuIcon"
-                            color={theme.colours.grey.primary}
-                            size={theme.icons.size.medium}
-                        />
-                        <PlusCircle
-                            //onClick={bookAppointment}
-                            className="menuIcon"
-                            color={theme.colours.grey.primary}
-                            size={theme.icons.size.medium}
-                        />
-                        <Phone
-                            className="menuIcon"
-                            color={theme.colours.grey.primary}
-                            size={theme.icons.size.medium}
-                        />
-                        <Calendar
-                            className="menuIcon"
-                            color={theme.colours.grey.primary}
-                            size={theme.icons.size.medium}
-                        />
-                    </MenuBarComponent>
-                    <Content>
-                        <Heading>Welcome back, {userName}!</Heading>
-                        <SubHeading>Today is {date.toLocaleDateString('en-AU')}</SubHeading>
-                        //this would be where the main decor would go under
-                    </Content>
-                </DashboardWrapper>
-            )}
-        </>
-    );
-}
+  const { isSuccess, isLoading, isError } = useQuery(
+    ['userData', id],
+    fetchUserData,
+    {
+      onSuccess: (data) => {
+        setUserName(data.name);
+        setRole(data.userType);
+      },
+    }
+  );
+
+  const [userName, setUserName] = useState();
+  const [role, setRole] = useState('User');
+  const [date] = useState(new Date());
+
+  // Page states for updating current view
+  const [main, setMain] = useState(true);
+  const [addEmpl, setAdd] = useState(false);
+
+  return (
+    <>
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>Error...</div>}
+      {isSuccess && (
+        <DashboardWrapper
+          userName={userName}
+          role={role}
+          actions={{ bookingLink: () => {} }}
+        >
+          <MenuBarComponent>
+            <Home
+              onClick={returnHome}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <PlusCircle
+              onClick={() => {}}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Phone
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Calendar
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+          </MenuBarComponent>
+          {main && (
+            <Content>
+              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={addEmployee}>
+                Add An Employee
+              </Button>
+            </Content>
+          )}
+          {addEmpl && (
+            <Content>
+              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={returnHome}>
+                Back
+              </Button>
+              <DashboardGrid>
+                <FormDetails />
+              </DashboardGrid>
+            </Content>
+          )}
+        </DashboardWrapper>
+      )}
+    </>
+  );
+};
 
 Admin.defaultProps = {
-    id: 's1@gmail.com',
+  id: 'lizatawaf',
 };
 
 export default Admin;
