@@ -38,7 +38,7 @@ jobs: # a collection of steps
       
       - store_artifacts: # store the uberjar as an artifact
       # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: BackEnd/Common/target/common-0.1.1-SNAPSHOT.jar
+          path: BackEnd/Common/target/common-1.1.1.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
         
         
