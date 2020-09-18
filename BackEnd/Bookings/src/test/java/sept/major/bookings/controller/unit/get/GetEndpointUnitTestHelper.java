@@ -6,6 +6,7 @@ import sept.major.bookings.entity.BookingEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static sept.major.bookings.BookingsTestHelper.*;
 
@@ -39,8 +40,16 @@ public abstract class GetEndpointUnitTestHelper extends UnitTestHelper {
     private void workerUsernameFilter(ResponseEntity expected, List<BookingEntity> returned, String startDate, String endDate) {
         String workerUsername = randomAlphanumericString(20);
 
-        List<BookingEntity> workerUsernameEntities = deepCopy(returned); // Need to deep copy the returned list otherwise it would impact other tests
-        workerUsernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
+        List<BookingEntity> workerUsernameEntities = returned.stream().map(bookingEntity -> {
+            BookingEntity newBookingEntity = new BookingEntity(
+                    workerUsername,
+                    bookingEntity.getCustomerUsername(),
+                    bookingEntity.getStartDateTime(),
+                    bookingEntity.getEndDateTime());
+            newBookingEntity.setBookingId(bookingEntity.getBookingId());
+            return newBookingEntity;
+        }).collect(Collectors.toList());
+
 
         // Adding the additional record with the random worker username
         workerUsernameEntities.add(randomEntityWithDateRange(randomInt(4),
@@ -62,8 +71,15 @@ public abstract class GetEndpointUnitTestHelper extends UnitTestHelper {
     private void customerUsernameFilter(ResponseEntity expected, List<BookingEntity> returned, String startDate, String endDate) {
         String customerUsername = randomAlphanumericString(20);
 
-        List<BookingEntity> customerUsernameEntities = deepCopy(returned); // Need to deep copy the returned list otherwise it would impact other tests
-        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
+        List<BookingEntity> customerUsernameEntities = returned.stream().map(bookingEntity -> {
+            BookingEntity newBookingEntity = new BookingEntity(
+                    bookingEntity.getWorkerUsername(),
+                    customerUsername,
+                    bookingEntity.getStartDateTime(),
+                    bookingEntity.getEndDateTime());
+            newBookingEntity.setBookingId(bookingEntity.getBookingId());
+            return newBookingEntity;
+        }).collect(Collectors.toList());
 
         // Adding the additional record with the random customer username
         customerUsernameEntities.add(randomEntityWithDateRange(randomInt(4),
@@ -86,11 +102,15 @@ public abstract class GetEndpointUnitTestHelper extends UnitTestHelper {
         String customerUsername = randomAlphanumericString(20);
         String workerUsername = randomAlphanumericString(20);
 
-        List<BookingEntity> usernameEntities = deepCopy(returned); // Need to deep copy the returned list otherwise it would impact other tests
-        usernameEntities.forEach(hoursEntity -> {
-            hoursEntity.setCustomerUsername(customerUsername);
-            hoursEntity.setWorkerUsername(workerUsername);
-        });
+        List<BookingEntity> usernameEntities = returned.stream().map(bookingEntity -> {
+            BookingEntity newBookingEntity = new BookingEntity(
+                    workerUsername,
+                    customerUsername,
+                    bookingEntity.getStartDateTime(),
+                    bookingEntity.getEndDateTime());
+            newBookingEntity.setBookingId(bookingEntity.getBookingId());
+            return newBookingEntity;
+        }).collect(Collectors.toList());
 
         // Add the record with just the customer username
         BookingEntity customerUsernameEntity = randomEntityWithDateRange(randomInt(4), (startDate == null) ? null : LocalDateTime.parse(startDate), (endDate == null) ? null : LocalDateTime.parse(endDate));
