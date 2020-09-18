@@ -39,6 +39,13 @@ public class HoursController {
                                           @RequestParam(name = "endDateTime") String endDateString,
                                           @RequestParam(required = false) String workerUsername,
                                           @RequestParam(required = false) String creatorUsername) {
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (creatorUsername != null && creatorUsername.equals("null")) {
+            creatorUsername = null;
+        }
+
         LocalDateTime startDate;
         try {
             startDate = (startDateString == null ? null : LocalDateTime.parse(startDateString));
@@ -76,6 +83,13 @@ public class HoursController {
     public ResponseEntity getHoursInDate(@RequestParam(name = "date") String dateString,
                                          @RequestParam(required = false) String workerUsername,
                                          @RequestParam(required = false) String creatorUsername) {
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (creatorUsername != null && creatorUsername.equals("null")) {
+            creatorUsername = null;
+        }
+
         try {
             List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(dateString), workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
@@ -91,6 +105,13 @@ public class HoursController {
     @GetMapping("/all")
     public ResponseEntity getAllHours(@RequestParam(required = false) String workerUsername,
                                       @RequestParam(required = false) String creatorUsername) {
+
+        if (workerUsername != null && workerUsername.equals("null")) {
+            workerUsername = null;
+        }
+        if (creatorUsername != null && creatorUsername.equals("null")) {
+            creatorUsername = null;
+        }
 
         try {
             List<HoursEntity> hours = hoursService.getAllHours(workerUsername, creatorUsername);
