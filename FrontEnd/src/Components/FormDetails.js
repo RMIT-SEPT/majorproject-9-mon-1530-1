@@ -84,12 +84,12 @@ export const FormDetails = props => {
 
     const usertype = window.location.pathname.substring(1);
     const onSubmit = (values) => {
-        const type = usertype  === "admin" ? "employee" : "user"
-        
+        const type = usertype === "admin" ? "employee" : "user"
+
         const headers = {
             "Content-Type": "application/json"
         }
-        
+
         axios.post('http://localhost:8083/users', {
             username: values.username,
             userType: type,
@@ -97,14 +97,14 @@ export const FormDetails = props => {
             name: values.name,
             phone: values.number,
             address: values.address
-            
-          },headers)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
+
+        }, headers)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
     return (
         <form onSubmit={handleSubmit((onSubmit))}>

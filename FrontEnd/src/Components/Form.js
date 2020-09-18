@@ -90,11 +90,11 @@ function Form() {
                 <Bold> Sign Up to Agem </Bold>
               </Grid>
               <FormDetails></FormDetails>
-              </Grid>
+            </Grid>
           </Right>
         </Grid>
       </Grid>
-      </form>
+    </form>
   )
 }
 
