@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 const axios = require("axios");
 
 const CssTextFieldGreen = withStyles({
@@ -78,7 +77,6 @@ const CssTextField = withStyles({
 export const FormDetails = (props) => {
     const { register, handleSubmit, reset } = useForm();
     const [loginerror, setLoginerror] = useState("");
-    let history = useHistory();
 
     const usertype = window.location.pathname.substring(1);
     const onSubmit = (values) => {
@@ -98,8 +96,7 @@ export const FormDetails = (props) => {
                     name: values.name,
                     phone: values.number,
                     address: values.address,
-                },
-                headers
+                }, headers
             )
             .then(function (response) {
                 console.log(response.data);
@@ -108,16 +105,15 @@ export const FormDetails = (props) => {
                 if (r === 200) {
                     //setLocalStorage to user data
                     //check standard user and then transfer to admin panel
-                    reset();
-                    setLoginerror("User Had been added ");
-                    history.push("/admin");
-                } else {
-                    setLoginerror("the user already exist");
+
+                    setLoginerror("User Had been added successfully");
                     reset();
                 }
             })
             .catch(function (error) {
                 console.log(error);
+                setLoginerror("the user already exist");
+                reset();
             });
     };
     return (
