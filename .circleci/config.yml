@@ -10,16 +10,12 @@ jobs: # a collection of steps
     steps: # a collection of executable commands 
 
       - run: echo "------------ START ---------------"
-      - run: echo pipeline.id $pipeline.id
-      - run: echo pipeline.number $pipeline.number 
-      - run: echo pipeline.git.branch $pipeline.git.branch
       - run: echo working_directory $working_directory
       - run: pwd
 
       - checkout # check out source code to working directory
 
       - run: ls -l
-      #- run: cd BackEnd/Common 
       - run: pwd
 
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
@@ -46,8 +42,53 @@ jobs: # a collection of steps
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
         
         
+  build-availability: # runs not using Workflows must have a `build` job as entry point
+    
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-stretch # ...with this image as the primary container; this is where all `steps` will run
+    
+    steps: # a collection of executable commands 
+
+      - run: echo "------------ START ---------------"
+      - run: echo working_directory $working_directory
+      - run: pwd
+
+      - checkout # check out source code to working directory
+
+      - run: ls -l
+      - run: pwd
+
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
+      
+      
+      - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
+      
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
+      
+      - run: cd BackEnd/Availability && mvn package # run the actual tests
+      
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+      # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: BackEnd/Availability/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+      # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: BackEnd/Availability/target/Availability-0.1.1-SNAPSHOT.jar
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
+        
+        
+        
+        
 workflows:
   version: 2
   workflow:
     jobs:
     - build-common
+    - build-availability:
+        requires:
+          - build
