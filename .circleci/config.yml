@@ -44,10 +44,11 @@ jobs: # a collection of steps
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
           # taken to be the root directory of the workspace.
-          root: BackEnd/Common/target/
+          root: BackEnd/
           # Must be relative path from root
           paths:
-            - common-1.1.1.jar
+            - Common/target/common-1.1.1.jar
+            - Common/pom.xml
         
   build-availability: # runs not using Workflows must have a `build` job as entry point
     
@@ -74,8 +75,8 @@ jobs: # a collection of steps
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
       
       - run: ls -l
-      - run: ls dependency -l
-      - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=file://dependency/common-1.1.1.jar -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
+      - run: ls dependency -l && ls dependency/Common -l 
+      - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
       - run: ls .m2 -l && ls .m2\sept\major -l
       
