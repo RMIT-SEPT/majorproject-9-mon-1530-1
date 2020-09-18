@@ -1,5 +1,6 @@
 package sept.major.bookings.blackbox.repository;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import sept.major.bookings.blackbox.BookingBlackBoxHelper;
@@ -18,6 +19,7 @@ public class RepositoryBlackBoxTests extends BookingBlackBoxHelper {
     public BookingsRepository bookingsRepository;
 
     @Test
+    @DisplayName("findAllInRange boundary testing with only one record returned")
     void oneRecordFindAllInRange() {
         LocalDate currentDate = LocalDate.now();
 
@@ -58,6 +60,7 @@ public class RepositoryBlackBoxTests extends BookingBlackBoxHelper {
     }
 
     @Test
+    @DisplayName("findAllInRange returning multiple records")
     void multipleRecordsFindAllInRange() {
         LocalDate currentDate = LocalDate.now();
 
@@ -90,6 +93,7 @@ public class RepositoryBlackBoxTests extends BookingBlackBoxHelper {
     }
 
     @Test
+    @DisplayName("Boundary testing of findConflictingHours")
     void findConflictingHours() {
         LocalDate currentDate = LocalDate.now();
         String workerUsername = randomAlphanumericString(20);

@@ -4,6 +4,7 @@ import sept.major.bookings.entity.BookingEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public abstract class BookingsTestHelper {
         return stringBuilder.toString();
     }
 
-    public static int randomInt(int length) {
+    public static Integer randomInt(int length) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < length; i++) {
             stringBuilder.append((int) ((Math.random() * (9) + 9)));
@@ -97,11 +98,30 @@ public abstract class BookingsTestHelper {
     }
 
     public static BookingEntity createBookingEntity(Map<String, String> entityMap) {
+
+        LocalDateTime startDateTime = null;
+        if (entityMap.get("startDateTime") != null) {
+            try {
+                startDateTime = LocalDateTime.parse(entityMap.get("startDateTime"));
+            } catch (DateTimeParseException e) {
+                // Some tests will use an invalid startDateTime and therefor this is ignored
+            }
+        }
+
+        LocalDateTime endDateTime = null;
+        if (entityMap.get("endDateTime") != null) {
+            try {
+                endDateTime = LocalDateTime.parse(entityMap.get("endDateTime"));
+            } catch (DateTimeParseException e) {
+                // Some tests will use an invalid endDateTime and therefor this is ignored
+            }
+        }
+
         return new BookingEntity(
-                (String) entityMap.get("workerUsername"),
-                (String) entityMap.get("customerUsername"),
-                LocalDateTime.parse(entityMap.get("startDateTime")),
-                LocalDateTime.parse(entityMap.get("endDateTime"))
+                entityMap.get("workerUsername"),
+                entityMap.get("customerUsername"),
+                startDateTime,
+                endDateTime
         );
     }
 
@@ -161,5 +181,32 @@ public abstract class BookingsTestHelper {
         });
 
         return copiedList;
+    }
+
+    public static BookingEntity patchEntity(BookingEntity existing, HashMap<String, String> patchValues) {
+
+        BookingEntity newEntity = new BookingEntity(existing.getWorkerUsername(), existing.getCustomerUsername(), existing.getStartDateTime(), existing.getEndDateTime());
+
+        if (patchValues.get("hoursId") != null) {
+            newEntity.setBookingId(new Integer(patchValues.get("hoursId")));
+        }
+
+        if (patchValues.get("workerUsername") != null) {
+            newEntity.setWorkerUsername(patchValues.get("workerUsername"));
+        }
+
+        if (patchValues.get("customerUsername") != null) {
+            newEntity.setCustomerUsername(patchValues.get("customerUsername"));
+        }
+
+        if (patchValues.get("startDateTime") != null) {
+            newEntity.setStartDateTime(LocalDateTime.parse(patchValues.get("startDateTime")));
+        }
+
+        if (patchValues.get("endDateTime") != null) {
+            newEntity.setEndDateTime(LocalDateTime.parse(patchValues.get("endDateTime")));
+        }
+
+        return newEntity;
     }
 }

@@ -1,5 +1,6 @@
 package sept.major.bookings.controller.unit;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -7,11 +8,7 @@ import org.springframework.http.ResponseEntity;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.common.response.ValidationError;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +19,7 @@ import static sept.major.bookings.BookingsTestHelper.*;
 class PatchEndpointTests extends UnitTestHelper {
 
     @Test
+    @DisplayName("Successfully patch an entity")
     void valid() {
         Integer hoursId = randomInt(4);
 
@@ -31,13 +29,28 @@ class PatchEndpointTests extends UnitTestHelper {
         HashMap patchValues = new HashMap() {{
             put("customerUsername", randomAlphanumericString(20));
         }};
-        BookingEntity patchedEntity = patchEntity(existing, patchValues);
+        BookingEntity patchedEntity = patchEntity(existing, patchValues);  // Manually update the entity so we can compare the results
 
         runTest(hoursId, patchValues, Optional.of(existing), patchedEntity,
                 new ResponseEntity(patchedEntity, HttpStatus.OK));
     }
 
     @Test
+    @DisplayName("Successfully patch with no patch values")
+    void noUpdate() {
+        Integer hoursId = randomInt(4);
+
+        Map<String, String> existingMap = randomEntityMap(hoursId);
+        BookingEntity existing = createBookingEntity(existingMap);
+
+
+        runTest(hoursId, new HashMap<>(), Optional.of(existing), existing,
+                new ResponseEntity(existing, HttpStatus.OK));
+    }
+
+
+    @Test
+    @DisplayName("Patch attempt on non existing entity")
     void noExisting() {
         Integer hoursId = randomInt(4);
 
@@ -54,6 +67,7 @@ class PatchEndpointTests extends UnitTestHelper {
     }
 
     @Test
+    @DisplayName("Update not blank field to blank")
     void emptyFieldUpdate() {
         Integer hoursId = randomInt(4);
 
@@ -70,6 +84,7 @@ class PatchEndpointTests extends UnitTestHelper {
     }
 
     @Test
+    @DisplayName("Update multiple not blank fields to blank")
     void missingFields() {
 
         Integer hoursId = randomInt(4);
@@ -91,6 +106,7 @@ class PatchEndpointTests extends UnitTestHelper {
     }
 
     @Test
+    @DisplayName("Provided id isn't an integer")
     void idInvalid() {
         String hoursId = "foo";
 
@@ -109,35 +125,11 @@ class PatchEndpointTests extends UnitTestHelper {
         ResponseEntity result = bookingServiceController.updateHours(hoursId.toString(), patchValues);
 
         assertThat(result).isNotNull();
-        assertThat(result.getBody()).isEqualTo(expected.getBody());
+        if (expected.getBody() instanceof List) {
+            assertThat((List) result.getBody()).containsAll((List) expected.getBody());
+        } else {
+            assertThat(result.getBody()).isEqualTo(expected.getBody());
+        }
         assertThat(result.getStatusCode()).isEqualTo(expected.getStatusCode());
     }
-
-    private BookingEntity patchEntity(BookingEntity existing, HashMap<String, String> patchValues) {
-
-        BookingEntity newEntity = new BookingEntity(existing.getWorkerUsername(), existing.getCustomerUsername(), existing.getStartDateTime(), existing.getEndDateTime());
-
-        if (patchValues.get("hoursId") != null) {
-            newEntity.setBookingId(new Integer(patchValues.get("hoursId")));
-        }
-
-        if (patchValues.get("workerUsername") != null) {
-            newEntity.setWorkerUsername(patchValues.get("workerUsername"));
-        }
-
-        if (patchValues.get("customerUsername") != null) {
-            newEntity.setCustomerUsername(patchValues.get("customerUsername"));
-        }
-
-        if (patchValues.get("startDateTime") != null) {
-            newEntity.setStartDateTime(LocalDateTime.parse(patchValues.get("startDateTime")));
-        }
-
-        if (patchValues.get("endDateTime") != null) {
-            newEntity.setEndDateTime(LocalDateTime.parse(patchValues.get("endDateTime")));
-        }
-
-        return newEntity;
-    }
-
 }

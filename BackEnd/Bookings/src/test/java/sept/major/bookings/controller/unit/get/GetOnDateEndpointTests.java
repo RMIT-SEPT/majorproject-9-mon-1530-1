@@ -1,16 +1,18 @@
 package sept.major.bookings.controller.unit.get;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import sept.major.bookings.controller.unit.UnitTestHelper;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.common.response.ValidationError;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,126 +20,90 @@ import static org.mockito.Mockito.when;
 import static sept.major.bookings.BookingsTestHelper.*;
 
 @SpringBootTest
-class GetOnDateEndpointTests extends UnitTestHelper {
-    @Test
-    void invalidDate() {
-        runTest(new ResponseEntity(new ValidationError("date", bookingServiceController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
-                null, "foo", null, null);
-    }
+class GetOnDateEndpointTests extends GetEndpointUnitTestHelper {
 
     @Test
+    @DisplayName("Provided date is valid and a record is retrieved")
     void dateValid() {
         LocalDate date = pastDate(1, 2, 3);
 
         BookingEntity expected = randomEntityWithDate(randomInt(4), date);
 
-        runTestsWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.OK),
+        testWithUsernameFilters(new ResponseEntity(Arrays.asList(expected), HttpStatus.OK),
                 Arrays.asList(expected), date.toString());
     }
 
     @Test
-    void dateMissingResult() {
-        LocalDate currentDate = LocalDate.now();
+    @DisplayName("Provided date is a random string")
+    void invalidDate() {
+        testWithUsernameFilters(new ResponseEntity(new ValidationError("date", bookingServiceController.INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST),
+                null, randomAlphanumericString(10));
+    }
 
-        runTestsWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
+    @Test
+    @DisplayName("Provided date is valid but no record could be found")
+    void dateMissingResult() {
+        testWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
                 Arrays.asList(), LocalDate.now().toString());
     }
 
-
-    private void runTestsWithUsernameFilters(ResponseEntity expected, List<BookingEntity> returned, String date) {
-        testWorkerUsernameFilter(expected, returned, date);
-        testCustomerUsernameFilter(expected, returned, date);
-        testCustomerAndWorkerUsernameFilter(expected, returned, date);
-    }
-
-    private void testWorkerUsernameFilter(ResponseEntity expected, List<BookingEntity> returned, String date) {
-        String workerUsername = randomAlphanumericString(20);
-
-        List<BookingEntity> workerUsernameEntities = deepCopy(returned);
-        workerUsernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
-
-        workerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
-
-        runTest(updateExpectedWithUsername(expected, workerUsername, null), workerUsernameEntities, date, workerUsername, null);
-    }
-
-    private void testCustomerUsernameFilter(ResponseEntity expected, List<BookingEntity> returned, String date) {
-        String customerUsername = randomAlphanumericString(20);
-
-        List<BookingEntity> customerUsernameEntities = deepCopy(returned);
-        customerUsernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
-
-        customerUsernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
-
-        runTest(updateExpectedWithUsername(expected, null, customerUsername), customerUsernameEntities, date, null, customerUsername);
-    }
-
-    private void testCustomerAndWorkerUsernameFilter(ResponseEntity expected, List<BookingEntity> returned, String date) {
-        String customerUsername = randomAlphanumericString(20);
-        String workerUsername = randomAlphanumericString(20);
-
-        List<BookingEntity> usernameEntities = deepCopy(returned);
-        usernameEntities.forEach(hoursEntity -> hoursEntity.setCustomerUsername(customerUsername));
-        usernameEntities.forEach(hoursEntity -> hoursEntity.setWorkerUsername(workerUsername));
-
-        BookingEntity customerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
-        customerUsernameEntity.setCustomerUsername(customerUsername);
-        usernameEntities.add(customerUsernameEntity);
-
-        BookingEntity workerUsernameEntity = randomEntityWithDate(randomInt(4), LocalDate.parse(date));
-        workerUsernameEntity.setWorkerUsername(workerUsername);
-        usernameEntities.add(workerUsernameEntity);
-
-        usernameEntities.add(randomEntityWithDate(randomInt(4), LocalDate.parse(date)));
-
-        runTest(updateExpectedWithUsername(expected, workerUsername, customerUsername), usernameEntities, date, workerUsername, customerUsername);
-    }
-
-
-    private void runTest(ResponseEntity expected, List<BookingEntity> returned, String date, String workerUsername, String customerUsername) {
+    private void testWithUsernameFilters(ResponseEntity expected, List<BookingEntity> returned, String date) {
         try {
-            if (date != null) {
-                LocalDate parsedDate = LocalDate.parse(date);
-                when(mockedBookingRepository.findAllInRange(parsedDate.atStartOfDay(), parsedDate.atTime(23, 59))).thenReturn(returned);
-            }
+            LocalDate localDate = LocalDate.parse(date);
+            super.testWithUsernameFilters(expected, returned, localDate.atStartOfDay().toString(), localDate.atTime(23, 59, 59).toString());
         } catch (DateTimeParseException e) {
-
+            super.testWithUsernameFilters(expected, returned, date, date);
         }
-        ResponseEntity result = bookingServiceController.getDate(date, workerUsername, customerUsername);
+
+
+    }
+
+    @Test
+    @DisplayName("Invalid usernames provided")
+    void invalidUsernameProvided() {
+        ResponseEntity expected = new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+
+        String startDate = LocalDateTime.now().toString();
+        String endDate = LocalDateTime.now().toString();
+
+        runTest(expected, Collections.emptyList(), startDate, endDate, "null", null);
+        runTest(expected, Collections.emptyList(), startDate, endDate, "", null);
+        runTest(expected, Collections.emptyList(), startDate, endDate, "  ", null);
+        runTest(expected, Collections.emptyList(), startDate, endDate, "\t", null);
+        runTest(expected, Collections.emptyList(), startDate, endDate, "   \t   ", null);
+
+        expected = new ResponseEntity(new ValidationError("customerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+
+        runTest(expected, Collections.emptyList(), startDate, endDate, null, "null");
+        runTest(expected, Collections.emptyList(), startDate, endDate, null, "");
+        runTest(expected, Collections.emptyList(), startDate, endDate, null, "  ");
+        runTest(expected, Collections.emptyList(), startDate, endDate, null, "\t");
+        runTest(expected, Collections.emptyList(), startDate, endDate, null, "   \t  ");
+    }
+
+
+    @Override
+    public void runTest(ResponseEntity expected, List<BookingEntity> returned, String startDate, String endDate, String workerUsername, String customerUsername) {
+        /*
+            The super method requires start date and end date but were we only need date.
+            The startDate should always be the date provided in this tests but after being converted to a LocalDateTime and back to a string.
+            Here we parse the string and return it to a LocalDate. It is an unfortunate process that we need.
+         */
+        LocalDate date = null;
+        try {
+            date = LocalDateTime.parse(startDate).toLocalDate();
+            when(mockedBookingRepository.findAllInRange(date.atStartOfDay(), date.atTime(23, 59, 59))).thenReturn(returned);
+        } catch (DateTimeParseException e) {
+        } // Some tests may want to make an invalid date so we ignore this exception
+
+
+        // If the date is null then that means we couldn't converted startDate to a LocalDateTime.
+        // The likely cause of this is the test testing an invalid date so we provided the invalid date to the controller.
+        ResponseEntity result = bookingServiceController.getDate(date == null ? startDate : date.toString(), workerUsername, customerUsername);
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(expected.getStatusCode());
         assertThat(result.getBody()).isEqualTo(expected.getBody());
     }
-
-    private ResponseEntity updateExpectedWithUsername(ResponseEntity expected, String workerUsername, String customerUsername) {
-        Object expectedBody = expected.getBody();
-        if (expectedBody instanceof BookingEntity) {
-            BookingEntity hoursEntity = (BookingEntity) expectedBody;
-            if (workerUsername != null) {
-                hoursEntity.setWorkerUsername(workerUsername);
-            }
-            if (customerUsername != null) {
-                hoursEntity.setCustomerUsername(customerUsername);
-            }
-            return new ResponseEntity(hoursEntity, expected.getStatusCode());
-        }
-        if (expectedBody instanceof List) {
-            List<BookingEntity> entityList = (List<BookingEntity>) expectedBody;
-            entityList.forEach(hoursEntity -> {
-                if (workerUsername != null) {
-                    hoursEntity.setWorkerUsername(workerUsername);
-                }
-                if (customerUsername != null) {
-                    hoursEntity.setCustomerUsername(customerUsername);
-                }
-            });
-
-            return new ResponseEntity(entityList, expected.getStatusCode());
-        }
-
-        return expected;
-    }
-
 
 }
