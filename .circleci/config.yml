@@ -40,7 +40,14 @@ jobs: # a collection of steps
       # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: BackEnd/Common/target/common-1.1.1.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
-        
+      
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
+          # taken to be the root directory of the workspace.
+          root: BackEnd/Common/target/
+          # Must be relative path from root
+          paths:
+            - common-1.1.1.jar
         
   build-availability: # runs not using Workflows must have a `build` job as entry point
     
@@ -58,6 +65,10 @@ jobs: # a collection of steps
       - run: ls -l
       - run: pwd
 
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: dependency
+          
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
