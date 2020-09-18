@@ -76,7 +76,7 @@ jobs: # a collection of steps
       
       - run: ls -l
       - run: ls dependency -l && ls dependency/Common -l 
-      - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
+      - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
       - run: ls .m2 -l && ls .m2\sept\major -l
       
