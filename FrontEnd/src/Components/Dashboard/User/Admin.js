@@ -219,16 +219,16 @@ const Admin = ({ id }) => {
                             <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
                             <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                             <DashboardGrid>
-                               <Grid>
-                               <Grid item xs={12}>
-                               <Button type="button" onClick={goBack}>
-                                    Back
+                                <Grid>
+                                    <Grid item xs={12}>
+                                        <Button type="button" onClick={goBack}>
+                                            Back
               </Button>
-              </Grid>
-              <Grid item xs={12}>
-              <FormDetails/> 
-              </Grid>
-                               </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FormDetails />
+                                    </Grid>
+                                </Grid>
 
                             </DashboardGrid>
                         </Content>
