@@ -177,7 +177,7 @@ export const Login = props =>{
               <Grid item xs={12}>
                 <a href="http://localhost:3000/"> <Logo src={logo} alt="logo" /> </a>
                 <Grid item xs={12}>
-                  <Construction src={construction} alt="contact" />
+                  <Construction src={construction} alt="contact" />              
                 </Grid>
               </Grid>
             </Grid>
@@ -201,7 +201,7 @@ export const Login = props =>{
                   data-testid="username-field"
                   style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
-                {errors.username && <span>This field is required</span>}
+                {errors.username && <span>username is Required</span>}
               </Grid>
               <Grid item xs={12}>
                 <Heading>Password</Heading>
@@ -212,7 +212,7 @@ export const Login = props =>{
                   data-testid="password-field"
                   id="outlined-full-width" style={{ margin: 8 }} helperText="Full width!" fullWidth margin="normal"
                   InputLabelProps={{ shrink: true, }} variant="outlined" />
-                {errors.password && <span>This field is required</span>}
+                {errors.password && <span>password is Required</span>}
               </Grid>
               {/* submit button */}
               <Grid item xs={12}>

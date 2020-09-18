@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid, Button } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from "@material-ui/core/styles";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-
+import { useHistory } from "react-router-dom";
+const axios = require('axios');
 
 
 
@@ -76,10 +77,37 @@ const CssTextField = withStyles({
 // items are allocated evenly using a Grid function in material ui library 
 // we use normal routing in order to move between pages 
 
-function FormDetails() {
-    const { register, handleSubmit } = useForm()
+export const FormDetails = props => {
+    const { register, handleSubmit, errors, reset } = useForm()
+    const [loginerror, setLoginerror] = useState('')
+    let history = useHistory();
+
+    const usertype = window.location.pathname.substring(1);
+    const onSubmit = (values) => {
+        const type = usertype  === "admin" ? "employee" : "user"
+        
+        const headers = {
+            "Content-Type": "application/json"
+        }
+        
+        axios.post('http://localhost:8083/users', {
+            username: values.username,
+            userType: type,
+            password: values.password,
+            name: values.name,
+            phone: values.number,
+            address: values.address
+            
+          },headers)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+    }
     return (
-        <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
+        <form onSubmit={handleSubmit((onSubmit))}>
             <Grid container direction="row" spacing={3}>
                 <Grid item xs={6}>
                     <Heading>Full Name  </Heading>
@@ -106,13 +134,13 @@ function FormDetails() {
                 </Grid>
                 <Grid item xs={6}>
                     <Heading>Username  </Heading>
-                    <CssTextFieldGreen required name="userName"
+                    <CssTextFieldGreen required name="username"
                         inputRef={
                             register({
-                                required: 'userName Required',
+                                required: 'username Required',
                                 maxLength: {
                                     value: 10,
-                                    message: 'userName must be less than 10 characters '
+                                    message: 'username must be less than 10 characters '
                                 },
                                 minLength: {
                                     value: 2,
@@ -193,7 +221,9 @@ function FormDetails() {
                 </Grid>
                 {/* submit button  */}
                 <Grid item xs={12}>
-                    <ColorButton type="submit" variant="contained"> Submit</ColorButton>
+                    {loginerror}
+                    <ColorButton type="submit" variant="contained" color="default" > Submit
+                </ColorButton>
                 </Grid>
             </Grid>
         </form>

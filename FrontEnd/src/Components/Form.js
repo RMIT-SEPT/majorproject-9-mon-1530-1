@@ -3,7 +3,6 @@ import { Grid } from '@material-ui/core';
 import logo from '../media/logo.png';
 import construction from '../media/undraw_under_construction_46pa-2 1.png';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
 import FormDetails from './FormDetails';
 
 
@@ -64,9 +63,8 @@ const Logo = styled.img`
 // we use normal routing in order to move between pages 
 
 function Form() {
-  const { handleSubmit } = useForm()
   return (
-    <form onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
+    <form >
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7} >
           {/* the logo and the img on the left  */}
