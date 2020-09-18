@@ -91,4 +91,4 @@ workflows:
     - build-common
     - build-availability:
         requires:
-          - build
+          - build-common
