@@ -1,7 +1,7 @@
 package sept.major.users.blackbox;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import sept.major.common.testing.RequestParameter;
 
 import java.util.Arrays;
