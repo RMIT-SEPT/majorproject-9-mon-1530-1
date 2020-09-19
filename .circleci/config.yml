@@ -159,6 +159,8 @@ jobs: # a collection of steps
       
       - run: cd BackEnd/Bookings && mvn dependency:go-offline # gets the project dependencies
       
+      - run: ls ../.m2 -R
+      
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
@@ -201,6 +203,8 @@ jobs: # a collection of steps
       
       - run: cd BackEnd/Users && mvn dependency:go-offline # gets the project dependencies
       
+      - run: ls ../.m2 -R
+
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
