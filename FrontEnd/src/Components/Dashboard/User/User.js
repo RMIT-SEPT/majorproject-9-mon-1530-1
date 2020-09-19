@@ -20,75 +20,28 @@ import {
   DateTimeSelector,
   WorkerRadioButton,
   TimeFlex,
+  AvailabilityView,
 } from '../Bookings/BookingComponents';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
+import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
 
-const services = [
-  {
-    serviceName: "Jim's Cleaning",
-    address: '48 Edinburgh Road, Mooroolbark, Victoria 3138',
-    phoneNumber: '131 546',
-  },
-  {
-    serviceName: 'Man Oh Man',
-    address: '137 Chapel Street Windsor, VIC 3181 Melbourne',
-    phoneNumber: '03 9530 2393',
-  },
-
-  {
-    serviceName: 'Nail Lisa',
-    address: 'No address available',
-    phoneNumber: '03 9561 2313',
-  },
-  {
-    serviceName: 'Bob the Builder',
-    address: 'Channel 3, ABC, Australia',
-    phoneNumber: '123 456',
-  },
-];
-
-const workers = [
-  {
-    workerUserName: 'kath123',
-    workerFullName: 'Kathreen McDonald',
-  },
-  {
-    workerUserName: 'markTheMark',
-    workerFullName: 'Mark Falley',
-  },
-  {
-    workerUserName: 'realSarahX',
-    workerFullName: 'Sarah Mickey',
-  },
-  {
-    workerUserName: 'JohnLeLemon',
-    workerFullName: 'John Lim Le',
-  },
-];
-
-const tempBookings = [
-  {
-    bookingId: '1',
-    workerUsername: 'jeffOak',
-    customerUsername: 'rw22448',
-    startDateTime: '2020-08-29T12:00',
-    endDateTime: '2020-08-29T13:00',
-  },
-  {
-    bookingId: '2',
-    workerUsername: 'jeffOak',
-    customerUsername: 'anthony',
-    startDateTime: '2020-08-31T14:00',
-    endDateTime: '2020-08-31T16:00',
-  },
-];
-
 const User = ({ id }) => {
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+  const {
+    setCustomerId,
+    setWorkerId,
+    setStartTime,
+    setEndTime,
+    clearBooking,
+    submitBooking,
+    workerId,
+  } = useContext(BookingContext);
+
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
@@ -99,51 +52,47 @@ const User = ({ id }) => {
     return data;
   };
 
+  const clear = () => {
+    setBooking(false);
+    setService(false);
+    setWorker(false);
+    setMain(false);
+  };
+
   // State changing functions for updating page view
   const bookAppointment = () => {
-    clearBooking();
+    clear();
     setCustomerId(userId);
-    setMain(false);
-    setBooking(false);
-    setWorker(false);
     setService(true);
   };
 
   const returnHome = () => {
+    clear();
     clearBooking();
-    setBooking(false);
-    setService(false);
-    setWorker(false);
-    setMain(true);
-  };
-
-  const cancelBooking = () => {
-    clearBooking();
-    setBooking(false);
     setMain(true);
   };
 
   const selectBooking = () => {
-    setService(false);
+    clear();
     setBooking(true);
   };
 
-  const cancelService = () => {
-    clearBooking();
-    setService(false);
-    setMain(true);
-  };
-
   const selectWorker = () => {
-    setBooking(false);
+    clear();
     setWorker(true);
   };
 
   const cancelWorker = () => {
     setWorker(false);
-    setBooking(true);
+    setService(true);
   };
 
+  const cancelBooking = () => {
+    setBooking(false);
+    setWorker(true);
+  };
+
+  // Fetch user info from back-end
   const { isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
     fetchUserData,
@@ -154,6 +103,8 @@ const User = ({ id }) => {
       },
     }
   );
+
+  // Send booking request on submit
   const [mutate] = useMutation(
     async () => {
       await submitBooking();
@@ -164,16 +115,6 @@ const User = ({ id }) => {
       },
     }
   );
-
-  const { isFirefox, isChrome } = useContext(BrowserContext);
-  const {
-    setCustomerId,
-    setWorkerId,
-    setStartTime,
-    setEndTime,
-    clearBooking,
-    submitBooking,
-  } = useContext(BookingContext);
 
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
@@ -244,43 +185,18 @@ const User = ({ id }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={cancelService}>
+              <Button type="button" onClick={returnHome}>
                 Back
               </Button>
               <DashboardGrid>
                 <DashboardModule title="Choose a service">
                   <PanelGrid>
-                    {services.map((service) => (
+                    {tempServices.map((service) => (
                       <ServiceCard
                         key={service.serviceName}
-                        onClick={selectBooking}
+                        onClick={selectWorker}
                         service={service}
                       ></ServiceCard>
-                    ))}
-                  </PanelGrid>
-                </DashboardModule>
-              </DashboardGrid>
-            </Content>
-          )}
-          {booking && (
-            <Content>
-              <Heading>New booking</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={cancelBooking}>
-                Back
-              </Button>
-              <DashboardGrid>
-                <DashboardModule title="Choose a worker">
-                  <PanelGrid>
-                    {workers.map((worker) => (
-                      <WorkerRadioButton
-                        type="radio"
-                        worker={worker}
-                        key={worker.workerUserName}
-                        name="selectWorker"
-                        onChange={setWorkerId}
-                        onClick={selectWorker}
-                      ></WorkerRadioButton>
                     ))}
                   </PanelGrid>
                 </DashboardModule>
@@ -294,6 +210,35 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelWorker}>
                 Back
               </Button>
+              <DashboardGrid>
+                <DashboardModule title="Choose a worker">
+                  <PanelGrid>
+                    {tempWorkers.map((worker) => (
+                      <WorkerRadioButton
+                        type="radio"
+                        worker={worker}
+                        key={worker.workerUserName}
+                        name="selectWorker"
+                        onChange={setWorkerId}
+                        onClick={selectBooking}
+                      ></WorkerRadioButton>
+                    ))}
+                  </PanelGrid>
+                </DashboardModule>
+              </DashboardGrid>
+            </Content>
+          )}
+          {booking && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={cancelBooking}>
+                Back
+              </Button>
+              <DashboardModule title="Availability">
+                <AvailabilityView workerId={workerId} />
+              </DashboardModule>
+
               <DashboardModule title="Select times">
                 <TimeFlex>
                   {isChrome && (

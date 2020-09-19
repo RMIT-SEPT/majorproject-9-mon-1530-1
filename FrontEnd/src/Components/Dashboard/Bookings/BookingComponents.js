@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import { Title } from '../DashboardComponents';
 
 // Components defined here are specifically used for booking appointments
@@ -144,10 +146,6 @@ const WorkerRadioButton = ({ worker, onChange, onClick }) => {
 };
 
 const DateTimeSelector = ({ label, onChange }) => {
-  useEffect(() => {
-    console.log(label);
-  });
-
   return (
     <DateTimeSelectorWrapper>
       <label htmlFor={label}>{label}</label>
@@ -164,4 +162,37 @@ const DateTimeSelector = ({ label, onChange }) => {
   );
 };
 
-export { ServiceCard, DateTimeSelector, WorkerRadioButton, TimeFlex };
+const AvailabilityView = ({ workerId }) => {
+  const fetchWorkerAvailability = async (key, workerId) => {
+    const { data } = await axios
+      .get(`http://localhost:8084/availability/all`)
+      .then((res) => res)
+      .catch((error) => {
+        console.log('Error fetching user data: ' + error);
+        throw error;
+      });
+
+    return data;
+  };
+
+  const { isSuccess, isLoading, isError } = useQuery(
+    ['workerAvailability', workerId],
+    fetchWorkerAvailability,
+    {
+      onSuccess: (data) => {
+        console.log('Fetch availiability success');
+        console.log(data);
+      },
+    }
+  );
+
+  return <div>{workerId}</div>;
+};
+
+export {
+  ServiceCard,
+  DateTimeSelector,
+  WorkerRadioButton,
+  TimeFlex,
+  AvailabilityView,
+};
