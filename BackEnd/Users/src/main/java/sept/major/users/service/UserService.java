@@ -1,4 +1,4 @@
-package sept.major.users.unit.service;
+package sept.major.users.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;

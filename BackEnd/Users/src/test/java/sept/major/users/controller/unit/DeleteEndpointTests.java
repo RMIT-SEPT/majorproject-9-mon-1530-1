@@ -1,19 +1,19 @@
-package sept.major.users.unit;
+package sept.major.users.controller.unit;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static sept.major.users.UserServiceTestHelper.randomAlphanumericString;
+import static sept.major.users.UserTestHelper.randomAlphanumericString;
 
-@SpringBootTest
-class DeleteEndpointTests extends UserServiceTestHelper {
+public class DeleteEndpointTests extends UnitTestHelper {
 
     @Test
+    @DisplayName("A entity is correctly deleted")
     void valid() {
         String username = randomAlphanumericString(20);
 
@@ -27,6 +27,7 @@ class DeleteEndpointTests extends UserServiceTestHelper {
     }
 
     @Test
+    @DisplayName("No entity to delete")
     void missing() {
         String username = randomAlphanumericString(20);
 

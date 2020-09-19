@@ -1,4 +1,4 @@
-package sept.major.users.unit;
+package sept.major.users.controller.unit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,22 +7,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import sept.major.users.controller.UserServiceController;
 import sept.major.users.controller.UserServiceControllerHelper;
 import sept.major.users.repository.UsersRepository;
-import sept.major.users.unit.service.UserService;
+import sept.major.users.service.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public abstract class UserServiceTestHelper {
+
+public class UnitTestHelper {
+    protected UserServiceController userServiceController;
+    protected UserServiceControllerHelper userServiceControllerHelper;
+    protected UserService userService;
 
     @Mock
-    public UsersRepository mockedUserRepository;
-    UserServiceController userServiceController;
-    UserServiceControllerHelper userServiceControllerHelper;
-    UserService userService;
-
-    public UserService getUserService() {
-        return userService;
-    }
+    protected UsersRepository mockedUserRepository;
 
     @BeforeEach
     public void setUp() {

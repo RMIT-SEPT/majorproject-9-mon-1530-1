@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
-import sept.major.users.unit.service.UserService;
+import sept.major.users.service.UserService;
 
 import java.util.List;
 import java.util.Map;
