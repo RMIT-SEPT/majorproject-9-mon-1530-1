@@ -60,45 +60,37 @@ jobs: # a collection of steps
     steps: # a collection of executable commands 
 
       - run: echo "------------ START ---------------"
-      - run: echo working_directory $working_directory
-      - run: pwd
 
       - checkout # check out source code to working directory
-
-      - run: ls -l
-      - run: pwd
 
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: dependency
           
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
       
-      - run: ls -l && ls dependency -l && ls dependency/Common -l 
+      - run: ls -R
       
-      #- run: mvn deploy:deploy-file -Durl=file:///home/circleci/.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.1.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.1" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
-      - run: cd BackEnd/Availability && mvn dependency:go-offline # -Dmaven.repo.local=/home/circleci/.m2 # gets the project dependencies
+      - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
       
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
       
-      - run: cd BackEnd/Availability && mvn package # run the actual tests
+      - run: cd BackEnd/Availability && mvn package # run the actual tests and package
       
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
-      # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: BackEnd/Availability/target/surefire-reports
       
       - store_artifacts: # store the uberjar as an artifact
       # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: BackEnd/Availability/target/Availability-0.1.1-SNAPSHOT.jar
+          path: BackEnd/Availability/target/Availability-1.0.0.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
         
         

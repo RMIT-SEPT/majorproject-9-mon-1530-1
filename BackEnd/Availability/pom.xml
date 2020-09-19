@@ -10,7 +10,7 @@
     </parent>
     <groupId>sept.major</groupId>
     <artifactId>availability</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Availability</name>
     <description>API for managing and retrieving availability</description>
 
