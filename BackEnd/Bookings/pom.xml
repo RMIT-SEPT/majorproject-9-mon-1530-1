@@ -105,14 +105,14 @@
        		<!-- build fails without this dependency on circileci -->
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-databind</artifactId>
-		    <version>2.10.5</version>
+		    <version>2.1.1</version>
 		</dependency>
 
 		<dependency>
        		<!-- build fails without this dependency on circileci -->
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-core</artifactId>
-		    <version>2.11.2</version>
+		    <version>2.1.1</version>
 		</dependency>
 
     </dependencies>
