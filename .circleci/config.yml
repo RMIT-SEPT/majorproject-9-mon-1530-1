@@ -30,12 +30,10 @@ jobs: # a collection of steps
             - ~/.m2
           key: sept-p9-common-service-{{ checksum "BackEnd/Common/pom.xml" }}
       
-      - run: ls ../.m2 -R
-      
-      - run: ls /home/circleci/.m2 -R
-
       - run: cd BackEnd/Common && mvn package # run the actual tests
       
+      - run: ls ../.m2 -R
+            
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
       # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: BackEnd/Common/target/surefire-reports
@@ -81,7 +79,7 @@ jobs: # a collection of steps
       - run: ls -l && ls dependency -l && ls dependency/Common -l 
       - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
-      - run: ls ../.m2 -l && ls ../.m2/repository/sept/ -l -R
+      - run: ls ../.m2 -R
       
       - run: cd BackEnd/Availability && mvn dependency:go-offline -Dmaven.repo.local=../.m2 # gets the project dependencies
       
