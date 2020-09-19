@@ -116,6 +116,12 @@
             <version>4.4.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.3m</version>
+        </dependency>
+
     </dependencies>
 
     <build>
