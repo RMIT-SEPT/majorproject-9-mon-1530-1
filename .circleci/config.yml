@@ -78,7 +78,7 @@ jobs: # a collection of steps
       
       - run: ls -l && ls dependency -l && ls dependency/Common -l 
       
-      - run: mvn deploy:deploy-file -Durl=file://../.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
+      - run: mvn deploy:deploy-file -Durl=file:///home/circleci/.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
       - run: ls ../.m2 -R
       
