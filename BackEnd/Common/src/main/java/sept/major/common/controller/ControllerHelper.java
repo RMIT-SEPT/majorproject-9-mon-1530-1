@@ -71,13 +71,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             try {
                 return LocalDate.parse(toConvert);
             } catch (DateTimeParseException e) {
-                throw new FailedConversionException("must be formatted yyyy/mm/dd");
+                throw new FailedConversionException("must be formatted yyyy-mm-dd");
             }
         } else if(classToConvertTo.equals(LocalDateTime.class)) {
             try {
                 return LocalDateTime.parse(toConvert);
             } catch (DateTimeParseException e) {
-                throw new FailedConversionException("must be formatted yyyy/MM/ddTHH:mm:ss.SSSSSSSSS");
+                throw new FailedConversionException("must be formatted yyyy-MM-ddTHH:mm:ss.SSSSSSSSS");
             }
         }
         return new FailedConversionException(String.format("Conversion to %s has not been implemented", classToConvertTo));
