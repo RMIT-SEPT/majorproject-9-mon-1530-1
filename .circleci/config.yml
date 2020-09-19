@@ -30,6 +30,10 @@ jobs: # a collection of steps
             - ~/.m2
           key: sept-p9-common-service-{{ checksum "BackEnd/Common/pom.xml" }}
       
+      - run: ls ../.m2 -R
+      
+      - run: ls /home/circleci/.m2 -R
+
       - run: cd BackEnd/Common && mvn package # run the actual tests
       
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
@@ -87,8 +91,6 @@ jobs: # a collection of steps
           key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
       
       - run: cd BackEnd/Availability && mvn package # run the actual tests
-      
-      - run: ls ../.m2 -l -R
       
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
       # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
