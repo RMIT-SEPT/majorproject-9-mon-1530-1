@@ -42,12 +42,12 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
         if(date == null) {
             throw new ValidationErrorException(Arrays.asList(new ValidationError("date", "Must be provided")));
         }
-        List<HoursEntity> hoursInDate = hoursRepository.findAllByStartDateTimeBetween(date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+        List<HoursEntity> hoursInDate = hoursRepository.findAllInRange(date.atStartOfDay(), date.atTime(23, 59, 59));
         return filterUsernames(hoursInDate, workerUsername, creatorUsername);
     }
 
     public List<HoursEntity> getHoursBetweenDates(LocalDateTime startDate, LocalDateTime endDate, String workerUsername, String creatorUsername) throws RecordNotFoundException {
-        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllByStartDateTimeBetween(startDate, endDate);
+        List<HoursEntity> hoursBetweenDates = hoursRepository.findAllInRange(startDate, endDate);
         return filterUsernames(hoursBetweenDates, workerUsername, creatorUsername);
 
     }
@@ -80,6 +80,7 @@ public class HoursService extends CrudService<HoursEntity, Integer> {
 
     @Override
     protected HoursEntity saveEntity(HoursEntity entity) throws RecordAlreadyExistsException, ValidationErrorException {
+        super.validateEntity(entity);
         if (entity.getEndDateTime().isBefore(entity.getStartDateTime())) {
             throw new ValidationErrorException(Arrays.asList(new ValidationError("endDateTime", "must be after startDateTime")));
         }

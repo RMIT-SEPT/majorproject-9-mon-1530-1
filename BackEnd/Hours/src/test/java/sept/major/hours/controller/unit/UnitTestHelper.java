@@ -12,18 +12,18 @@ import sept.major.hours.service.HoursService;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public abstract class HoursUnitTestHelper {
 
+public class UnitTestHelper {
     protected HoursController hoursController;
     protected HoursControllerHelper hoursControllerHelper;
     protected HoursService hoursService;
 
     @Mock
-    protected HoursRepository mockedUserRepository;
+    protected HoursRepository mockedHoursRepository;
 
     @BeforeEach
     public void setUp() {
-        hoursService = new HoursService(mockedUserRepository);
+        hoursService = new HoursService(mockedHoursRepository);
         hoursControllerHelper = new HoursControllerHelper(hoursService);
         hoursController = new HoursController(hoursService, hoursControllerHelper);
     }

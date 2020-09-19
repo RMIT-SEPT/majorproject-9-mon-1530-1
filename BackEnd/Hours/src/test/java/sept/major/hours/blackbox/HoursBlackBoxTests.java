@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public abstract class HoursBlackBoxHelper extends BlackboxTestHelper {
+public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;

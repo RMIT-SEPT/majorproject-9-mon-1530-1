@@ -1,4 +1,4 @@
-package sept.major.hours.blackbox;
+package sept.major.hours.blackbox.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import sept.major.common.response.ValidationError;
+import sept.major.hours.blackbox.HoursBlackBoxTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static sept.major.hours.HoursTestHelper.pastDateTime;
 import static sept.major.hours.HoursTestHelper.randomEntityMap;
 
-public class PostBlackBoxTest extends HoursBlackBoxHelper {
+public class PostBlackBoxTest extends HoursBlackBoxTests {
 
     @Test
     void valid() {
@@ -29,7 +30,7 @@ public class PostBlackBoxTest extends HoursBlackBoxHelper {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).startsWith("Hours provided conflicts with existing hours:");
+        assertThat(result.getBody()).startsWith("Hours provided conflicts with existing hours: ");
     }
 
     @Test
