@@ -105,7 +105,7 @@ const CssTextFieldGreen = withStyles({
 // we use normal routing in order to move between pages 
 
 const contact = (props) => {
-  
+
   return (
     // this is the main grid that holds every element 
     <Grid container alignItems="center" justify="center" spacing={0}>

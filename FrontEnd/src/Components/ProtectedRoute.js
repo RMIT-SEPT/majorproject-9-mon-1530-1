@@ -17,15 +17,15 @@ export const ProtectedRoute = ({ component: Component, ...rest }) => {
             }}
           />
         ) : (
-          <Redirect
-            to={{
-              pathname: '/unauthorized',
-              state: {
-                from: props.location,
-              },
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: '/unauthorized',
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
       }
     />
   );
