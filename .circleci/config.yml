@@ -84,7 +84,7 @@ jobs: # a collection of steps
       
       - run: cat ../.m2/repository/sept/major/common/*
       
-      - run: cd BackEnd/Availability && mvn dependency:go-offline -Dmaven.repo.local=../.m2 # gets the project dependencies
+      - run: cd BackEnd/Availability && mvn dependency:go-offline -Dmaven.repo.local=/home/circleci/.m2 # gets the project dependencies
       
       - save_cache: # saves the project dependencies
           paths:
