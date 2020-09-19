@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.testing.RequestParameter;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
 
 public class DeleteBlackboxTest extends BookingBlackBoxHelper {
     @Test
-    void deleteEntity() {
+    void deleteEntity() throws IOException {
         Map<String, String> post = successfulPost(randomEntityMap());
 
         String bookingId = post.get("bookingId");

@@ -2,6 +2,7 @@ package sept.major.bookings.blackbox;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -23,6 +24,7 @@ import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
 
 public class PatchBlackBoxTest extends BookingBlackBoxHelper {
 
+    @SneakyThrows
     @Test
     void valid() throws JsonProcessingException {
         HashMap<String, String> patchValues = new HashMap<>();

@@ -3,6 +3,7 @@ package sept.major.bookings.blackbox;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -38,7 +39,7 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
     }
 
 
-    protected HashMap<String, String> successfulPost(Map<String, String> entityMap) throws IOException {
+    protected HashMap<String, String> successfulPost(Map<String, String> entityMap) {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), entityMap, String.class);
 
         System.out.println(result);
@@ -69,7 +70,8 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
         }
     }
 
-    protected void successfulPatch(Map<String, String> entityMap, Map<String, String> patchValues) throws IOException {
+    @SneakyThrows
+    protected void successfulPatch(Map<String, String> entityMap, Map<String, String> patchValues) {
         HashMap<String, String> postResult = successfulPost(entityMap);
 
         List<RequestParameter> requestParameters = Arrays.asList(
@@ -112,7 +114,8 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
         assertThat(getCastedResult).isEqualTo(expected);
     }
 
-    protected void successfulGetList(List<Map<String, String>> expected, String url) throws IOException {
+    @SneakyThrows
+    protected void successfulGetList(List<Map<String, String>> expected, String url) {
         ResponseEntity<String> getResult = testRestTemplate.getForEntity(url, String.class);
 
         System.out.println(getResult);
