@@ -1,4 +1,4 @@
-package sept.major.bookings.unit;
+package sept.major.bookings.controller.unit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 
 public class UnitTestHelper {
-    BookingServiceController bookingServiceController;
-    BookingServiceControllerHelper bookingServiceControllerHelper;
-    BookingService bookingService;
+    protected BookingServiceController bookingServiceController;
+    protected BookingServiceControllerHelper bookingServiceControllerHelper;
+    protected BookingService bookingService;
 
     @Mock
-    BookingsRepository mockedBookingRepository;
+    protected BookingsRepository mockedBookingRepository;
 
     @BeforeEach
     public void setUp() {

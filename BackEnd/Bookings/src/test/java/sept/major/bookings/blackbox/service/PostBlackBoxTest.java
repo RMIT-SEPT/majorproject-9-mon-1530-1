@@ -1,10 +1,11 @@
-package sept.major.bookings.blackbox;
+package sept.major.bookings.blackbox.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import sept.major.bookings.blackbox.BookingBlackBoxHelper;
 import sept.major.common.response.ValidationError;
 
 import java.util.Arrays;

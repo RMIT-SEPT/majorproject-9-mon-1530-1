@@ -1,6 +1,7 @@
-package sept.major.bookings.blackbox;
+package sept.major.bookings.blackbox.service;
 
 import org.junit.Before;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import sept.major.bookings.blackbox.BookingBlackBoxHelper;
 import sept.major.common.response.ValidationError;
 import sept.major.common.testing.RequestParameter;
 
@@ -24,6 +26,7 @@ import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
 public class PatchBlackBoxTest extends BookingBlackBoxHelper {
 
     @Test
+    @DisplayName("Successfully update an entity")
     void valid() throws JsonProcessingException {
         HashMap<String, String> patchValues = new HashMap<>();
         patchValues.put("startDateTime", pastDateTime(1, 2, 3).toString());
@@ -32,7 +35,8 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
     }
 
     @Test
-    void notExisting() {
+    @DisplayName("Attempt to update not existing entity")
+    void notExisting() throws JsonProcessingException {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
 
         int id = Integer.parseInt(firstPostMap.get("bookingId")) + 1;
@@ -43,10 +47,12 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(new HashMap<String, String>()), String.class);
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(patchResult.getBody()).isEqualTo("{\"field\":\"Identifier field\",\"message\":\"No record with a identifier of " + id + " was found\"}");
+        ValidationError validationError = new ValidationError("Identifier field", String.format("No record with a identifier of %s was found", id));
+        assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(validationError));
     }
 
     @Test
+    @DisplayName("Update not blank field to not blank")
     void missingField() throws JsonProcessingException {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("bookingId", firstPostMap.get("bookingId")));
@@ -57,12 +63,12 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
 
-        System.out.println(patchResult);
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("customerUsername", "must not be blank"))));
     }
 
     @Test
+    @DisplayName("Provided value for a field as a list")
     void incorrectFieldTypeList() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("bookingId", firstPostMap.get("bookingId")));
@@ -78,6 +84,7 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
     }
 
     @Test
+    @DisplayName("Provided value for a field as a map")
     void incorrectFieldTypeMap() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("bookingId", firstPostMap.get("bookingId")));
@@ -95,6 +102,7 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
     }
 
     @Test
+    @DisplayName("Updated end date to be before the start date")
     void endBeforeStartDate() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("bookingId", firstPostMap.get("bookingId")));
@@ -112,8 +120,10 @@ public class PatchBlackBoxTest extends BookingBlackBoxHelper {
     }
 
 
-//    Default restTemplate doesn't support PATCH endpoints. The following adds that  support
-
+    /*
+        TestRestTemplate does not support patch, even using .exchanged(), by default and this is needed to add support for it.
+        Sets the request factory to an apache request factory implementation
+     */
     @Before
     void setupRestTemplate() {
         testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
