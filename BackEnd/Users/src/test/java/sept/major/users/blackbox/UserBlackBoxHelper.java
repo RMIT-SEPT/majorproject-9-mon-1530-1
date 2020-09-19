@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public abstract class UsersBlackBoxHelper extends BlackboxTestHelper {
+public abstract class UserBlackBoxHelper extends BlackboxTestHelper {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;
@@ -47,12 +47,9 @@ public abstract class UsersBlackBoxHelper extends BlackboxTestHelper {
             HashMap<String, String> resultMap = objectMapper.readValue(result.getBody(), new TypeReference<HashMap<String, String>>() {
             });
 
-            HashMap<String, String> entityMapCopy = new HashMap<>(entityMap);
-            entityMapCopy.remove("password");
+            entityMap.remove("password"); // Password aren't returned
 
-            System.out.println("Comparing " + resultMap + " to " + entityMapCopy);
-            assertThat(resultMap.size()).isEqualTo(entityMapCopy.size());
-            assertThat(resultMap).isEqualTo(entityMapCopy);
+            assertThat(resultMap).isEqualTo(entityMap);
 
             return resultMap;
         } catch (JsonProcessingException e) {
@@ -71,7 +68,6 @@ public abstract class UsersBlackBoxHelper extends BlackboxTestHelper {
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
 
-        System.out.println(patchResult);
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         for (Map.Entry<String, String> entry : patchValues.entrySet()) {
@@ -82,21 +78,24 @@ public abstract class UsersBlackBoxHelper extends BlackboxTestHelper {
         HashMap<String, String> castPathResult = objectMapper.readValue(patchResult.getBody(), new TypeReference<HashMap<String, String>>() {
         });
 
-        for (Map.Entry<String, String> entry : castPathResult.entrySet()) {
-            assertThat(castPathResult.get(entry.getKey())).isEqualTo(postResult.get(entry.getKey()));
-        }
+        assertThat(castPathResult).isEqualTo(postResult);
     }
 
 
     protected void successfulGet(Map<String, String> expected, String url) {
         ResponseEntity<HashMap> getResult = testRestTemplate.getForEntity(url, HashMap.class);
+        HashMap<String, String> getCastedResult = new HashMap<>();
+        for (Object entry : getResult.getBody().entrySet()) {
+            Map.Entry<String, Object> castEntry = (Map.Entry<String, Object>) entry;
+            getCastedResult.put(castEntry.getKey(), castEntry.getValue().toString());
+        }
 
         System.out.println(getResult);
         assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(getResult.getBody()).isEqualTo(expected);
+        assertThat(getCastedResult).isEqualTo(expected);
     }
 
-    protected void successfulGet(List<Map<String, String>> expected, String url) throws JsonProcessingException {
+    protected void successfulGetList(List<Map<String, String>> expected, String url) throws JsonProcessingException {
         ResponseEntity<String> getResult = testRestTemplate.getForEntity(url, String.class);
 
         System.out.println(getResult);
@@ -110,5 +109,4 @@ public abstract class UsersBlackBoxHelper extends BlackboxTestHelper {
         System.out.println(getCastedResult);
         assertThat(getCastedResult).isEqualTo(expected);
     }
-
 }

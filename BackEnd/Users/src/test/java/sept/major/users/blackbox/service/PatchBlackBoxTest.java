@@ -1,6 +1,7 @@
-package sept.major.users.blackbox;
+package sept.major.users.blackbox.service;
 
 import org.junit.Before;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -11,6 +12,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingExcept
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import sept.major.common.response.ValidationError;
 import sept.major.common.testing.RequestParameter;
+import sept.major.users.blackbox.UserBlackBoxHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,56 +20,61 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static sept.major.users.UserServiceTestHelper.randomAlphanumericString;
-import static sept.major.users.UserServiceTestHelper.randomEntityMap;
+import static sept.major.users.UserTestHelper.randomAlphanumericString;
+import static sept.major.users.UserTestHelper.randomEntityMap;
 
-public class PatchBlackBoxTest extends UsersBlackBoxHelper {
+public class PatchBlackBoxTest extends UserBlackBoxHelper {
 
     @Test
+    @DisplayName("Successfully update an entity")
     void valid() throws JsonProcessingException {
         HashMap<String, String> patchValues = new HashMap<>();
+        patchValues.put("userType", randomAlphanumericString(20));
         patchValues.put("name", randomAlphanumericString(20));
         successfulPatch(randomEntityMap(), patchValues);
     }
 
     @Test
-    void notExisting() {
+    @DisplayName("Attempt to update not existing entity")
+    void notExisting() throws JsonProcessingException {
+        Map<String, String> firstPostMap = successfulPost(randomEntityMap());
+
         String username = randomAlphanumericString(20);
+
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", username));
 
-        HashMap<String, String> patchValues = new HashMap<>();
-        patchValues.put("name", randomAlphanumericString(20));
-
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(new HashMap<String, String>()), String.class);
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(patchResult.getBody()).isEqualTo("{\"field\":\"Identifier field\",\"message\":\"No record with a identifier of " + username + " was found\"}");
+        ValidationError validationError = new ValidationError("Identifier field", String.format("No record with a identifier of %s was found", username));
+        assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(validationError));
     }
 
     @Test
+    @DisplayName("Update not blank field to not blank")
     void missingField() throws JsonProcessingException {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", firstPostMap.get("username")));
 
         HashMap<String, String> patchValues = new HashMap<>();
-        patchValues.put("name", "");
+        patchValues.put("userType", "");
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
 
-        System.out.println(patchResult);
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("name", "must not be blank"))));
+        assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("userType", "must not be blank"))));
     }
 
     @Test
+    @DisplayName("Provided value for a field as a list")
     void incorrectFieldTypeList() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", firstPostMap.get("username")));
 
         HashMap<String, Object> patchValues = new HashMap<>();
-        patchValues.put("name", Arrays.asList("an incorrect value"));
+        patchValues.put("userType", Arrays.asList("an incorrect value"));
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
@@ -77,6 +84,7 @@ public class PatchBlackBoxTest extends UsersBlackBoxHelper {
     }
 
     @Test
+    @DisplayName("Provided value for a field as a map")
     void incorrectFieldTypeMap() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", firstPostMap.get("username")));
@@ -85,7 +93,7 @@ public class PatchBlackBoxTest extends UsersBlackBoxHelper {
         incorrectField.put("incorrect", "field");
 
         HashMap<String, Object> patchValues = new HashMap<>();
-        patchValues.put("name", incorrectField);
+        patchValues.put("userType", incorrectField);
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
         ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
@@ -93,8 +101,10 @@ public class PatchBlackBoxTest extends UsersBlackBoxHelper {
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-
-    //    Default restTemplate doesn't support PATCH endpoints. The following adds that  support
+    /*
+        TestRestTemplate does not support patch, even using .exchanged(), by default and this is needed to add support for it.
+        Sets the request factory to an apache request factory implementation
+     */
     @Before
     void setupRestTemplate() {
         testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
