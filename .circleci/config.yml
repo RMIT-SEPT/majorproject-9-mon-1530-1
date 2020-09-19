@@ -77,9 +77,9 @@ jobs: # a collection of steps
       - run: ls -l && ls dependency -l && ls dependency/Common -l 
       - run: mvn deploy:deploy-file -Durl=file://.m2 -Dfile=dependency/Common/target/common-1.1.1.jar -DpomFile=dependency/Common/pom.xml -DgroupId=sept.major -DartifactId=common -Dpackaging=jar -Dversion=1.1.1
       
-      - run: ls ../.m2 -l && ls ../.m2/repository/sept/major -l
+      - run: ls ../.m2 -l && ls ../.m2/repository/sept/ -l -R
       
-      - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
+      - run: cd BackEnd/Availability && mvn dependency:go-offline -Dmaven.repo.local=../.m2 # gets the project dependencies
       
       - save_cache: # saves the project dependencies
           paths:
