@@ -33,7 +33,11 @@ jobs: # a collection of steps
       - run: cd BackEnd/Common && mvn package # run the actual tests
       
       - run: ls ../.m2 -R
-            
+      
+      - run: cd BackEnd/Availability && mvn dependency:go-offline -Dmaven.repo.local=/home/circleci/.m2 # gets the project dependencies
+      
+      - run: ls ../.m2 -R
+      
       - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
       # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: BackEnd/Common/target/surefire-reports
