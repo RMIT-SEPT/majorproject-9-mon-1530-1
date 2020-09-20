@@ -96,6 +96,7 @@ jobs: # a collection of steps
           path: BackEnd/Common/target/common-1.1.1.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
       
+      
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
           # taken to be the root directory of the workspace.
@@ -141,10 +142,12 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           path: BackEnd/Availability/target/availability-1.0.0.jar
 
+      - run: mv BackEnd/Availability/target/availability-1.0.0.jar BackEnd/Availability/target/availability.jar
+      
       - persist_to_workspace:
           root: BackEnd/
           paths:
-            - Availability/target/availability-1.0.0.jar
+            - Availability/target/availability.jar
             - Availability/Dockerfile
             - Availability/pom.xml
 
@@ -184,10 +187,13 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           path: BackEnd/Hours/target/hours-1.0.0.jar
 
+      - run: mv BackEnd/Hours/target/hours-1.0.0.jar BackEnd/Hours/target/hours.jar
+      
       - persist_to_workspace:
           root: BackEnd/
           paths:
-            - Hours/target/hours-1.0.0.jar
+            - Hours/target/hours.jar
+            - Hours/Dockerfile
             - Hours/pom.xml
 
   build-bookings: # runs not using Workflows must have a `build` job as entry point
@@ -228,10 +234,13 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           path: BackEnd/Bookings/target/bookings-1.0.0.jar
 
+      - run: mv BackEnd/Bookings/target/bookings-1.0.0.jar BackEnd/Bookings/target/bookings.jar
+
       - persist_to_workspace:
           root: BackEnd/
           paths:
-            - Bookings/target/bookings-1.0.0.jar
+            - Bookings/target/bookings.jar
+            - Bookings/Dockerfile
             - Bookings/pom.xml
 
   build-users: # runs not using Workflows must have a `build` job as entry point
@@ -272,11 +281,15 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           path: BackEnd/Users/target/users-1.0.0.jar
 
+      - run: mv BackEnd/Users/target/users-1.0.0.jar BackEnd/Common/target/users.jar
+      
       - persist_to_workspace:
           root: BackEnd/
           paths:
-            - Users/target/users-1.0.0.jar
+            - Users/target/users.jar
+            - Users/Dockerfile
             - Users/pom.xml
+            
   build-front-end:
         docker:
           - image: circleci/node:12.9.1-browsers

@@ -1,6 +1,6 @@
 # Alpine Linux with OpenJDK JRE
 FROM openjdk:8-jre-alpine
 
-COPY target/availability.jar /app.jar
+COPY target/bookings.jar /app.jar
 
 CMD ["/usr/bin/java", "-jar", "/app.jar"]
