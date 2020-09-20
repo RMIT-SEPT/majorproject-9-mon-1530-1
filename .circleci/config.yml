@@ -17,7 +17,8 @@ jobs: # a collection of steps
     - run:
         name: Setup common environment variables
         command: |
-          echo 'aaaaaaa'
+          echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest"' >> $BASH_ENV
 
     - run:
         name: Install dependencies for AWS
@@ -31,8 +32,14 @@ jobs: # a collection of steps
         name: Build image
         command: |
           cd BackEnd/Availability
-          docker build -t availability_image .
+          docker build -t $FULL_IMAGE_NAME .
 
+    - run:
+        name: Push image
+        command: |
+          eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          docker push $FULL_IMAGE_NAME
+            
   build-common: # runs not using Workflows must have a `build` job as entry point
     #working_directory: ~/BackEnd/Common # directory where steps will run
 
