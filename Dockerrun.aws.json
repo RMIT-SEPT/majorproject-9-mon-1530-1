@@ -3,7 +3,7 @@
   "containerDefinitions": [
      {
        "name": "availability",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:latest",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
        "environment": [
          {
            "name": "DB_USERNAME",
