@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.response.ValidationError;
 
+import java.util.AbstractMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static sept.major.bookings.BookingsTestHelper.randomAlphanumericString;
 import static sept.major.bookings.BookingsTestHelper.randomInt;
@@ -39,7 +41,8 @@ public class DeleteEndpointTests extends UnitTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(result.getBody()).isEqualTo(String.format("No record with a identifier of %s was found", bookingId));
+
+        assertThat(result.getBody()).isEqualTo(new AbstractMap.SimpleEntry<>("message", String.format("No record with a identifier of %s was found", bookingId)));
     }
 
     @Test
