@@ -281,7 +281,7 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           path: BackEnd/Users/target/users-1.0.0.jar
 
-      - run: mv BackEnd/Users/target/users-1.0.0.jar BackEnd/Common/target/users.jar
+      - run: mv BackEnd/Users/target/users-1.0.0.jar BackEnd/Users/target/users.jar
       
       - persist_to_workspace:
           root: BackEnd/
