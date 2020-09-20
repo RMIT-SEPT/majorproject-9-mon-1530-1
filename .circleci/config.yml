@@ -252,7 +252,7 @@ workflows:
     - build-availability:
         requires:
           - build-common
-    - docker-build-deploy-availability
+    - docker-build-deploy-availability:
         requires:
           - build-common
     
