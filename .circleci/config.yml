@@ -19,6 +19,23 @@ jobs: # a collection of steps
         command: |
           echo 'aaaaaaa'
 
+    - run:
+        name: Install dependencies for project
+        command: gradle assemble
+
+     - run:
+        name: Install dependencies for AWS
+        command: |
+          sudo apt-get update
+          sudo apt-get -y -qq install awscli
+          sudo apt-get install python3-pip
+          sudo pip3 install --upgrade awscli
+
+    - run:
+        name: Build image
+        command: |
+          docker build -t $FULL_IMAGE_NAME .
+
   build-common: # runs not using Workflows must have a `build` job as entry point
     #working_directory: ~/BackEnd/Common # directory where steps will run
 
@@ -249,9 +266,9 @@ workflows:
     - build-availability:
         requires:
           - build-common
-    - docker-build-deploy-availability:
+    - docker-build-deploy-availability
         requires:
-          - build-common
+          - build-availability
     
 #    - build-hours:
 #        requires:
