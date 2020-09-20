@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Title, AvailabilityGrid } from '../DashboardComponents';
+import {
+  Title,
+  AvailabilityGrid,
+  StyledGreenText,
+} from '../DashboardComponents';
 
 // Components defined here are specifically used for booking appointments
 
@@ -113,11 +117,6 @@ const StyledHr = styled.hr`
   margin-bottom: 0;
 `;
 
-const StyledGreenText = styled.span`
-  color: ${(props) => props.theme.colours.green.primary};
-  font-weight: ${(props) => props.theme.fontWeight.semiBold};
-`;
-
 const StyledSelectedWorker = styled.div`
   margin-bottom: 8px;
 `;
@@ -221,6 +220,7 @@ const AvailabilityView = ({ workerId }) => {
     <div>
       <SelectedWorker workerId={workerId} />
       <AvailabilityGrid>
+        {availability.length === 0 && <div>No availability found...</div>}
         {availability.map((time) => {
           const localStartDate = new Date(time.startDateTime);
 
@@ -272,9 +272,6 @@ const SelectedWorker = ({ workerId }) => {
         <>
           Selected worker: <StyledGreenText>{worker.name}</StyledGreenText>
         </>
-      )}
-      {!worker.username && (
-        <div>No availability found for selected worker...</div>
       )}
     </StyledSelectedWorker>
   );
