@@ -24,6 +24,7 @@ jobs: # a collection of steps
           echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
           echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${backedn_service_dir_name}"' >> $BASH_ENV
 
+    - run: echo $FULL_IMAGE_NAME
     - run:
         name: Install dependencies for AWS
         command: |
