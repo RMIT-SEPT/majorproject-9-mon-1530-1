@@ -6,10 +6,11 @@ orbs:
   aws-ecs: circleci/aws-ecs@1.3.0
 
 jobs: # a collection of steps
+
   docker-build-deploy-availability:
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk
-    
+
     steps: # a collection of executable commands 
     - checkout # check out source code to working directory
     - setup_remote_docker
@@ -17,21 +18,7 @@ jobs: # a collection of steps
         name: Setup common environment variables
         command: |
           echo 'aaaaaaa'
-    
-    - run:
-        name: Install dependencies for project
-        command: gradle assemble
 
-     - run:
-        name: Install dependencies for AWS
-        command: |
-          sudo apt-get update
-          sudo apt-get -y -qq install awscli
-          sudo apt-get install python3-pip
-          sudo pip3 install --upgrade awscli
-
-    
-    
   build-common: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk
