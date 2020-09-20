@@ -296,17 +296,9 @@ workflows:
     - build-availability:
         requires:
           - build-common
-#    - docker-build-deploy-availability:
-#        requires:
-#          - build-availability
-    - aws-ecr/build-and-push-image:
-          repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          attach-workspace: true
-          workspace-root: dependency
-          path: dependency/Availability
-          region: AWS_DEFAULT_REGION
-          requires:
-            - build-availability
+    - docker-build-deploy-availability:
+        requires:
+          - build-availability
         
 
 #    - build-hours:
