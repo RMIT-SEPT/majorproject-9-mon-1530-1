@@ -16,6 +16,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @RestController
 @RequestMapping("/hours")
 @CrossOrigin
@@ -39,11 +41,11 @@ public class HoursController {
                                           @RequestParam(name = "endDateTime") String endDateString,
                                           @RequestParam(required = false) String workerUsername,
                                           @RequestParam(required = false) String creatorUsername) {
-        if (workerUsername != null && workerUsername.equals("null")) {
-            workerUsername = null;
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
-        if (creatorUsername != null && creatorUsername.equals("null")) {
-            creatorUsername = null;
+        if (isUsernameInvalid(creatorUsername)) {
+            return new ResponseEntity(new ValidationError("creatorUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
 
         LocalDateTime startDate;
@@ -83,11 +85,11 @@ public class HoursController {
     public ResponseEntity getHoursInDate(@RequestParam(name = "date") String dateString,
                                          @RequestParam(required = false) String workerUsername,
                                          @RequestParam(required = false) String creatorUsername) {
-        if (workerUsername != null && workerUsername.equals("null")) {
-            workerUsername = null;
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
-        if (creatorUsername != null && creatorUsername.equals("null")) {
-            creatorUsername = null;
+        if (isUsernameInvalid(creatorUsername)) {
+            return new ResponseEntity(new ValidationError("creatorUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -106,11 +108,11 @@ public class HoursController {
     public ResponseEntity getAllHours(@RequestParam(required = false) String workerUsername,
                                       @RequestParam(required = false) String creatorUsername) {
 
-        if (workerUsername != null && workerUsername.equals("null")) {
-            workerUsername = null;
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
-        if (creatorUsername != null && creatorUsername.equals("null")) {
-            creatorUsername = null;
+        if (isUsernameInvalid(creatorUsername)) {
+            return new ResponseEntity(new ValidationError("creatorUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -139,5 +141,9 @@ public class HoursController {
     @DeleteMapping
     public ResponseEntity deleteHours(@RequestParam String hoursId) {
         return hoursControllerHelper.deleteEntity(hoursId, Integer.class);
+    }
+
+    private boolean isUsernameInvalid(String username) {
+        return (username != null && ("null".equals(username) || isBlank(username)));
     }
 }

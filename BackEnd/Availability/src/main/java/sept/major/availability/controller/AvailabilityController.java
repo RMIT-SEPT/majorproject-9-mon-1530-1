@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/availability")
+@CrossOrigin
 public class AvailabilityController {
 
     private static final Logger log = LoggerFactory.getLogger(AvailabilityController.class);

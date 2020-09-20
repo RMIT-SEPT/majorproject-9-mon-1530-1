@@ -71,13 +71,13 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             try {
                 return LocalDate.parse(toConvert);
             } catch (DateTimeParseException e) {
-                throw new FailedConversionException("must be formatted yyyy/mm/dd");
+                throw new FailedConversionException("must be formatted yyyy-mm-dd");
             }
         } else if(classToConvertTo.equals(LocalDateTime.class)) {
             try {
                 return LocalDateTime.parse(toConvert);
             } catch (DateTimeParseException e) {
-                throw new FailedConversionException("must be formatted yyyy/MM/ddTHH:mm:ss.SSSSSSSSS");
+                throw new FailedConversionException("must be formatted yyyy-MM-ddTHH:mm:ss.SSSSSSSSS");
             }
         }
         return new FailedConversionException(String.format("Conversion to %s has not been implemented", classToConvertTo));
@@ -90,17 +90,6 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
      * @return The {@link CrudService} which this class with call methods on when providing generic implementations
      */
     public abstract CrudService<E, ID> getService();
-
-    /*
-        Used for validating input data for used for creating an entity.
-        Values provided:
-            * Class of the entity this class implements. Done because you cannot get the class of a generic
-            * A map which links field name to field value. Normally translated from JSON
-         Returns: An entity constructed from the map provided
-         Throws:
-            * RecordAlreadyExistsException: Record already exists with the same identifying field provided in the map
-            * ResponseErrorException: A field is missing or an incorrect type.
-     */
 
     /**
      * The generic implementation of retrieve by id functionality
@@ -313,7 +302,8 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         try {
             id = convertIdentifier(identifierString, identifierClass);
         } catch (FailedConversionException e) {
-            return new ResponseEntity(new ValidationError(identifierFieldName, e.getMessage()), HttpStatus.BAD_REQUEST);
+            String field = (identifierFieldName == null) ? "id": identifierFieldName; // identifierFieldName might not have been found so we just use "id" instead if it isn't
+            return new ResponseEntity(new ValidationError(field, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -435,7 +425,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             try {
                 return (ID) convertString(identifierType, identifierString);
             } catch (FailedConversionException e) {
-                throw new FailedConversionException(String.format("Conversion to %s has not been implemented", identifierType));
+                throw new FailedConversionException(e.getMessage());
             }
         }
     }
