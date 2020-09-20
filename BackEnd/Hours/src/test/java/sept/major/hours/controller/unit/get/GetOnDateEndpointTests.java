@@ -11,6 +11,7 @@ import sept.major.hours.entity.HoursEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,8 @@ class GetOnDateEndpointTests extends GetEndpointUnitTestHelper {
     @Test
     @DisplayName("Provided date is valid but no record could be found")
     void dateMissingResult() {
-        testWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
+
+        testWithUsernameFilters(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", "No records within provided bounds were found"), HttpStatus.NOT_FOUND),
                 Arrays.asList(), LocalDate.now().toString());
     }
 
