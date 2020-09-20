@@ -17,7 +17,6 @@ const BookingContextProvider = (props) => {
   };
 
   const submitBooking = async () => {
-    console.log(workerId, customerId, startTime, endTime);
     // TODO: Handle errors
     await axios.post('http://localhost:8081/bookings', {
       workerUsername: workerId,
