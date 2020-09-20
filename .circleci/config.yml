@@ -1,4 +1,4 @@
-version: 2 # use CircleCI 2.0
+version: 2.1 
 
 
 orbs:
@@ -239,12 +239,12 @@ workflows:
         requires:
           - build-common
 
-    - build-hours:
-        requires:
-          - build-common
-    - build-bookings:
-        requires:
-          - build-common
-    - build-users:
-        requires:
-          - build-common
+#    - build-hours:
+#        requires:
+#          - build-common
+#    - build-bookings:
+#        requires:
+#          - build-common
+#    - build-users:
+#        requires:
+#          - build-common
