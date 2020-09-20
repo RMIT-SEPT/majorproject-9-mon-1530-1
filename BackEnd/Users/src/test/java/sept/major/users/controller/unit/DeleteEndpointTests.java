@@ -7,6 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.AbstractMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static sept.major.users.UserTestHelper.randomAlphanumericString;
 
@@ -37,6 +39,7 @@ public class DeleteEndpointTests extends UnitTestHelper {
 
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(result.getBody()).isEqualTo(String.format("No record with a identifier of %s was found", username));
+
+        assertThat(result.getBody()).isEqualTo(new AbstractMap.SimpleEntry<>("message", String.format("No record with a identifier of %s was found", username)));
     }
 }
