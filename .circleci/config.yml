@@ -304,6 +304,7 @@ workflows:
           attach-workspace: true
           workspace-root: dependency
           path: dependency/Availability
+          region: ${AWS_DEFAULT_REGION}
           requires:
             - build-availability
         
