@@ -31,10 +31,12 @@ jobs: # a collection of steps
     - attach_workspace:
         at: dependency
 
+    - run: ls -R
+      
     - run:
         name: Build image
         command: |
-          cd dependency/BackEnd/Availability
+          cd dependency/Availability
           docker build -t $FULL_IMAGE_NAME .
 
     - run:
@@ -133,6 +135,7 @@ jobs: # a collection of steps
           root: BackEnd/
           paths:
             - Availability/target/availability-1.0.0.jar
+            - Availability/Dockerfile
             - Availability/pom.xml
 
   build-hours: # runs not using Workflows must have a `build` job as entry point
@@ -288,7 +291,7 @@ workflows:
   version: 2
   workflow:
     jobs:
-    - build-front-end
+#    - build-front-end
     - build-common
     - build-availability:
         requires:
