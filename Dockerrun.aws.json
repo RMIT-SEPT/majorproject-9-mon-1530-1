@@ -18,11 +18,11 @@
            "value": "jdbc:postgresql://database-3-instance-1.clewumvfkuf6.us-east-1.rds.amazonaws.com:5432/sept"
          }
 	   ],
-	   "memory": 128,
+	   "memory": 256,
 	   "portMappings": [
         {
-          "hostPort": 3000,
-          "containerPort": 3000
+          "hostPort": 8084,
+          "containerPort": 8084
         }
       ]
      }
