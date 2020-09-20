@@ -111,7 +111,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(entity, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
             // No record was found so return a 404 with a message stating a record wasn't found.
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -207,7 +207,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             return new ResponseEntity(createdEntity, HttpStatus.OK);
 
         } catch (RecordAlreadyExistsException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.CONFLICT);
         } catch (ValidationErrorException e) {
             return new ResponseEntity(e.getValidationErrors(), HttpStatus.BAD_REQUEST);
         }
@@ -320,7 +320,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
         } catch (IdentifierUpdateException e) {
             return new ResponseEntity(new ValidationError("Identifier field", "Cannot update field used for identifying entities"), HttpStatus.BAD_REQUEST);
         } catch (RecordAlreadyExistsException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.CONFLICT);
         }
 
     }
@@ -345,7 +345,7 @@ public abstract class ControllerHelper<E extends AbstractEntity<ID>, ID> {
             getService().delete(id);
             return new ResponseEntity("Record successfully deleted", HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
