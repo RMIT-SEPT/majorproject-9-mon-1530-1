@@ -107,6 +107,11 @@ const Button = styled.button`
   }
 `;
 
+const StyledGreenText = styled.span`
+  color: ${(props) => props.theme.colours.green.primary};
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+`;
+
 const DashboardModule = ({ children, title }) => {
   return (
     <StyledDashboardModule>
@@ -169,4 +174,5 @@ export {
   PanelGrid,
   Title,
   Button,
+  StyledGreenText,
 };
