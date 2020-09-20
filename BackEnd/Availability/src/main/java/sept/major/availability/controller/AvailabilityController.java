@@ -16,6 +16,7 @@ import sept.major.common.testing.RequestParameter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class AvailabilityController {
 
             return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); //TODO try/catch to be improved
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST); //TODO try/catch to be improved
         }
     }
 
@@ -144,7 +145,7 @@ public class AvailabilityController {
 
             return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
         }
 
     }
@@ -186,7 +187,7 @@ public class AvailabilityController {
 
             return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
         }
     }
 
