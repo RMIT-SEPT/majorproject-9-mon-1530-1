@@ -288,6 +288,7 @@ workflows:
   version: 2
   workflow:
     jobs:
+    - build-front-end
     - build-common
     - build-availability:
         requires:
