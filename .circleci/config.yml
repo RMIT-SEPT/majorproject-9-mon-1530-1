@@ -263,13 +263,13 @@ workflows:
   version: 2
   workflow:
     jobs:
-    - build-common
-    - build-availability:
-        requires:
-          - build-common
+#    - build-common
+#    - build-availability:
+#        requires:
+#          - build-common
     - docker-build-deploy-availability
-        requires:
-          - build-availability
+#        requires:
+#          - build-availability
     
 #    - build-hours:
 #        requires:
