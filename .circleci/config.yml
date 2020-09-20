@@ -18,13 +18,19 @@ jobs: # a collection of steps
     steps: # a collection of executable commands 
     - checkout # check out source code to working directory
     - setup_remote_docker
+    
+    - run: echo << parameters.backedn_service_dir_name >> 
+    
+    
     - run:
         name: Setup common environment variables
         command: |
           echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
-          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest"' >> $BASH_ENV
+          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:<< parameters.backedn_service_dir_name >>"' >> $BASH_ENV
 
     - run: echo $FULL_IMAGE_NAME
+    
+    
     - run:
         name: Install dependencies for AWS
         command: |
@@ -41,7 +47,7 @@ jobs: # a collection of steps
     - run:
         name: Build image
         command: |
-          cd dependency/${backedn_service_dir_name}
+          cd dependency/<< parameters.backedn_service_dir_name >> 
           docker build -t $FULL_IMAGE_NAME .
 
     - run:
