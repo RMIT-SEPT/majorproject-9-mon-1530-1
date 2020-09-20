@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import sept.major.users.controller.unit.UnitTestHelper;
 import sept.major.users.entity.UserEntity;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetAllEndpointTests extends UnitTestHelper {
     @Test
     @DisplayName("No record found with no userType")
     void missingResult() {
-        runTest(new ResponseEntity("No record was found", HttpStatus.NOT_FOUND),
+        runTest(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", "No record was found"), HttpStatus.NOT_FOUND),
                 Arrays.asList(), null);
     }
 
@@ -64,7 +65,7 @@ public class GetAllEndpointTests extends UnitTestHelper {
     @DisplayName("No record found with userType")
     void missingResultWithUserType() {
         String username = randomAlphanumericString(20);
-        runTest(new ResponseEntity(String.format("No record with a userType of %s was found", username), HttpStatus.NOT_FOUND),
+        runTest(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", String.format("No record with a userType of %s was found", username)), HttpStatus.NOT_FOUND),
                 Arrays.asList(), username);
     }
 
