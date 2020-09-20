@@ -23,7 +23,7 @@ jobs: # a collection of steps
         name: Install dependencies for project
         command: gradle assemble
 
-     - run:
+    - run:
         name: Install dependencies for AWS
         command: |
           sudo apt-get update
@@ -34,14 +34,15 @@ jobs: # a collection of steps
     - run:
         name: Build image
         command: |
-          docker build -t $FULL_IMAGE_NAME .
+          cd BackEnd/Availability
+          docker build -t availability_image .
 
   build-common: # runs not using Workflows must have a `build` job as entry point
     #working_directory: ~/BackEnd/Common # directory where steps will run
 
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk
-    
+
     steps: # a collection of executable commands 
 
       - run: echo "------------ START ---------------"
