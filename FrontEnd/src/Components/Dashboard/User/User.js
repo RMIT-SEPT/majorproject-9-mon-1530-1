@@ -10,8 +10,8 @@ import {
   Heading,
   SubHeading,
   Content,
-  DashboardGrid,
   AppointmentsGrid,
+  BookingGrid,
   PanelGrid,
   Button,
 } from '../DashboardComponents';
@@ -165,20 +165,18 @@ const User = ({ id }) => {
             <Content>
               <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <DashboardGrid>
-                <DashboardModule title="Upcoming appointments">
-                  {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
+              <DashboardModule title="Upcoming appointments">
+                {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
-                  <AppointmentsGrid>
-                    {tempBookings.map((booking) => (
-                      <UpcomingAppointmentCard
-                        key={booking.bookingId}
-                        booking={booking}
-                      />
-                    ))}
-                  </AppointmentsGrid>
-                </DashboardModule>
-              </DashboardGrid>
+                <AppointmentsGrid>
+                  {tempBookings.map((booking) => (
+                    <UpcomingAppointmentCard
+                      key={booking.bookingId}
+                      booking={booking}
+                    />
+                  ))}
+                </AppointmentsGrid>
+              </DashboardModule>
             </Content>
           )}
           {service && (
@@ -188,19 +186,17 @@ const User = ({ id }) => {
               <Button type="button" onClick={returnHome}>
                 Back
               </Button>
-              <DashboardGrid>
-                <DashboardModule title="Choose a service">
-                  <PanelGrid>
-                    {tempServices.map((service) => (
-                      <ServiceCard
-                        key={service.serviceName}
-                        onClick={selectWorker}
-                        service={service}
-                      ></ServiceCard>
-                    ))}
-                  </PanelGrid>
-                </DashboardModule>
-              </DashboardGrid>
+              <DashboardModule title="Choose a service">
+                <PanelGrid>
+                  {tempServices.map((service) => (
+                    <ServiceCard
+                      key={service.serviceName}
+                      onClick={selectWorker}
+                      service={service}
+                    ></ServiceCard>
+                  ))}
+                </PanelGrid>
+              </DashboardModule>
             </Content>
           )}
           {worker && (
@@ -210,22 +206,20 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelWorker}>
                 Back
               </Button>
-              <DashboardGrid>
-                <DashboardModule title="Choose a worker">
-                  <PanelGrid>
-                    {tempWorkers.map((worker) => (
-                      <WorkerRadioButton
-                        type="radio"
-                        worker={worker}
-                        key={worker.workerUserName}
-                        name="selectWorker"
-                        onChange={setWorkerId}
-                        onClick={selectBooking}
-                      ></WorkerRadioButton>
-                    ))}
-                  </PanelGrid>
-                </DashboardModule>
-              </DashboardGrid>
+              <DashboardModule title="Choose a worker">
+                <PanelGrid>
+                  {tempWorkers.map((worker) => (
+                    <WorkerRadioButton
+                      type="radio"
+                      worker={worker}
+                      key={worker.workerUserName}
+                      name="selectWorker"
+                      onChange={setWorkerId}
+                      onClick={selectBooking}
+                    ></WorkerRadioButton>
+                  ))}
+                </PanelGrid>
+              </DashboardModule>
             </Content>
           )}
           {booking && (
@@ -235,27 +229,29 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelBooking}>
                 Back
               </Button>
-              <DashboardModule title="Availability">
-                <AvailabilityView workerId={workerId} />
-              </DashboardModule>
+              <BookingGrid>
+                <DashboardModule title="Availability">
+                  <AvailabilityView workerId={workerId} />
+                </DashboardModule>
 
-              <DashboardModule title="Select times">
-                <TimeFlex>
-                  {isChrome && (
-                    <>
-                      <DateTimeSelector
-                        label="Start time"
-                        onChange={setStartTime}
-                      ></DateTimeSelector>
-                      <DateTimeSelector
-                        label="End time"
-                        onChange={setEndTime}
-                      ></DateTimeSelector>
-                    </>
-                  )}
-                  {isFirefox && <div>Firefox...</div>}
-                </TimeFlex>
-              </DashboardModule>
+                <DashboardModule title="Select times">
+                  <TimeFlex>
+                    {isChrome && (
+                      <>
+                        <DateTimeSelector
+                          label="Start time"
+                          onChange={setStartTime}
+                        ></DateTimeSelector>
+                        <DateTimeSelector
+                          label="End time"
+                          onChange={setEndTime}
+                        ></DateTimeSelector>
+                      </>
+                    )}
+                    {isFirefox && <div>Firefox...</div>}
+                  </TimeFlex>
+                </DashboardModule>
+              </BookingGrid>
               <Button type="button" onClick={mutate}>
                 Submit
               </Button>

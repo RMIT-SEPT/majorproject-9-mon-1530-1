@@ -117,7 +117,7 @@ export const FormDetails = (props) => {
             });
     };
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form style={{width: '840px'}} onSubmit={handleSubmit(onSubmit)}>
             <Grid container direction="row" spacing={3}>
                 <Grid item xs={6}>
                     <Heading>Full Name </Heading>

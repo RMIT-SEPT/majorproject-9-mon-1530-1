@@ -4,13 +4,7 @@ import axios from 'axios';
 import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
-import {
-  Heading,
-  SubHeading,
-  Content,
-  DashboardGrid,
-  Button,
-} from '../DashboardComponents';
+import { Heading, SubHeading, Content, Button } from '../DashboardComponents';
 import FormDetails from '../../FormDetails';
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
@@ -107,9 +101,7 @@ const Admin = ({ id }) => {
               <Button type="button" onClick={returnHome}>
                 Back
               </Button>
-              <DashboardGrid>
-                <FormDetails />
-              </DashboardGrid>
+              <FormDetails />
             </Content>
           )}
         </DashboardWrapper>
