@@ -20,10 +20,6 @@ jobs: # a collection of steps
           echo 'aaaaaaa'
 
     - run:
-        name: Install dependencies for project
-        command: gradle assemble
-
-    - run:
         name: Install dependencies for AWS
         command: |
           sudo apt-get update
