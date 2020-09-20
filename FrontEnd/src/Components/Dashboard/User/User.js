@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { Home, Phone, Calendar, PlusCircle, Settings } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -25,6 +25,7 @@ import {
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { tempServices, tempWorkers, tempBookings } from './UserMockData';
+import UserSettings from '../../UserSettings';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
@@ -57,6 +58,7 @@ const User = ({ id }) => {
     setService(false);
     setWorker(false);
     setMain(false);
+    setSetting(false);
   };
 
   // State changing functions for updating page view
@@ -92,6 +94,11 @@ const User = ({ id }) => {
     setWorker(true);
   };
 
+  const selectSetting = () => {
+    clear();
+    setSetting(true);
+  }
+
   // Fetch user info from back-end
   const { isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
@@ -126,6 +133,7 @@ const User = ({ id }) => {
   const [service, setService] = useState(false);
   const [booking, setBooking] = useState(false);
   const [worker, setWorker] = useState(false);
+  const [setting, setSetting] = useState(false);
 
   return (
     <>
@@ -156,6 +164,12 @@ const User = ({ id }) => {
               size={theme.icons.size.medium}
             />
             <Calendar
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Settings
+              onClick={selectSetting}
               className="menuIcon"
               color={theme.colours.grey.primary}
               size={theme.icons.size.medium}
@@ -255,6 +269,14 @@ const User = ({ id }) => {
               <Button type="button" onClick={mutate}>
                 Submit
               </Button>
+            </Content>
+          )}
+          {setting && (
+            <Content>
+              <Heading>Settings</Heading>
+              <div>
+                <UserSettings/>
+              </div>
             </Content>
           )}
         </DashboardWrapper>
