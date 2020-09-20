@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import sept.major.availability.entity.AvailabilityEntity;
 import sept.major.availability.entity.BookingResponse;
@@ -14,9 +15,9 @@ import sept.major.availability.entity.HoursResponse;
 import sept.major.availability.service.AvailabilityService;
 import sept.major.common.testing.RequestParameter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,42 +59,49 @@ public class AvailabilityController {
         String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
         String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 
-        try {
-            {//conversion test TODO remove
-                LocalDateTime sample = LocalDateTime.now();
-                log.info("sample:{}", sample);
-                LocalDateTime start_LDT = LocalDateTime.parse(startDateString);
-                LocalDateTime end_LDT = LocalDateTime.parse(endDateString);
-                log.info("start_LDT:{}, end_LDT:{}", start_LDT, end_LDT);
-            }
+        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
+        hoursRequestParameters.add(new RequestParameter("startDate", startDateString));
+        hoursRequestParameters.add(new RequestParameter("endDate", endDateString));
+        List<RequestParameter> bookingsRequestParameters = new ArrayList<>(hoursRequestParameters);
 
-            List<RequestParameter> hoursRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsername", workerUsername),
-                    new RequestParameter("creatorUsername", creatorUsername),
-                    new RequestParameter("startDateTime", startDateString),
-                    new RequestParameter("endDateTime", endDateString)
-            );
-            String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/range", hoursRequestParameters);
-            List<HoursResponse> hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
-
-            List<RequestParameter> bookingsRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsername", workerUsername),
-                    new RequestParameter("customerUsername", customerUsername),
-                    new RequestParameter("startDateTime", startDateString),
-                    new RequestParameter("endDateTime", endDateString)
-            );
-            String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/range", bookingsRequestParameters);
-            List<BookingResponse> bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-
-            log.info(hoursList.toString());
-
-            List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-
-            return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); //TODO try/catch to be improved
+        if (workerUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
+            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
         }
+        if (creatorUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
+        }
+        if (customerUsername != null) {
+            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
+        }
+
+        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
+        List<HoursResponse> hoursList;
+        try {
+            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("service", "hours");
+            response.put("details", e.getMessage());
+            return new ResponseEntity(response, e.getStatusCode());
+        }
+
+        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
+        List<BookingResponse> bookingsList = new ArrayList<>();
+        try {
+            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("service", "hours");
+                response.put("details", e.getMessage());
+                return new ResponseEntity(response, e.getStatusCode());
+            }
+        }
+
+        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
+
+        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -116,36 +124,48 @@ public class AvailabilityController {
         String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
         String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 
-        try { // conversion test TODO remove
-            {// conversion test TODO remove
-                LocalDate sample = LocalDate.now();
-                log.info("sample:{}", sample);
-                LocalDate start_LD = LocalDate.parse(dateString);
-                log.info("start_LD:{}", start_LD);
-            }
+        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
+        hoursRequestParameters.add(new RequestParameter("date", dateString));
+        List<RequestParameter> bookingsRequestParameters = new ArrayList<>(hoursRequestParameters);
 
-            List<RequestParameter> hoursRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsername", workerUsername),
-                    new RequestParameter("creatorUsername", creatorUsername),
-                    new RequestParameter("date", dateString)
-            );
-            String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/date", hoursRequestParameters);
-            List<HoursResponse> hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
-
-            List<RequestParameter> bookingsRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsername", workerUsername),
-                    new RequestParameter("customerUsername", customerUsername),
-                    new RequestParameter("date", dateString)
-            );
-            String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/date", bookingsRequestParameters);
-            List<BookingResponse> bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-
-            List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-            return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
+        if (workerUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
+            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
         }
+        if (creatorUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
+        }
+        if (customerUsername != null) {
+            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
+        }
+
+        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
+        List<HoursResponse> hoursList;
+        try {
+            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("service", "hours");
+            response.put("details", e.getMessage());
+            return new ResponseEntity(response, e.getStatusCode());
+        }
+
+        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
+        List<BookingResponse> bookingsList = new ArrayList<>();
+        try {
+            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("service", "hours");
+                response.put("details", e.getMessage());
+                return new ResponseEntity(response, e.getStatusCode());
+            }
+        }
+
+        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
+
+        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
 
     }
 
@@ -163,31 +183,50 @@ public class AvailabilityController {
                                                @RequestParam(required = false) String customerUsername) {
         log.info("workerUsername:{}, creatorUsername:{}, ", workerUsername, creatorUsername);
 
-        String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
         String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
         String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 
-        try {
-            List<RequestParameter> hoursRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsername", workerUsername),
-                    new RequestParameter("creatorUsername", creatorUsername)
-            );
-            String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
-            List<HoursResponse> hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
+        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
+        List<RequestParameter> bookingsRequestParameters = new ArrayList<>();
 
-            List<RequestParameter> bookingsRequestParameters = Arrays.asList(
-                    new RequestParameter("workerUsename", workerUsername),
-                    new RequestParameter("creatorUsername", customerUsername)
-            );
-            String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
-            List<BookingResponse> bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-
-            List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-            return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO try/catch to be improved
+        if (workerUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
+            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
         }
+        if (creatorUsername != null) {
+            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
+        }
+        if (customerUsername != null) {
+            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
+        }
+
+        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
+        List<HoursResponse> hoursList;
+        try {
+            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("service", "hours");
+            response.put("details", e.getMessage());
+            return new ResponseEntity(response, e.getStatusCode());
+        }
+
+        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
+        List<BookingResponse> bookingsList = new ArrayList<>();
+        try {
+            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
+        } catch (HttpClientErrorException e) {
+            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                HashMap<String, Object> response = new HashMap<>();
+                response.put("service", "hours");
+                response.put("details", e.getMessage());
+                return new ResponseEntity(response, e.getStatusCode());
+            }
+        }
+
+        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
+
+        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
     }
 
     /**
