@@ -308,7 +308,7 @@ workflows:
         requires:
           - build-common
     - docker-build-deploy-backend:
-        backedn_service_dir_name: availability
+        backedn_service_dir_name: Availability
         requires:
           - build-availability
         
