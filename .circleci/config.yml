@@ -330,35 +330,35 @@ workflows:
   workflow:
     jobs:
     - build-deploy-front-end
-    - build-common
-    - build-availability:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Availability
-        requires:
-          - build-availability
+    # - build-common
+    # - build-availability:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Availability
+        # requires:
+          # - build-availability
 
-    - build-hours:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Hours
-        requires:
-          - build-hours
+    # - build-hours:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Hours
+        # requires:
+          # - build-hours
 
-    - build-bookings:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Bookings
-        requires:
-          - build-bookings
+    # - build-bookings:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Bookings
+        # requires:
+          # - build-bookings
 
-    - build-users:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Users
-        requires:
-          - build-users
+    # - build-users:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Users
+        # requires:
+          # - build-users

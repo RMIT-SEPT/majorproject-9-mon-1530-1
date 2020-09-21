@@ -12,7 +12,7 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 #RUN npm install react-scripts@3.4.3 -g
-RUN npm test -- --watchAll=false
+#RUN npm test -- --watchAll=false
 # add app
 COPY . ./
 
