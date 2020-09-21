@@ -1,43 +1,43 @@
-import React, { useState } from "react";
-import { Button, Grid } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import logo from "../media/logo.png";
-import construction from "../media/undraw_under_construction_46pa-2 1.png";
-import { withStyles } from "@material-ui/core/styles";
-import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import auth from "./auth";
-import { useHistory } from "react-router-dom";
-const axios = require("axios");
+import React, { useState } from 'react';
+import { Button, Grid } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import logo from '../../media/logo.png';
+import construction from '../../media/undraw_under_construction_46pa-2 1.png';
+import { withStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
+import auth from '../Auth/auth';
+import { useHistory } from 'react-router-dom';
+const axios = require('axios');
 
 const ColorButton = withStyles((theme) => ({
   root: {
-    margin: "10px",
-    color: theme.palette.getContrastText("#000000"),
-    backgroundColor: "#5AC490",
-    "&:hover": {
-      backgroundColor: "#60BF90",
+    margin: '10px',
+    color: theme.palette.getContrastText('#000000'),
+    backgroundColor: '#5AC490',
+    '&:hover': {
+      backgroundColor: '#60BF90',
     },
   },
 }))(Button);
 
 const CssTextFieldGreen = withStyles({
   root: {
-    "& label.Mui-focused": {
-      color: "green",
+    '& label.Mui-focused': {
+      color: 'green',
     },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "green",
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
     },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "green",
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green',
       },
-      "&:hover fieldset": {
-        borderColor: "light green",
+      '&:hover fieldset': {
+        borderColor: 'light green',
       },
-      "&.Mui-focused fieldset": {
-        borderColor: "green",
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
       },
     },
   },
@@ -45,21 +45,21 @@ const CssTextFieldGreen = withStyles({
 
 const CssTextField = withStyles({
   root: {
-    "& label.Mui-focused": {
-      color: "green",
+    '& label.Mui-focused': {
+      color: 'green',
     },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "green",
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
     },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "red",
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'red',
       },
-      "&:hover fieldset": {
-        borderColor: "light green",
+      '&:hover fieldset': {
+        borderColor: 'light green',
       },
-      "&.Mui-focused fieldset": {
-        borderColor: "green",
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
       },
     },
   },
@@ -76,7 +76,7 @@ const Heading = styled.div`
   margin: 10px;
 `;
 const Bold = styled.div`
-  font-family: "Nunito Sans";
+  font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 800;
   font-size: 35px;
@@ -85,7 +85,7 @@ const Bold = styled.div`
   color: #000000;
 `;
 const TopRight = styled.div`
-  font-family: "Nunito Sans";
+  font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 600;
   font-size: 20px;
@@ -130,7 +130,7 @@ const Left = styled.div`
 // we use normal routing in order to move between pages
 export const Login = (props) => {
   const { register, handleSubmit, errors, reset } = useForm();
-  const [loginerror, setLoginerror] = useState("");
+  const [loginerror, setLoginerror] = useState('');
   let history = useHistory();
 
   // every time a user goes to login page it resets
@@ -149,15 +149,15 @@ export const Login = (props) => {
         console.log(response.data);
         let r = response.data;
         console.log(JSON.parse(response.data));
-        if (r.result === "true") {
+        if (r.result === 'true') {
           //setLocalStorage to user data
-          localStorage.setItem("username", values.username);
+          localStorage.setItem('username', values.username);
           auth.login(() => {
             //check standard user and then transfer to admin panel
-            history.push("/about");
+            history.push('/about');
           });
         } else {
-          setLoginerror("The username or password is incorrect.");
+          setLoginerror('The username or password is incorrect.');
           reset();
         }
       })
@@ -179,8 +179,8 @@ export const Login = (props) => {
             >
               <Grid item xs={12}>
                 <a href="http://localhost:3000/">
-                  {" "}
-                  <Logo src={logo} alt="logo" />{" "}
+                  {' '}
+                  <Logo src={logo} alt="logo" />{' '}
                 </a>
                 <Grid item xs={12}>
                   <Construction src={construction} alt="contact" />
@@ -194,7 +194,7 @@ export const Login = (props) => {
           <Right>
             {/* link to sign up  */}
             <TopRight>
-              Not a member? <a href="http://localhost:3000/form">Sign up</a>{" "}
+              Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
             </TopRight>
             <Grid container spacing={1}>
               <Grid item xs={12}>
@@ -206,7 +206,7 @@ export const Login = (props) => {
                   required
                   name="username"
                   inputRef={register({
-                    required: "username is Required",
+                    required: 'username is Required',
                   })}
                   id="outlined-full-width"
                   data-testid="username-field"
@@ -226,7 +226,7 @@ export const Login = (props) => {
                   type="password"
                   name="password"
                   inputRef={register({
-                    required: "password is Required",
+                    required: 'password is Required',
                   })}
                   data-testid="password-field"
                   id="outlined-full-width"
@@ -243,7 +243,7 @@ export const Login = (props) => {
               <Grid item xs={12}>
                 {loginerror}
                 <ColorButton type="submit" variant="contained" color="default">
-                  {" "}
+                  {' '}
                   Submit
                 </ColorButton>
               </Grid>

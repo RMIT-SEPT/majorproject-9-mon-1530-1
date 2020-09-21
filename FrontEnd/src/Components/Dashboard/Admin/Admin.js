@@ -12,7 +12,7 @@ import {
   DashboardModule,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
-import FormDetails from '../../FormDetails';
+import FormDetails from '../../Form/FormDetails';
 
 // Admin dashboard component for a logged in admin.
 
@@ -125,7 +125,7 @@ const Admin = ({ id }) => {
                 Back
               </Button>
               <DashboardModule title="Add worker hours">
-                <WorkerHours worker={selectedWorker} userName={userName} />
+                <WorkerHours worker={selectedWorker} userName={id} />
               </DashboardModule>
             </Content>
           )}

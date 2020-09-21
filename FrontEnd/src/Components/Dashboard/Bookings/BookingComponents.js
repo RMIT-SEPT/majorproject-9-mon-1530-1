@@ -197,7 +197,7 @@ const AvailabilityView = ({ workerId }) => {
   const fetchWorkerAvailability = async (key, workerId) => {
     const { data } = await axios
       .get(
-        `http://localhost:8084/availability/all?workerUsername=${workerId}&creatorUsername=${'admin'}`
+        `http://localhost:8084/availability/all?workerUsername=${workerId}&creatorUsername=${'lizatawaf'}`
       )
       .then((res) => res)
       .catch((error) => {
