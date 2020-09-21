@@ -290,60 +290,60 @@ jobs: # a collection of steps
             - Users/Dockerfile
             - Users/pom.xml
             
-  build-front-end:
-        docker:
-          - image: circleci/node:12.9.1-browsers
-
-        steps:
-          - checkout
-          - restore_cache:
-              keys:
-                - v1-dependencies-{{ checksum "package.json" }}
-                - v1-dependencies-
-          - run: yarn install
-          - save_cache:
-              paths:
-                - node_modules
-                - ~/.npm
-                - ~/.cache
-              key: v1-dependencies-{{ checksum "package.json" }}
-          - run: yarn test
+   build-front-end:
+         docker:
+           - image: circleci/node:12.9.1-browsers
+         steps:
+           - checkout
+#           - restore_cache:
+#               keys:
+#                 - v1-dependencies-{{ checksum "FrontEnd/package.json" }}
+#                 - v1-dependencies-
+           - run: cd FrontEnd && docker build -t testFrontEnd
+#           - save_cache:
+#               paths:
+#                 - node_modules
+#                 - ~/.npm
+#                 - ~/.cache
+#               key: v1-dependencies-{{ checksum "FrontEnd/package.json" }}
+#          - run: cd FrontEnd && npm test -- --watchAll=false
+#           - run: cd FrontEnd && npm start
 
 
 workflows:
   version: 2
   workflow:
     jobs:
-#    - build-front-end
-    - build-common
-    - build-availability:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Availability
-        requires:
-          - build-availability
+    - build-front-end
+    # - build-common
+    # - build-availability:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Availability
+        # requires:
+          # - build-availability
 
-    - build-hours:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Hours
-        requires:
-          - build-hours
+    # - build-hours:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Hours
+        # requires:
+          # - build-hours
 
-    - build-bookings:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Bookings
-        requires:
-          - build-bookings
+    # - build-bookings:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Bookings
+        # requires:
+          # - build-bookings
 
-    - build-users:
-        requires:
-          - build-common
-    - docker-build-deploy-backend:
-        backedn_service_dir_name: Users
-        requires:
-          - build-users
+    # - build-users:
+        # requires:
+          # - build-common
+    # - docker-build-deploy-backend:
+        # backedn_service_dir_name: Users
+        # requires:
+          # - build-users
