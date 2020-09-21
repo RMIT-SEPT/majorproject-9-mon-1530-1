@@ -7,6 +7,21 @@ orbs:
 
 jobs: # a collection of steps
 
+  build-deploy-front-end:
+    docker:
+      - image: circleci/node:12.9.1-browsers
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run: echo "--- START ----"
+
+    - run: 
+        name: Build image
+        command: |
+          cd FrontEnd
+          docker build -t testfrontend .
+
+
   docker-build-deploy-backend:
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk
@@ -290,39 +305,11 @@ jobs: # a collection of steps
             - Users/Dockerfile
             - Users/pom.xml
 
-  build-front-end:
-        docker:
-          - image: circleci/node:12.9.1-browsers
-        steps:
-          - checkout
-          - setup_remote_docker
-          - run: echo "--- START ----"
-
-#          - restore_cache:
-#              keys:
-#                - v1-dependencies-{{ checksum "FrontEnd/package.json" }}
-#                - v1-dependencies-
-          - run: 
-              name: Build image
-              command: |
-                cd FrontEnd
-                docker build -t testfrontend .
-
-#          - save_cache:
-#              paths:
-#                - node_modules
-#                - ~/.npm
-#                - ~/.cache
-#              key: v1-dependencies-{{ checksum "FrontEnd/package.json" }}
-#         - run: cd FrontEnd && npm test -- --watchAll=false
-#          - run: cd FrontEnd && npm start
-
-
 workflows:
   version: 2
   workflow:
     jobs:
-    - build-front-end
+    - build-deploy-front-end
     # - build-common
     # - build-availability:
         # requires:
