@@ -9,7 +9,7 @@ jobs: # a collection of steps
 
   build-deploy-front-end:
     docker:
-      - image: circleci/node:14.5
+      - image: circleci/node:14.11.0
     steps:
     - checkout
     - setup_remote_docker
@@ -128,7 +128,7 @@ jobs: # a collection of steps
       
       - store_artifacts: # store the uberjar as an artifact
       # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: BackEnd/Common/target/common-1.1.1.jar
+          path: BackEnd/Common/target/common-1.1.4.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
       
       
@@ -138,7 +138,7 @@ jobs: # a collection of steps
           root: BackEnd/
           # Must be relative path from root
           paths:
-            - Common/target/common-1.1.1.jar
+            - Common/target/common-1.1.4.jar
             - Common/pom.xml
         
   build-availability: # runs not using Workflows must have a `build` job as entry point
@@ -158,7 +158,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.1.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.1" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -203,7 +203,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.1.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.1" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -248,7 +248,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.1.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.1" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -295,7 +295,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.1.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.1" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
