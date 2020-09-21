@@ -99,7 +99,7 @@ const WorkerHours = ({ worker, userName }) => {
   const submitHours = async () => {
     await axios.post('http://localhost:8082/hours', {
       creatorUsername: userName,
-      workerUsername: worker.name,
+      workerUsername: worker.username,
       startDateTime,
       endDateTime,
     });

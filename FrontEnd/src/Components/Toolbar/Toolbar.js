@@ -5,10 +5,10 @@ import {
   StyledLogoLink,
   GreenNavLink,
   RightFlexElements,
-} from './Navigation/Nav';
-import logo from '../media/logo.png';
-import login from '../media/login.png';
-import small from '../media/small.png';
+} from '../Navigation/Nav';
+import logo from '../../media/logo.png';
+import login from '../../media/login.png';
+import small from '../../media/small.png';
 
 // this is the toolbar for the guest user
 // items are allocated evenly using a Grid function in material ui library
