@@ -1,7 +1,18 @@
 {
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
-     {
+	{
+       "name": "frontend",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Frontend",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 80
+        }
+      ]
+     }
+/*     {
        "name": "availability",
        "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
        "environment": [
@@ -25,6 +36,6 @@
           "containerPort": 8084
         }
       ]
-     }
+     }*/
    ]
 }
