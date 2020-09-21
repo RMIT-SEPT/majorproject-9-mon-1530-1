@@ -17,6 +17,7 @@ RUN npm install
 COPY . ./
 
 EXPOSE 3000/tcp
+EXPOSE 80/tcp
 
 # start app
 CMD ["npm", "start"]
