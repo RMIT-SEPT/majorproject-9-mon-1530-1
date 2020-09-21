@@ -3,7 +3,7 @@
   "containerDefinitions": [
 	{
        "name": "frontend",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Frontend",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:frontend",
 	   "memory": 128,
 	   "portMappings": [
         {

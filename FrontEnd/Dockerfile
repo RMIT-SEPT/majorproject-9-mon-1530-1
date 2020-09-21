@@ -16,5 +16,7 @@ RUN npm install react-scripts@3.4.3 -g
 # add app
 COPY . ./
 
+EXPOSE 80/tcp
+
 # start app
 CMD ["npm", "start"]
