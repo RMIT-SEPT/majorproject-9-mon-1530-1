@@ -330,35 +330,101 @@ workflows:
   workflow:
     jobs:
     - build-deploy-front-end
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+          
     - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - build-availability:
         requires:
           - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - docker-build-deploy-backend:
         backedn_service_dir_name: Availability
         requires:
           - build-availability
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
     - build-hours:
         requires:
           - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - docker-build-deploy-backend:
         backedn_service_dir_name: Hours
         requires:
           - build-hours
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
     - build-bookings:
         requires:
           - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - docker-build-deploy-backend:
         backedn_service_dir_name: Bookings
         requires:
           - build-bookings
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
     - build-users:
         requires:
           - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - docker-build-deploy-backend:
         backedn_service_dir_name: Users
         requires:
           - build-users
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
