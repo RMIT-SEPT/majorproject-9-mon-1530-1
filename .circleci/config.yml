@@ -329,7 +329,7 @@ workflows:
   version: 2
   workflow:
     jobs:
-    - build-deploy-front-end
+    - build-deploy-front-end:
         filters:
           branches:
             only:
@@ -337,7 +337,7 @@ workflows:
               - master
               - /.*circleci.*/
           
-    - build-common
+    - build-common:
         filters:
           branches:
             only:
