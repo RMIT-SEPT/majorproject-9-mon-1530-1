@@ -13,4 +13,6 @@ COPY . .
 EXPOSE 3000/tcp
 EXPOSE 80/tcp
 
+ENV CI true
+
 CMD [ "npm", "start" ]

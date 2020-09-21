@@ -1,0 +1,16 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+	{
+       "name": "Frontend",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Frontend",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8080
+        }
+      ]
+    }
+   ]
+}
