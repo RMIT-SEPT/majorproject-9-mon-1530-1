@@ -9,7 +9,7 @@ jobs: # a collection of steps
 
   build-deploy-front-end:
     docker:
-      - image: circleci/node:12.9.1
+      - image: circleci/node:14.5
     steps:
     - checkout
     - setup_remote_docker
