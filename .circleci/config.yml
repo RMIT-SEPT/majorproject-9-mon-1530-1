@@ -15,12 +15,33 @@ jobs: # a collection of steps
     - setup_remote_docker
     - run: echo "--- START ----"
 
+    - run:
+        name: Setup common environment variables
+        command: |
+          echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:frontend"' >> $BASH_ENV
+
+    - run: echo $FULL_IMAGE_NAME
+
+    - run:
+        name: Install dependencies for AWS
+        command: |
+          sudo apt-get update
+          sudo apt-get -y -qq install awscli
+          sudo apt-get install python3-pip
+          sudo pip3 install --upgrade awscli
+
     - run: 
         name: Build image
         command: |
           cd FrontEnd
           docker build -t testfrontend .
 
+    - run:
+        name: Push image
+        command: |
+          eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          docker push $FULL_IMAGE_NAME
 
   docker-build-deploy-backend:
     docker: # run the steps with Docker
@@ -35,7 +56,6 @@ jobs: # a collection of steps
     - setup_remote_docker
     
     - run: echo 'parameter, << parameters.backedn_service_dir_name >>' 
-    
     
     - run:
         name: Setup common environment variables
