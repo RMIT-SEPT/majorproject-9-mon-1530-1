@@ -292,9 +292,12 @@ jobs: # a collection of steps
 
   build-front-end:
         docker:
-          - image: circleci/node:9.9
+          - image: circleci/node:12.9.1-browsers
         steps:
           - checkout
+          - setup_remote_docker
+          - run: echo "--- START ----"
+
 #          - restore_cache:
 #              keys:
 #                - v1-dependencies-{{ checksum "FrontEnd/package.json" }}
