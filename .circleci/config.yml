@@ -15,7 +15,7 @@ jobs: # a collection of steps
 #               keys:
 #                 - v1-dependencies-{{ checksum "FrontEnd/package.json" }}
 #                 - v1-dependencies-
-           - run: cd FrontEnd && docker build -t testFrontEnd
+           - run: cd FrontEnd && docker build -t test_front_end
 #           - save_cache:
 #               paths:
 #                 - node_modules
