@@ -2,8 +2,8 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
 	{
-       "name": "frontend",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:frontend",
+       "name": "Frontend",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Frontend",
 	   "memory": 128,
 	   "portMappings": [
         {
@@ -12,30 +12,5 @@
         }
       ]
      }
-/*     {
-       "name": "availability",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
-       "environment": [
-         {
-           "name": "DB_USERNAME",
-           "value": "postgres"
-         },
-         {
-           "name": "DB_PASSWORD",
-           "value": "postgres"
-         },
-         {
-           "name": "DB_URL",
-           "value": "jdbc:postgresql://database-3-instance-1.clewumvfkuf6.us-east-1.rds.amazonaws.com:5432/sept"
-         }
-	   ],
-	   "memory": 256,
-	   "portMappings": [
-        {
-          "hostPort": 8084,
-          "containerPort": 8084
-        }
-      ]
-     }*/
    ]
 }
