@@ -35,7 +35,7 @@ jobs: # a collection of steps
         name: Build image
         command: |
           cd FrontEnd
-          docker build -t testfrontend .
+          docker build -t $FULL_IMAGE_NAME .
 
     - run:
         name: Push image
