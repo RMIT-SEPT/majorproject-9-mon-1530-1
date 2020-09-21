@@ -11,12 +11,12 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
-RUN npm install react-scripts@3.4.3 -g
+#RUN npm install react-scripts@3.4.3 -g
 
 # add app
 COPY . ./
 
-EXPOSE 80/tcp
+EXPOSE 3000/tcp
 
 # start app
 CMD ["npm", "start"]
