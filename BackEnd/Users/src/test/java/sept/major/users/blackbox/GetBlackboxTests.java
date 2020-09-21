@@ -1,17 +1,20 @@
 package sept.major.users.blackbox;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Test;
-import sept.major.common.testing.RequestParameter;
+import static sept.major.users.UserTestHelper.randomAlphanumericString;
+import static sept.major.users.UserTestHelper.randomEntityMap;
+
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static sept.major.users.UserServiceTestHelper.randomAlphanumericString;
-import static sept.major.users.UserServiceTestHelper.randomEntityMap;
+import org.junit.jupiter.api.Test;
 
-public class GetBlackboxTests extends UsersBlackBoxHelper {
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import sept.major.common.testing.RequestParameter;
+
+public class GetBlackboxTests extends UserBlackBoxHelper {
 
     @Test
     public void getById() {
@@ -39,7 +42,7 @@ public class GetBlackboxTests extends UsersBlackBoxHelper {
         firstExpected.remove("password");
         secondExcepted.remove("password");
 
-        successfulGet(Arrays.asList(firstExpected, secondExcepted), getUrl("bulk", Arrays.asList(new RequestParameter("userType", userType))));
+        successfulGetList(Arrays.asList(firstExpected, secondExcepted), getUrl("bulk", Arrays.asList(new RequestParameter("userType", userType))));
     }
 
     @Test
@@ -50,7 +53,7 @@ public class GetBlackboxTests extends UsersBlackBoxHelper {
         firstExpected.remove("password");
         secondExcepted.remove("password");
 
-        successfulGet(Arrays.asList(firstExpected, secondExcepted), getUrl("bulk"));
+        successfulGetList(Arrays.asList(firstExpected, secondExcepted), getUrl("bulk"));
     }
 
 

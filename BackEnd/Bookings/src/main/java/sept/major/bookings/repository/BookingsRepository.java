@@ -13,12 +13,22 @@ import java.util.List;
 @Table(name = "bookings")
 @Repository
 public interface BookingsRepository extends JpaRepository<BookingEntity, Integer> {
-    List<BookingEntity> findAllByStartDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    @Query("select b from BookingEntity b where (" +
+            "not (:startDateTime < b.startDateTime and :endDateTime < b.startDateTime)" +
+            "and not (:startDateTime > b.endDateTime and :endDateTime > b.endDateTime)" +
+            ")")
+    List<BookingEntity> findAllInRange(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+//    @Query("select b from BookingEntity b where (" +
+//            "(:workerUsername =  b.workerUsername)" +
+//            "and (b.startDateTime >= :startDateTime and b.startDateTime <= :endDateTime)" +
+//            "and (b.endDateTime >= :startDateTime and b.endDateTime <= :endDateTime)" +
+//            ")")
 
     @Query("select b from BookingEntity b where (" +
-            "(:workerUsername =  b.workerUsername)" +
-            "and (b.startDateTime >= :startDateTime and b.startDateTime <= :endDateTime)" +
-            "and (b.endDateTime >= :startDateTime and b.endDateTime <= :endDateTime)" +
+            "((:workerUsername =  b.workerUsername) or (:customerUsername = b.customerUsername))" +
+            "and not (:startDateTime <= b.startDateTime and :endDateTime <= b.startDateTime)" +
+            "and not (:startDateTime >= b.endDateTime and :endDateTime >= b.endDateTime)" +
             ")")
-    List<BookingEntity> findConflictingHours(String workerUsername, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<BookingEntity> findConflictingHours(String workerUsername, String customerUsername, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

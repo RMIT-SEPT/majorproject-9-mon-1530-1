@@ -63,11 +63,13 @@ describe('BookingComponents', () => {
 
     it('should simulate onChange event', () => {
       const onChangeMock = jest.fn();
+      const onClickMock = jest.fn();
 
       const { getByText } = renderComponent(
         <WorkerRadioButton
           worker={testWorker}
           onChange={onChangeMock}
+          onClick={onClickMock}
         ></WorkerRadioButton>
       );
 
