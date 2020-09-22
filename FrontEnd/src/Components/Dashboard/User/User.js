@@ -25,10 +25,18 @@ import {
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { tempServices, tempWorkers, tempBookings } from './UserMockData';
-
+import { BookingView } from '../Bookings/BookingView';
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
+
+//function which is used to add 0 infront of numbers if they're < 10
+function addZero(number) {
+  if (number < 10) {
+    return ("0" + number);
+  }
+  return number;
+}
 
 const User = ({ id }) => {
   const { isFirefox, isChrome } = useContext(BrowserContext);
@@ -183,6 +191,18 @@ const User = ({ id }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <BookingView
+                timeSlots={[
+                  {
+                    "startDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`),
+                    "endDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+1}:${date.getMinutes()}:${date.getSeconds()}`)
+                  },
+                  {
+                    "startDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+2}:${date.getMinutes()}:${date.getSeconds()}`),
+                    "endDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+3}:${date.getMinutes()}:${date.getSeconds()}`)
+                  }
+                ]}
+              />
               <Button type="button" onClick={returnHome}>
                 Back
               </Button>
@@ -264,7 +284,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'lizatawaf',
+  id: 's1@gmail.com',
 };
 
 export default User;
