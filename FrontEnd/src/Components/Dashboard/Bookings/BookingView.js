@@ -67,7 +67,7 @@ function changeDateRange(selectedDate, startDate, endDate) {
 }
 
 function generateDays(startDate, endDate) {
-    let indents = [];
+    var indents = [];
 
     if (startDate > endDate) {
         return (<li>start date too great</li>)
@@ -78,15 +78,15 @@ function generateDays(startDate, endDate) {
     }
 
     var currentDate = new Date();
-
+    var i = 0;
     //pre dates which would be greyed out
-    for (let i = 0; i < startDate.getDay(); i++) {
+    for (i = 0; i < startDate.getDay(); i++) {
         currentDate.setDate(startDate.getDate() + (i - startDate.getDay()));
         indents.push(<li style = {day} >{`${currentDate.getDate()} ${days[i % days.length]}`}</li>);
     }
 
     //active dates
-    for (let i = startDate.getDay(); i <= endDate.getDay(); i++) {
+    for (i = startDate.getDay(); i <= endDate.getDay(); i++) {
         currentDate.setDate(startDate.getDate() + (i - startDate.getDay()));
         indents.push(<li style = {day} >{`${currentDate.getDate()} ${days[i % days.length]}`}</li>);
     }
@@ -94,17 +94,43 @@ function generateDays(startDate, endDate) {
 }
 
 function generateTimesForDays(startDate, endDate, timeSlots) {
-    
-    var currentTimeSlotStartDate = new Date();
+    var indents = [];
+    var insidelocalStartDate = new Date();
+    var localStartDate = new Date();
+    var localTimeSlots = [...timeSlots];
+    var j = 0;
 
-    days.map( (currentValue, index, arr) => {
-            console.log(currentValue);
-            /*for (let j = 0; j < timeSlots.length; j++)
-            {
-                currentTimeSlotStartDate = new Date(timeSlots[j].startDateTime);
-            }*/
+    localStartDate.setDate(startDate.getDate() - 1);
+
+    while (localTimeSlots.length > 0)
+    {
+        for(j = 0; j < days.length; j++) {
+            if (localTimeSlots.length == 0)
+                break;
+
+            insidelocalStartDate.setDate(localStartDate.getDate() + j);
+            
+            var currentTimeSlotStartDate = new Date(localTimeSlots[0].startDateTime);
+            var currentTimeSlotEndDate = new Date(localTimeSlots[0].endDateTime);
+            
+            if (currentTimeSlotStartDate.getDate() == insidelocalStartDate.getDate()) {
+                localTimeSlots.shift();
+                indents.push(
+                    <li style = {day} >
+                        <Button>{`
+                            ${currentTimeSlotStartDate.getHours()}:${currentTimeSlotStartDate.getMinutes()} 
+                            - 
+                            ${currentTimeSlotEndDate.getHours()}:${currentTimeSlotEndDate.getMinutes()}`}
+                        </Button>
+                    </li>
+                );
+            } else {
+                indents.push(<li style = {day}><br/></li>);
+            }
         }
-    );
+    }
+
+    return indents;
 
 }
 
