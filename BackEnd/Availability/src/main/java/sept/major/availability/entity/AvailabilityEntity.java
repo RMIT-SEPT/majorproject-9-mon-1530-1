@@ -1,23 +1,12 @@
 package sept.major.availability.entity;
 
-import java.time.LocalDateTime;
+import lombok.*;
+import sept.major.common.entity.AbstractEntity;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import sept.major.common.entity.AbstractEntity;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,12 +16,12 @@ import sept.major.common.entity.AbstractEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "availability")
-public class AvailabilityEntity implements AbstractEntity<String> {
+public class AvailabilityEntity implements AbstractEntity<Integer> {
 
     @Id
     @Setter(onMethod = @__(@Id))
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String hoursId;
+    private Integer hoursId;
 
     @NotBlank
     private String workerUsername;
@@ -47,7 +36,7 @@ public class AvailabilityEntity implements AbstractEntity<String> {
     private LocalDateTime endDateTime;
 
     @Override
-    public String getID() {
+    public Integer getID() {
         return hoursId;
     }
 }

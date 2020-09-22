@@ -1,0 +1,430 @@
+version: 2.1 
+
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.12.2
+  aws-ecs: circleci/aws-ecs@1.3.0
+
+jobs: # a collection of steps
+
+  build-deploy-front-end:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run: echo "--- START ----"
+
+    - run:
+        name: Setup common environment variables
+        command: |
+          echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:Frontend"' >> $BASH_ENV
+
+    - run: echo $FULL_IMAGE_NAME
+
+    - run:
+        name: Install dependencies for AWS
+        command: |
+          sudo apt-get update
+          sudo apt-get -y -qq install awscli
+          sudo apt-get install python3-pip
+          sudo pip3 install --upgrade awscli
+
+    - run: 
+        name: Build image
+        command: |
+          cd FrontEnd
+          docker build -t $FULL_IMAGE_NAME .
+
+    - run:
+        name: Push image
+        command: |
+          eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          docker push $FULL_IMAGE_NAME
+
+  docker-build-deploy-backend:
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+
+    parameters:
+      backedn_service_dir_name:
+        type: string
+
+    steps: # a collection of executable commands 
+    - checkout # check out source code to working directory
+    - setup_remote_docker
+    
+    - run: echo 'parameter, << parameters.backedn_service_dir_name >>' 
+    
+    - run:
+        name: Setup common environment variables
+        command: |
+          echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
+          echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:<< parameters.backedn_service_dir_name >>"' >> $BASH_ENV
+
+    - run: echo $FULL_IMAGE_NAME
+    
+    - run:
+        name: Install dependencies for AWS
+        command: |
+          sudo apt-get update
+          sudo apt-get -y -qq install awscli
+          sudo apt-get install python3-pip
+          sudo pip3 install --upgrade awscli
+
+    - attach_workspace:
+        at: dependency
+
+    - run: ls -R
+      
+    - run:
+        name: Build image
+        command: |
+          cd dependency/<< parameters.backedn_service_dir_name >> 
+          docker build -t $FULL_IMAGE_NAME .
+
+    - run:
+        name: Push image
+        command: |
+          eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+          docker push $FULL_IMAGE_NAME
+            
+  build-common: # runs not using Workflows must have a `build` job as entry point
+    #working_directory: ~/BackEnd/Common # directory where steps will run
+
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+
+    steps: # a collection of executable commands 
+
+      - run: echo "------------ START ---------------"
+      - run: echo working_directory $working_directory
+      - run: pwd
+
+      - checkout # check out source code to working directory
+
+      - run: ls -l
+
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: sept-p9-common-service-{{ checksum "BackEnd/Common/pom.xml" }}
+      
+      
+      - run: cd BackEnd/Common && mvn dependency:go-offline # gets the project dependencies
+      
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-common-service-{{ checksum "BackEnd/Common/pom.xml" }}
+      
+      - run: cd BackEnd/Common && mvn package # run the actual tests
+      
+      - run: ls ../.m2 -R
+            
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+      # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: BackEnd/Common/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+      # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: BackEnd/Common/target/common-1.1.4.jar
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
+      
+      
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is 
+          # taken to be the root directory of the workspace.
+          root: BackEnd/
+          # Must be relative path from root
+          paths:
+            - Common/target/common-1.1.4.jar
+            - Common/pom.xml
+        
+  build-availability: # runs not using Workflows must have a `build` job as entry point
+    
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+    
+    steps: # a collection of executable commands 
+
+      - checkout # check out source code to working directory
+
+      - attach_workspace:
+          at: dependency
+          
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
+      
+      - run: ls -R
+      
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      
+      - run: ls ../.m2 -R
+      
+      - run: cd BackEnd/Availability && mvn dependency:go-offline # gets the project dependencies
+      
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-Availability-service-{{ checksum "BackEnd/Availability/pom.xml" }}
+      
+      - run: cd BackEnd/Availability && mvn package # run the actual tests and package
+      
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+          path: BackEnd/Availability/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+          path: BackEnd/Availability/target/availability-1.0.0.jar
+
+      - run: mv BackEnd/Availability/target/availability-1.0.0.jar BackEnd/Availability/target/availability.jar
+      
+      - persist_to_workspace:
+          root: BackEnd/
+          paths:
+            - Availability/target/availability.jar
+            - Availability/Dockerfile
+            - Availability/pom.xml
+
+  build-hours: # runs not using Workflows must have a `build` job as entry point
+    
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+    
+    steps: # a collection of executable commands 
+
+      - checkout # check out source code to working directory
+
+      - attach_workspace:
+          at: dependency
+          
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          key: sept-p9-Hours-service-{{ checksum "BackEnd/Hours/pom.xml" }}
+      
+      - run: ls -R
+      
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      
+      - run: ls ../.m2 -R
+      
+      - run: cd BackEnd/Hours && mvn dependency:go-offline # gets the project dependencies
+      
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-Hours-service-{{ checksum "BackEnd/Hours/pom.xml" }}
+      
+      - run: cd BackEnd/Hours && mvn package # run the actual tests and package
+      
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+          path: BackEnd/Hours/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+          path: BackEnd/Hours/target/hours-1.0.0.jar
+
+      - run: mv BackEnd/Hours/target/hours-1.0.0.jar BackEnd/Hours/target/hours.jar
+      
+      - persist_to_workspace:
+          root: BackEnd/
+          paths:
+            - Hours/target/hours.jar
+            - Hours/Dockerfile
+            - Hours/pom.xml
+
+  build-bookings: # runs not using Workflows must have a `build` job as entry point
+    
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+    
+    steps: # a collection of executable commands 
+
+      - checkout # check out source code to working directory
+
+      - attach_workspace:
+          at: dependency
+          
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          key: sept-p9-Bookings-service-{{ checksum "BackEnd/Bookings/pom.xml" }}
+      
+      - run: ls -R
+      
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      
+      - run: ls ../.m2 -R
+      
+      - run: cd BackEnd/Bookings && mvn dependency:go-offline # gets the project dependencies
+      
+      - run: ls ../.m2 -R
+      
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-Bookings-service-{{ checksum "BackEnd/Bookings/pom.xml" }}
+      
+      - run: cd BackEnd/Bookings && mvn package # run the actual tests and package
+      
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+          path: BackEnd/Bookings/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+          path: BackEnd/Bookings/target/bookings-1.0.0.jar
+
+      - run: mv BackEnd/Bookings/target/bookings-1.0.0.jar BackEnd/Bookings/target/bookings.jar
+
+      - persist_to_workspace:
+          root: BackEnd/
+          paths:
+            - Bookings/target/bookings.jar
+            - Bookings/Dockerfile
+            - Bookings/pom.xml
+
+  build-users: # runs not using Workflows must have a `build` job as entry point
+    
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk
+    
+    steps: # a collection of executable commands 
+
+      - checkout # check out source code to working directory
+
+      - attach_workspace:
+          at: dependency
+          
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          key: sept-p9-Users-service-{{ checksum "BackEnd/Users/pom.xml" }}
+      
+      - run: ls -R
+      
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      
+      - run: ls ../.m2 -R
+      
+      - run: cd BackEnd/Users && mvn dependency:go-offline # gets the project dependencies
+      
+      - run: ls ../.m2 -R
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: sept-p9-Users-service-{{ checksum "BackEnd/Users/pom.xml" }}
+      
+      - run: cd BackEnd/Users && mvn package # run the actual tests and package
+      
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
+          path: BackEnd/Users/target/surefire-reports
+      
+      - store_artifacts: # store the uberjar as an artifact
+          path: BackEnd/Users/target/users-1.0.0.jar
+
+      - run: mv BackEnd/Users/target/users-1.0.0.jar BackEnd/Users/target/users.jar
+      
+      - persist_to_workspace:
+          root: BackEnd/
+          paths:
+            - Users/target/users.jar
+            - Users/Dockerfile
+            - Users/pom.xml
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build-deploy-front-end:
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+          
+    - build-common:
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - build-availability:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Availability
+        requires:
+          - build-availability
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - build-hours:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Hours
+        requires:
+          - build-hours
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - build-bookings:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Bookings
+        requires:
+          - build-bookings
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - build-users:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Users
+        requires:
+          - build-users
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
