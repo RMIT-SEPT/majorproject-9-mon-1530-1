@@ -33,7 +33,7 @@ import { BookingView } from '../Bookings/BookingView';
 //function which is used to add 0 infront of numbers if they're < 10
 function addZero(number) {
   if (number < 10) {
-    return ("0" + number);
+    return '0' + number;
   }
   return number;
 }
@@ -130,8 +130,8 @@ const User = ({ id }) => {
   const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(true);
-  const [service, setService] = useState(false);
+  const [main, setMain] = useState(false);
+  const [service, setService] = useState(true);
   const [booking, setBooking] = useState(false);
   const [worker, setWorker] = useState(false);
 
@@ -194,13 +194,29 @@ const User = ({ id }) => {
               <BookingView
                 timeSlots={[
                   {
-                    "startDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`),
-                    "endDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+1}:${date.getMinutes()}:${date.getSeconds()}`)
+                    startDateTime: `${date.getFullYear()}-${addZero(
+                      date.getMonth() + 1
+                    )}-${addZero(
+                      date.getDate()
+                    )}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+                    endDateTime: `${date.getFullYear()}-${addZero(
+                      date.getMonth() + 1
+                    )}-${addZero(date.getDate())}T${
+                      date.getHours() + 1
+                    }:${date.getMinutes()}:${date.getSeconds()}`,
                   },
                   {
-                    "startDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+2}:${date.getMinutes()}:${date.getSeconds()}`),
-                    "endDateTime": (`${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}T${date.getHours()+3}:${date.getMinutes()}:${date.getSeconds()}`)
-                  }
+                    startDateTime: `${date.getFullYear()}-${addZero(
+                      date.getMonth() + 1
+                    )}-${addZero(date.getDate())}T${
+                      date.getHours() + 2
+                    }:${date.getMinutes()}:${date.getSeconds()}`,
+                    endDateTime: `${date.getFullYear()}-${addZero(
+                      date.getMonth() + 1
+                    )}-${addZero(date.getDate())}T${
+                      date.getHours() + 3
+                    }:${date.getMinutes()}:${date.getSeconds()}`,
+                  },
                 ]}
               />
               <Button type="button" onClick={returnHome}>
