@@ -105,7 +105,7 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
     while (localTimeSlots.length > 0)
     {
         for(j = 0; j < days.length; j++) {
-            if (localTimeSlots.length == 0)
+            if (localTimeSlots.length === 0)
                 break;
 
             insidelocalStartDate.setDate(localStartDate.getDate() + (j - 1));
@@ -113,7 +113,7 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
             var currentTimeSlotStartDate = new Date(localTimeSlots[0].startDateTime);
             var currentTimeSlotEndDate = new Date(localTimeSlots[0].endDateTime);
             
-            if (currentTimeSlotStartDate.getDate() == insidelocalStartDate.getDate()) {
+            if (currentTimeSlotStartDate.getDate() === insidelocalStartDate.getDate()) {
                 localTimeSlots.shift();
                 indents.push(
                     <li style = {day} >
@@ -137,26 +137,28 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
 //direction is bool
 //true to go forward 1 week
 //false to go back 1 week
-function moveDate(startDate, endDate, direction) {
-    if (direction) {
-        startDate.setDate(startDate.getDate() + 7);
-        endDate.setDate(endDate.getDate() + 7);
-    } else {
-        startDate.setDate(startDate.getDate() - 7);
-        endDate.setDate(endDate.getDate() - 7);
-    }
 
-    console.log("button fired");
-}
 
 //https://www.w3schools.com/howto/howto_css_calendar.asp
 //https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_calendar
 const BookingView = ({timeSlots}) => {
     const [date] = useState(new Date());
-    var currentWeekDate = new Date();
-    var currentWeekEnd = new Date();
+    const [currentWeekDate, setCurrentWeekDate] = useState(new Date());
+    const [currentWeekEnd, setCurrentWeekEnd] = useState(new Date());
 
     changeDateRange(date, currentWeekDate, currentWeekEnd);
+
+    // function moveDate(startDate, endDate, direction) {
+    //     if (direction) {
+    //         startDate.setDate(startDate.getDate() + 7);
+    //         endDate.setDate(endDate.getDate() + 7);
+    //     } else {
+    //         startDate.setDate(startDate.getDate() - 7);
+    //         endDate.setDate(endDate.getDate() - 7);
+    //     }
+    
+    //     console.log("button fired");
+    // }
 
     //from today till end of the week
     const daysToEnd = days.slice(date.getDay()-1, days.length);
@@ -165,8 +167,11 @@ const BookingView = ({timeSlots}) => {
         <>
             <div style={ month }>
                 <ul style = {{listStyleType: "none"}}>
-                    <li style = {prev}><Button onClick={moveDate(currentWeekDate, currentWeekEnd, false)}>&#10094;</Button></li>
-                    <li style = {next}><Button onClick={moveDate(currentWeekDate, currentWeekEnd, true)}>&#10095;</Button></li>
+                    <li style = {prev}><Button onClick={() => {
+                            setCurrentWeekDate(currentWeekDate.getDate() - 7);
+                            setCurrentWeekEnd(currentWeekEnd.getDate() - 7);
+                        }}>&#10094;</Button></li>
+                    <li style = {next}><Button onClick={() => {}}>&#10095;</Button></li>
                     <li>
                         {monthNames[date.getMonth()]}<br/>
                         <span>{`${currentWeekDate.getDate()} ${days[currentWeekDate.getDay()]}`}</span>
