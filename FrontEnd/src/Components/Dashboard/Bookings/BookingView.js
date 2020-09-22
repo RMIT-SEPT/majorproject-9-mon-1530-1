@@ -108,7 +108,7 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
             if (localTimeSlots.length == 0)
                 break;
 
-            insidelocalStartDate.setDate(localStartDate.getDate() + j);
+            insidelocalStartDate.setDate(localStartDate.getDate() + (j - 1));
             
             var currentTimeSlotStartDate = new Date(localTimeSlots[0].startDateTime);
             var currentTimeSlotEndDate = new Date(localTimeSlots[0].endDateTime);
