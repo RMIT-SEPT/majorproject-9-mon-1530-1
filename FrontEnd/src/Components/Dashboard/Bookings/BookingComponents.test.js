@@ -9,16 +9,8 @@ import {
 } from './BookingComponents';
 import { theme } from '../../../App';
 
-const testService = {
-  serviceName: "Bambi's Restaurant",
-  address: '123 Test Avenue, Melbourne, VIC, Australia',
-  phoneNumber: '04 4151 3232',
-};
-
-const testWorker = {
-  workerUserName: 'kath123',
-  workerFullName: 'Kathreen McDonald',
-};
+// Added this render method to wrap components rendered in Theme tag to prevent
+// test failing
 
 const renderComponent = (component) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
@@ -26,7 +18,13 @@ const renderComponent = (component) => {
 
 describe('BookingComponents', () => {
   describe('ServiceCard', () => {
-    it('should render component and details when provided a service as child', () => {
+    const testService = {
+      serviceName: "Bambi's Restaurant",
+      address: '123 Test Avenue, Melbourne, VIC, Australia',
+      phoneNumber: '04 4151 3232',
+    };
+
+    it('should render component and details when provided a service as prop', () => {
       const { getByText } = renderComponent(
         <ServiceCard service={testService}></ServiceCard>
       );
@@ -50,6 +48,11 @@ describe('BookingComponents', () => {
   });
 
   describe('WorkerRadioButton', () => {
+    const testWorker = {
+      workerUserName: 'kath123',
+      workerFullName: 'Kathreen McDonald',
+    };
+
     it('should render component and details when provided a worker as prop', () => {
       const { getByText } = renderComponent(
         <WorkerRadioButton worker={testWorker}></WorkerRadioButton>
@@ -60,11 +63,13 @@ describe('BookingComponents', () => {
 
     it('should simulate onChange event', () => {
       const onChangeMock = jest.fn();
+      const onClickMock = jest.fn();
 
       const { getByText } = renderComponent(
         <WorkerRadioButton
           worker={testWorker}
           onChange={onChangeMock}
+          onClick={onClickMock}
         ></WorkerRadioButton>
       );
 

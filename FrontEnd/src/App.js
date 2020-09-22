@@ -1,30 +1,58 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
-import About from './Components/About';
-import Form from './Components/Form';
-import Main from './Components/Main';
-import Login from './Components/Login';
-import Contact from './Components/Contact';
+import About from './Components/About/About';
+import Form from './Components/Form/Form';
+import Main from './Components/Main/Main';
+import Login from './Components/Login/Login';
+import Contact from './Components/Contact/Contact';
 import User from './Components/Dashboard/User/User';
+import Admin from './Components/Dashboard/Admin/Admin';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import BrowserContext from './Contexts/BrowserContext';
 import BookingContext from './Contexts/BookingContext';
-import { ProtectedRoute } from './Components/ProtectedRoute.js';
-import Unauthorized from './Components/Unauthorized';
-import Authorized from './Components/Authorized';
+import { ProtectedRoute } from './Components/Auth/ProtectedRoute.js';
+import Unauthorized from './Components/Auth/Unauthorized';
+import Authorized from './Components/Auth/Authorized';
 
 const GlobalStyle = createGlobalStyle`
   body, html{
     font-family: Nunito Sans;
   }
+
+  .menuIcon {
+    margin: 20px 0px;
+    transition: stroke ${(props) => props.theme.transition.short};
+
+    &:hover {
+      cursor: pointer;
+      stroke: ${(props) => props.theme.colours.green.primary};
+    }
+
+    &:active {
+      stroke: ${(props) => props.theme.colours.green.tertiary};
+    }
+  }
+
+  .upcomingAppointmentsCardIcon {
+    position: relative;
+    right: 2px;
+    top: 3px;
+    margin-right: 4px;
+  }
 `;
 
 const theme = {
   colours: {
-    greenPrimary: '#5ac490',
-    greenSecondary: '#369668',
-    greenTertiary: '#1b4b34',
+    green: {
+      primary: '#5ac490',
+      secondary: '#369668',
+      tertiary: '#1b4b34',
+    },
+    grey: {
+      primary: '#707070',
+    },
   },
   dashboard: {
     defaultWidth: '1304px',
@@ -41,20 +69,15 @@ const theme = {
   shadow: {
     defaultBoxShadow: '0px 4px 8px rgba(0, 0, 0, 0.25)',
   },
+  icons: {
+    size: {
+      small: '16px',
+      medium: '40px',
+    },
+  },
 };
 
 function App() {
-  const [user, setUser] = useState(false);
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setUser(true);
-  };
-
-  const handleLogout = (e) => {
-    e.preventDefault();
-    setUser(false);
-  };
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -69,6 +92,7 @@ function App() {
                 <Route exact path="/about" component={About} />
                 <Route exact path="/contactus" component={Contact} />
                 <Route exact path="/user" component={User} />
+                <Route exact path="/admin" component={Admin} />
                 <Route exact path="/unauthorized" component={Unauthorized} />
                 <ProtectedRoute
                   exact

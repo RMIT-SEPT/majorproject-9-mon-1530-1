@@ -1,17 +1,19 @@
 package sept.major.bookings.blackbox;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import sept.major.common.testing.BlackboxTestHelper;
 import sept.major.common.testing.RequestParameter;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,7 +70,8 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
         }
     }
 
-    protected void successfulPatch(Map<String, String> entityMap, Map<String, String> patchValues) throws JsonProcessingException {
+    @SneakyThrows
+    protected void successfulPatch(Map<String, String> entityMap, Map<String, String> patchValues) {
         HashMap<String, String> postResult = successfulPost(entityMap);
 
         List<RequestParameter> requestParameters = Arrays.asList(
@@ -111,7 +114,8 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
         assertThat(getCastedResult).isEqualTo(expected);
     }
 
-    protected void successfulGetList(List<Map<String, String>> expected, String url) throws JsonProcessingException {
+    @SneakyThrows
+    protected void successfulGetList(List<Map<String, String>> expected, String url) {
         ResponseEntity<String> getResult = testRestTemplate.getForEntity(url, String.class);
 
         System.out.println(getResult);

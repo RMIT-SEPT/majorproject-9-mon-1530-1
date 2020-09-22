@@ -1,15 +1,17 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { DashboardWrapper, MenuBarComponent, MenuIcon } from '../Dashboard';
+import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { theme } from '../../../App';
+import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
   DashboardModule,
   UpcomingAppointmentCard,
   Heading,
   SubHeading,
   Content,
-  DashboardGrid,
   AppointmentsGrid,
+  BookingGrid,
   PanelGrid,
   Button,
 } from '../DashboardComponents';
@@ -18,78 +20,28 @@ import {
   DateTimeSelector,
   WorkerRadioButton,
   TimeFlex,
+  AvailabilityView,
 } from '../Bookings/BookingComponents';
-import home from '../../../media/home-40px.svg';
-import book from '../../../media/book-40px.svg';
-import calendar from '../../../media/calendar-40px.svg';
-import phone from '../../../media/phone-40px.svg';
-import circleAdd from '../../../media/plus-circle-20px.svg';
 import { BrowserContext } from '../../../Contexts/BrowserContext';
 import { BookingContext } from '../../../Contexts/BookingContext';
+import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
 
-const services = [
-  {
-    serviceName: "Jim's Cleaning",
-    address: '48 Edinburgh Road, Mooroolbark, Victoria 3138',
-    phoneNumber: '131 546',
-  },
-  {
-    serviceName: 'Man Oh Man',
-    address: '137 Chapel Street Windsor, VIC 3181 Melbourne',
-    phoneNumber: '03 9530 2393',
-  },
-
-  {
-    serviceName: 'Nail Lisa',
-    address: 'No address available',
-    phoneNumber: '03 9561 2313',
-  },
-  {
-    serviceName: 'Bob the Builder',
-    address: 'Channel 3, ABC, Australia',
-    phoneNumber: '123 456',
-  },
-];
-
-const workers = [
-  {
-    workerUserName: 'kath123',
-    workerFullName: 'Kathreen McDonald',
-  },
-  {
-    workerUserName: 'markTheMark',
-    workerFullName: 'Mark Falley',
-  },
-  {
-    workerUserName: 'realSarahX',
-    workerFullName: 'Sarah Mickey',
-  },
-  {
-    workerUserName: 'JohnLeLemon',
-    workerFullName: 'John Lim Le',
-  },
-];
-
-const tempBookings = [
-  {
-    workerUsername: 'jeffOak',
-    customerUsername: 'rw22448',
-    startDateTime: '2020-08-29T12:00',
-    endDateTime: '2020-08-29T13:00',
-  },
-  {
-    workerUsername: 'jeffOak',
-    customerUsername: 'anthony',
-    startDateTime: '2020-08-31T14:00',
-    endDateTime: '2020-08-31T16:00',
-  },
-];
-
 const User = ({ id }) => {
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+  const {
+    setCustomerId,
+    setWorkerId,
+    setStartTime,
+    setEndTime,
+    clearBooking,
+    submitBooking,
+    workerId,
+  } = useContext(BookingContext);
+
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
@@ -100,33 +52,48 @@ const User = ({ id }) => {
     return data;
   };
 
+  const clear = () => {
+    setBooking(false);
+    setService(false);
+    setWorker(false);
+    setMain(false);
+  };
+
   // State changing functions for updating page view
   const bookAppointment = () => {
-    clearBooking();
+    clear();
     setCustomerId(userId);
-    setMain(false);
-    setService(false);
-    setBooking(true);
-  };
-
-  const cancelBooking = () => {
-    clearBooking();
-    setBooking(false);
-    setMain(true);
-  };
-
-  const selectService = () => {
-    setBooking(false);
     setService(true);
   };
 
-  const cancelService = () => {
+  const returnHome = () => {
+    clear();
     clearBooking();
-    setService(false);
     setMain(true);
   };
 
-  const { data, isSuccess, isLoading, isError } = useQuery(
+  const selectBooking = () => {
+    clear();
+    setBooking(true);
+  };
+
+  const selectWorker = () => {
+    clear();
+    setWorker(true);
+  };
+
+  const cancelWorker = () => {
+    setWorker(false);
+    setService(true);
+  };
+
+  const cancelBooking = () => {
+    setBooking(false);
+    setWorker(true);
+  };
+
+  // Fetch user info from back-end
+  const { isSuccess, isLoading, isError } = useQuery(
     ['userData', id],
     fetchUserData,
     {
@@ -136,6 +103,8 @@ const User = ({ id }) => {
       },
     }
   );
+
+  // Send booking request on submit
   const [mutate] = useMutation(
     async () => {
       await submitBooking();
@@ -147,16 +116,6 @@ const User = ({ id }) => {
     }
   );
 
-  const { isFirefox, isChrome } = useContext(BrowserContext);
-  const {
-    setCustomerId,
-    setWorkerId,
-    setStartTime,
-    setEndTime,
-    clearBooking,
-    submitBooking,
-  } = useContext(BookingContext);
-
   const [userId] = useState(id);
   const [userName, setUserName] = useState();
   const [role, setRole] = useState('User');
@@ -164,8 +123,9 @@ const User = ({ id }) => {
 
   // Page states for updating current view
   const [main, setMain] = useState(true);
-  const [booking, setBooking] = useState(false);
   const [service, setService] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [worker, setWorker] = useState(false);
 
   return (
     <>
@@ -173,38 +133,93 @@ const User = ({ id }) => {
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
-          userName={data.name}
+          userName={userName}
           role={role}
           actions={{ bookingLink: bookAppointment }}
         >
           <MenuBarComponent>
-            <MenuIcon src={home} alt="Home icon" />
-            <MenuIcon src={book} alt="Book icon" />
-            <MenuIcon src={phone} alt="Phone icon" />
-            <MenuIcon src={calendar} alt="Calendar icon" />
+            <Home
+              onClick={returnHome}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <PlusCircle
+              onClick={bookAppointment}
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Phone
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
+            <Calendar
+              className="menuIcon"
+              color={theme.colours.grey.primary}
+              size={theme.icons.size.medium}
+            />
           </MenuBarComponent>
           {main && (
             <Content>
               <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <DashboardGrid>
-                <DashboardModule
-                  title="Upcoming appointments"
-                  icon={circleAdd}
-                  action={bookAppointment}
-                >
-                  {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
+              <DashboardModule title="Upcoming appointments">
+                {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
-                  <AppointmentsGrid>
-                    {tempBookings.map((booking) => (
-                      <UpcomingAppointmentCard key={booking.customerUsername}>
-                        {/* TODO: Potentially provide a bookingId to use as key for uniqueness? */}
-                        {booking}
-                      </UpcomingAppointmentCard>
-                    ))}
-                  </AppointmentsGrid>
-                </DashboardModule>
-              </DashboardGrid>
+                <AppointmentsGrid>
+                  {tempBookings.map((booking) => (
+                    <UpcomingAppointmentCard
+                      key={booking.bookingId}
+                      booking={booking}
+                    />
+                  ))}
+                </AppointmentsGrid>
+              </DashboardModule>
+            </Content>
+          )}
+          {service && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={returnHome}>
+                Back
+              </Button>
+              <DashboardModule title="Choose a service">
+                <PanelGrid>
+                  {tempServices.map((service) => (
+                    <ServiceCard
+                      key={service.serviceName}
+                      onClick={selectWorker}
+                      service={service}
+                    ></ServiceCard>
+                  ))}
+                </PanelGrid>
+              </DashboardModule>
+            </Content>
+          )}
+          {worker && (
+            <Content>
+              <Heading>New booking</Heading>
+              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+              <Button type="button" onClick={cancelWorker}>
+                Back
+              </Button>
+              <DashboardModule title="Choose a worker">
+                <PanelGrid>
+                  {tempWorkers.map((worker) => (
+                    <WorkerRadioButton
+                      type="radio"
+                      worker={worker}
+                      key={worker.workerUserName}
+                      name="selectWorker"
+                      onChange={setWorkerId}
+                      onClick={selectBooking}
+                    ></WorkerRadioButton>
+                  ))}
+                </PanelGrid>
+              </DashboardModule>
             </Content>
           )}
           {booking && (
@@ -214,46 +229,11 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelBooking}>
                 Back
               </Button>
-              <form>
-                <DashboardGrid>
-                  <DashboardModule title="Choose a service">
-                    <PanelGrid>
-                      {services.map((service) => (
-                        <ServiceCard
-                          key={service.serviceName}
-                          onClick={selectService}
-                          service={service}
-                        ></ServiceCard>
-                      ))}
-                    </PanelGrid>
-                  </DashboardModule>
-                </DashboardGrid>
-              </form>
-            </Content>
-          )}
-          {service && (
-            <Content>
-              <Heading>New booking</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <form>
-                <Button type="button" onClick={cancelService}>
-                  Back
-                </Button>
-                <DashboardGrid>
-                  <DashboardModule title="Choose a worker">
-                    <PanelGrid>
-                      {workers.map((worker) => (
-                        <WorkerRadioButton
-                          type="radio"
-                          worker={worker}
-                          key={worker.workerUserName}
-                          name="selectWorker"
-                          onChange={setWorkerId}
-                        ></WorkerRadioButton>
-                      ))}
-                    </PanelGrid>
-                  </DashboardModule>
-                </DashboardGrid>
+              <BookingGrid>
+                <DashboardModule title="Availability">
+                  <AvailabilityView workerId={workerId} />
+                </DashboardModule>
+
                 <DashboardModule title="Select times">
                   <TimeFlex>
                     {isChrome && (
@@ -271,10 +251,10 @@ const User = ({ id }) => {
                     {isFirefox && <div>Firefox...</div>}
                   </TimeFlex>
                 </DashboardModule>
-                <Button type="button" onClick={mutate}>
-                  Submit
-                </Button>
-              </form>
+              </BookingGrid>
+              <Button type="button" onClick={mutate}>
+                Submit
+              </Button>
             </Content>
           )}
         </DashboardWrapper>
@@ -284,7 +264,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'jeffOak',
+  id: 'lizatawaf',
 };
 
 export default User;
