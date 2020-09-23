@@ -101,7 +101,7 @@ function generateDays(startDate, endDate) {
     var currentDate = new Date(startDate.valueOf() + 1000 * 60 * 60 * 24 * i);
 
     indents.push(
-      <li style={day}>{`${currentDate.getDate()} ${ needMonth ? monthNames[currentDate.getMonth()] : "" } ${days[i % days.length]}`}</li>
+      <li style={day}>{`${days[i % days.length]} ${currentDate.getDate()} ${ needMonth ? monthNames[currentDate.getMonth()] : "" }`}</li>
     );
   }
   return indents;
@@ -152,9 +152,9 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
             <li style={day}>
               <Button>
                 {`
-                ${currentTimeSlotStartDate.getHours()}:${currentTimeSlotStartDate.getMinutes()} 
+                ${currentTimeSlotStartDate.toTimeString().substring(0,5)} 
                 - 
-                ${currentTimeSlotEndDate.getHours()}:${currentTimeSlotEndDate.getMinutes()}`}
+                ${currentTimeSlotEndDate.toTimeString().substring(0,5)}`}
               </Button>
             </li>
           );
@@ -243,11 +243,11 @@ const BookingView = ({ timeSlots }) => {
             {monthNames[date.getMonth()]} {date.getFullYear()}
             <br />
             <span>
-              {weekStartDate.getDate()} {days[weekStartDate.getDay()]}
+               {days[weekStartDate.getDay()]} {weekStartDate.getDate()} { (weekStartDate.getMonth() != weekEndDate.getMonth()) ? monthNames[weekStartDate.getMonth()] : "" }
             </span>
             <span> - </span>
             <span>
-              {weekEndDate.getDate()} {days[weekEndDate.getDay()]}
+               {days[weekEndDate.getDay()]} {weekEndDate.getDate()} { (weekStartDate.getMonth() != weekEndDate.getMonth()) ? monthNames[weekEndDate.getMonth()] : "" }
             </span>
           </li>
         </ul>
