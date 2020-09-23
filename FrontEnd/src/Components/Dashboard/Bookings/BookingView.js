@@ -243,11 +243,11 @@ const BookingView = ({ timeSlots }) => {
             {monthNames[date.getMonth()]} {date.getFullYear()}
             <br />
             <span>
-               {days[weekStartDate.getDay()]} {weekStartDate.getDate()} { (weekStartDate.getMonth() != weekEndDate.getMonth()) ? monthNames[weekStartDate.getMonth()] : "" }
+               {days[weekStartDate.getDay()]} {weekStartDate.getDate()} { (weekStartDate.getMonth() !== weekEndDate.getMonth()) ? monthNames[weekStartDate.getMonth()] : "" }
             </span>
             <span> - </span>
             <span>
-               {days[weekEndDate.getDay()]} {weekEndDate.getDate()} { (weekStartDate.getMonth() != weekEndDate.getMonth()) ? monthNames[weekEndDate.getMonth()] : "" }
+               {days[weekEndDate.getDay()]} {weekEndDate.getDate()} { (weekStartDate.getMonth() !== weekEndDate.getMonth()) ? monthNames[weekEndDate.getMonth()] : "" }
             </span>
           </li>
         </ul>
