@@ -107,16 +107,26 @@ function generateDays(startDate, endDate) {
 
 function generateTimesForDays(startDate, endDate, timeSlots) {
   var indents = [];
-  var localStartDate = new Date(startDate.valueOf());
   var localTimeSlots = [...timeSlots];
   var j = 0;
 
-  //this is going from left to right
+  //this is going from left to right row by row
+  //current logic goes like this
+  //we loop through one row no matter what but as said row by row
+  //if there has been no change (i.e. no time slot added)
+  //then we break
+  //if a timeslot has been added then we need to ensure not to
+  //add an empty timeslot in its position otherwise it will be unaligned
+  //empty timeslots are used to make sure that the time slots align
+  //under their corresponding dates
+  //there is a local copy of the timeSlots as we 
+  //go through and pop (splice) the selected element
   while (localTimeSlots.length > 0) {
     var timeLength = localTimeSlots.length;
+    var changed = false;
     for (j = 0; j < days.length; j++) {
       var insidelocalStartDate = new Date(
-        localStartDate.valueOf() + 1000 * 60 * 60 * 24 * j
+        startDate.valueOf() + 1000 * 60 * 60 * 24 * j
       );
 
       for (var i = 0; i < localTimeSlots.length; i++) {
@@ -128,15 +138,14 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
         var currentTimeSlotEndDate = new Date(localTimeSlots[i].endDateTime);
 
         if (
-          currentTimeSlotStartDate.getDate() === insidelocalStartDate.getDate()
+          (currentTimeSlotStartDate.getDate() === insidelocalStartDate.getDate())
+          &&
+          (currentTimeSlotStartDate.getMonth() === insidelocalStartDate.getMonth())
+          &&
+          (currentTimeSlotStartDate.getFullYear() === insidelocalStartDate.getFullYear())
         ) {
-          console.log(
-            'currentTimeSlotStartDate',
-            currentTimeSlotStartDate.getDate()
-          );
-          console.log('insideLocalStartDate', insidelocalStartDate.getDate());
-
-          localTimeSlots.shift();
+          localTimeSlots.splice(i, 1);
+          changed = true;
           indents.push(
             <li style={day}>
               <Button>
@@ -147,16 +156,21 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
               </Button>
             </li>
           );
+          break;
         }
       }
-      if (timeLength == localTimeSlots.length) {
+      if (timeLength === localTimeSlots.length) {
         indents.push(
           <li style={day}>
             <br />
           </li>
         );
+      } else {
+        timeLength = localTimeSlots.length;
       }
     }
+    //if nothing has happened (no time slots added through this row, then break)
+    if (!changed && timeLength === localTimeSlots.length) break;
   }
 
   return indents;
@@ -224,7 +238,7 @@ const BookingView = ({ timeSlots }) => {
             </Button>
           </li>
           <li>
-            {monthNames[date.getMonth()]}
+            {monthNames[date.getMonth()]} {date.getFullYear()}
             <br />
             <span>
               {weekStartDate.getDate()} {days[weekStartDate.getDay()]}
