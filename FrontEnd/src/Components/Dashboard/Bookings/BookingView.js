@@ -94,12 +94,14 @@ function generateDays(startDate, endDate) {
     );
   }*/
 
+  var needMonth = (startDate.getMonth() !== endDate.getMonth());
+
   //active dates
   for (i = startDate.getDay(); i <= endDate.getDay(); i++) {
     var currentDate = new Date(startDate.valueOf() + 1000 * 60 * 60 * 24 * i);
 
     indents.push(
-      <li style={day}>{`${currentDate.getDate()} ${days[i % days.length]}`}</li>
+      <li style={day}>{`${currentDate.getDate()} ${ needMonth ? monthNames[currentDate.getMonth()] : "" } ${days[i % days.length]}`}</li>
     );
   }
   return indents;
