@@ -45,13 +45,14 @@ const User = ({ id }) => {
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
+      .then((res) => res)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
+        throw error;
       });
 
     return data;
   };
-
   const clear = () => {
     setBooking(false);
     setService(false);
