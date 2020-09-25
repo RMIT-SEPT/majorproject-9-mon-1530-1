@@ -91,12 +91,24 @@ public class UserServiceController {
     @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
-    	boolean result = userService.comparePassword(username,password);
-        HashMap<String, String> response = new HashMap<>();
+
+        HashMap<String, Object> response = new HashMap<>();
         response.put("username", username);
         response.put("password", password);
+
+        UserEntity userEntity;
+        try {
+            userEntity = userService.read(username);
+        } catch (RecordNotFoundException e) {
+            response.put("result", "failed");
+            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+        }
+
+        boolean result = userService.comparePassword(username, password);
+
         if (result) {
             response.put("result", "successful");
+            response.put("user", userEntity);
             return new ResponseEntity(response, HttpStatus.OK);
         } else {
             response.put("result", "failed");
