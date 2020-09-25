@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LogOut} from 'react-feather';
+import { LogOut } from 'react-feather';
 import { theme } from '../../App';
 import logoAlt from '../../media/logo-alt.png';
 import {
@@ -63,8 +63,8 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
           <GreenNavLink>Appointments</GreenNavLink>
           <GreenNavLink>Contact-us</GreenNavLink>
           <GreenNavLink>About</GreenNavLink>
-          <RightNavElement          userName={userName}
-          role={role}></RightNavElement>
+          <RightNavElement userName={userName}
+            role={role}></RightNavElement>
         </StyledNavBarBorder>
       </StyledNavWhite>
       <FlexContainer>{children}</FlexContainer>

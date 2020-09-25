@@ -58,7 +58,7 @@ const Admin = ({ id }) => {
   );
 
   const [userName, setUserName] = useState();
-  const [role, setRole] = useState('User');
+  const [role, setRole] = useState();
   const [date] = useState(new Date());
   const [selectedWorker, setSelectedWorker] = useState();
 

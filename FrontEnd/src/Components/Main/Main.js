@@ -62,7 +62,7 @@ function Main(props) {
       >
         <Grid item xs={12}>
           {/* implemented toolbar */}
-          <Toolbar />
+          <Toolbar/>
         </Grid>
         <Grid item xs={12}>
           {/* implemented  search  for a service  */}
