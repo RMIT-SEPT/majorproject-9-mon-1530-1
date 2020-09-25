@@ -1,14 +1,11 @@
 package sept.major.hours.blackbox.service;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import sept.major.common.response.ValidationError;
-import sept.major.common.testing.RequestParameter;
-import sept.major.hours.blackbox.HoursBlackBoxTests;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static sept.major.hours.HoursTestHelper.futureDateTime;
+import static sept.major.hours.HoursTestHelper.pastDate;
+import static sept.major.hours.HoursTestHelper.pastDateTime;
+import static sept.major.hours.HoursTestHelper.randomAlphanumericString;
+import static sept.major.hours.HoursTestHelper.randomEntityMap;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +15,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static sept.major.hours.HoursTestHelper.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sept.major.common.response.ValidationError;
+import sept.major.common.testing.RequestParameter;
+import sept.major.hours.blackbox.HoursBlackBoxTests;
 
 public class GetBlackBoxTests extends HoursBlackBoxTests {
 

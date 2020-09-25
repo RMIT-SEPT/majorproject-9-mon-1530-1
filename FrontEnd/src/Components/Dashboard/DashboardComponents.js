@@ -22,13 +22,6 @@ const Content = styled.div`
   margin: 40px;
 `;
 
-const DashboardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin: 24px 0px;
-`;
-
 const AppointmentsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 280px);
@@ -41,8 +34,20 @@ const PanelGrid = styled.div`
   gap: 20px;
 `;
 
+const AvailabilityGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(1, 400px);
+  gap: 20px;
+`;
+
+const BookingGrid = styled.div`
+  display: grid;
+  grid-template-columns: 400px 600px;
+  gap: 40px;
+`;
+
 const StyledDashboardModule = styled.div`
-  grid-column: span 2;
+  margin-top: 24px;
 `;
 
 const Title = styled.span`
@@ -102,6 +107,11 @@ const Button = styled.button`
   }
 `;
 
+const StyledGreenText = styled.span`
+  color: ${(props) => props.theme.colours.green.primary};
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+`;
+
 const DashboardModule = ({ children, title }) => {
   return (
     <StyledDashboardModule>
@@ -158,9 +168,11 @@ export {
   Heading,
   SubHeading,
   Content,
-  DashboardGrid,
   AppointmentsGrid,
+  AvailabilityGrid,
+  BookingGrid,
   PanelGrid,
   Title,
   Button,
+  StyledGreenText,
 };

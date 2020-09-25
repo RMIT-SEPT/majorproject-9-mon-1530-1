@@ -1,18 +1,20 @@
 package sept.major.users.blackbox.service;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import sept.major.common.testing.RequestParameter;
-import sept.major.users.blackbox.UserBlackBoxHelper;
+import static sept.major.users.UserTestHelper.randomAlphanumericString;
+import static sept.major.users.UserTestHelper.randomEntityMap;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static sept.major.users.UserTestHelper.randomAlphanumericString;
-import static sept.major.users.UserTestHelper.randomEntityMap;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import sept.major.common.testing.RequestParameter;
+import sept.major.users.blackbox.UserBlackBoxHelper;
 
 public class GetBlackBoxTests extends UserBlackBoxHelper {
 

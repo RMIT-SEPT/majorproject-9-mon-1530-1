@@ -1,0 +1,60 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+	{
+       "name": "Frontend",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Frontend",
+	   "memory": 256,
+	   "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 3000
+        }
+      ]
+    },
+	{
+       "name": "Availability",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 8084,
+          "containerPort": 8084
+        }
+      ]
+    },
+	{
+       "name": "Hours",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Hours",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 8082,
+          "containerPort": 8082
+        }
+      ]
+    },
+	{
+       "name": "Users",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Users",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 8083,
+          "containerPort": 8083
+        }
+      ]
+    },
+	{
+       "name": "Bookings",
+       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Bookings",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 8081,
+          "containerPort": 8081
+        }
+      ]
+    }
+   ]
+}

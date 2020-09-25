@@ -80,7 +80,7 @@ export const FormDetails = (props) => {
 
     const usertype = window.location.pathname.substring(1);
     const onSubmit = (values) => {
-        const type = usertype === "admin" ? "employee" : "user";
+        const type = usertype === "admin" ? "Worker" : "user";
 
         const headers = {
             "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export const FormDetails = (props) => {
             });
     };
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form style={{width: '840px'}} onSubmit={handleSubmit(onSubmit)}>
             <Grid container direction="row" spacing={3}>
                 <Grid item xs={6}>
                     <Heading>Full Name </Heading>
