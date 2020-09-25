@@ -33,7 +33,7 @@ const fetchAdminData = async (key, id) => {
 
   return data;
 };
-const { isSuccess, isLoading, isError } = useQuery(
+const {} = useQuery(
   ['adminData', id],
   fetchAdminData,
   {
