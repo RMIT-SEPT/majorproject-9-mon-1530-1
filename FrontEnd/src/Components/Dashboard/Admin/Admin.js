@@ -75,7 +75,7 @@ const Admin = ({ id }) => {
         <DashboardWrapper
           userName={userName}
           role={role}
-          actions={{ bookingLink: () => {} }}
+          actions={{ bookingLink: () => { } }}
         >
           <MenuBarComponent>
             <Home
@@ -85,7 +85,7 @@ const Admin = ({ id }) => {
               size={theme.icons.size.medium}
             />
             <PlusCircle
-              onClick={() => {}}
+              onClick={() => { }}
               className="menuIcon"
               color={theme.colours.grey.primary}
               size={theme.icons.size.medium}

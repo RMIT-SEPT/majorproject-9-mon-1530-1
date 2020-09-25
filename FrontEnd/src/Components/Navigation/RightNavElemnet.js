@@ -4,9 +4,9 @@ import { ChevronDown } from 'react-feather';
 import {
     RightFlexElements,
     StyledUserTagName,
-  } from '../Navigation/Nav';
+} from '../Navigation/Nav';
 
-  const UserName = styled.div`
+const UserName = styled.div`
   text-align: right;
   font-size: 20px;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
@@ -26,7 +26,7 @@ const Logo = styled.div`
   border-radius: 28px;
   margin: 0px 12px 0px 24px;
 `;
-const rightNavElement = ({ userName, role}) => {
+const rightNavElement = ({ userName, role }) => {
     return (
         <RightFlexElements>
             <StyledUserTagName>

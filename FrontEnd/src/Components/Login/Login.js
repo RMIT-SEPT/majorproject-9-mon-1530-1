@@ -161,97 +161,97 @@ const Login = (props) => {
       });
   };
   const isLoggedIn = localStorage.getItem('isAuth');
-    if (isLoggedIn) {
-      return (<Redirect to="/admin" />);
-    } else {
-      return (<form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container alignItems="center" justify="center" spacing={0}>
-          <Grid item xs={7}>
-            {/* the logo and the img on the left  */}
-            <Left>
-              <Grid
-                container
-                direction="column"
-                justify="center"
-                alignItems="center"
-              >
+  if (isLoggedIn) {
+    return (<Redirect to="/admin" />);
+  } else {
+    return (<form onSubmit={handleSubmit(onSubmit)}>
+      <Grid container alignItems="center" justify="center" spacing={0}>
+        <Grid item xs={7}>
+          {/* the logo and the img on the left  */}
+          <Left>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <Grid item xs={12}>
+                <a href="http://localhost:3000/">
+                  {' '}
+                  <Logo src={logo} alt="logo" />{' '}
+                </a>
                 <Grid item xs={12}>
-                  <a href="http://localhost:3000/">
-                    {' '}
-                    <Logo src={logo} alt="logo" />{' '}
-                  </a>
-                  <Grid item xs={12}>
-                    <Construction src={construction} alt="contact" />
-                  </Grid>
+                  <Construction src={construction} alt="contact" />
                 </Grid>
               </Grid>
-            </Left>
-          </Grid>
+            </Grid>
+          </Left>
+        </Grid>
 
-          <Grid item xs={5}>
-            <Right>
-              {/* link to sign up  */}
-              <TopRight>
-                Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
-              </TopRight>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <Bold> Log In to Agem </Bold>
-                </Grid>
-                <Grid item xs={12}>
-                  <Heading>User Name </Heading>
-                  <CssTextFieldGreen
-                    required
-                    name="username"
-                    inputRef={register({
-                      required: 'username is Required',
-                    })}
-                    id="outlined-full-width"
-                    data-testid="username-field"
-                    style={{ margin: 8 }}
-                    helperText="Full width!"
-                    fullWidth
-                    margin="normal"
-                    InputLabelProps={{ shrink: true }}
-                    variant="outlined"
-                  />
-                  {errors.username && <span>username is Required</span>}
-                </Grid>
-                <Grid item xs={12}>
-                  <Heading>Password</Heading>
-                  <CssTextField
-                    required
-                    type="password"
-                    name="password"
-                    inputRef={register({
-                      required: 'password is Required',
-                    })}
-                    data-testid="password-field"
-                    id="outlined-full-width"
-                    style={{ margin: 8 }}
-                    helperText="Full width!"
-                    fullWidth
-                    margin="normal"
-                    InputLabelProps={{ shrink: true }}
-                    variant="outlined"
-                  />
-                  {errors.password && <span>password is Required</span>}
-                </Grid>
-                {/* submit button */}
-                <Grid item xs={12}>
-                  {loginerror}
-                  <ColorButton type="submit" variant="contained" color="default">
-                    {' '}
+        <Grid item xs={5}>
+          <Right>
+            {/* link to sign up  */}
+            <TopRight>
+              Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
+            </TopRight>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Bold> Log In to Agem </Bold>
+              </Grid>
+              <Grid item xs={12}>
+                <Heading>User Name </Heading>
+                <CssTextFieldGreen
+                  required
+                  name="username"
+                  inputRef={register({
+                    required: 'username is Required',
+                  })}
+                  id="outlined-full-width"
+                  data-testid="username-field"
+                  style={{ margin: 8 }}
+                  helperText="Full width!"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{ shrink: true }}
+                  variant="outlined"
+                />
+                {errors.username && <span>username is Required</span>}
+              </Grid>
+              <Grid item xs={12}>
+                <Heading>Password</Heading>
+                <CssTextField
+                  required
+                  type="password"
+                  name="password"
+                  inputRef={register({
+                    required: 'password is Required',
+                  })}
+                  data-testid="password-field"
+                  id="outlined-full-width"
+                  style={{ margin: 8 }}
+                  helperText="Full width!"
+                  fullWidth
+                  margin="normal"
+                  InputLabelProps={{ shrink: true }}
+                  variant="outlined"
+                />
+                {errors.password && <span>password is Required</span>}
+              </Grid>
+              {/* submit button */}
+              <Grid item xs={12}>
+                {loginerror}
+                <ColorButton type="submit" variant="contained" color="default">
+                  {' '}
               Submit
             </ColorButton>
-                </Grid>
               </Grid>
-            </Right>
-          </Grid>
+            </Grid>
+          </Right>
         </Grid>
-      </form>);
-    }
-  };
+      </Grid>
+    </form>);
+  }
+};
 Login.defaultProps = {
   id: localStorage.getItem('username'),
 };

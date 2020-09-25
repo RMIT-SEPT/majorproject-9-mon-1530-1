@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState } from 'react';
 import {
   StyledNavBlack,
   StyledNavBar,
@@ -17,34 +17,34 @@ import { useQuery } from 'react-query';
 // we use normal routing in order to move between pages
 
 
-const Toolbar = ({id}) => {
-const [main, setMain] = useState(false);
-const [worker, setWorker] = useState(false); 
-const fetchAdminData = async (key, id) => {
-  const { data } = await axios
-    .get(`http://localhost:8083/users?username=${id}`)
-    .then((res) => res)
-    .then(setWorker(true))
-    .catch((error) => {
-     setMain(true);
-     setWorker(false);
-      throw error;
-    });
+const Toolbar = ({ id }) => {
+  const [main, setMain] = useState(false);
+  const [worker, setWorker] = useState(false);
+  const fetchAdminData = async (key, id) => {
+    const { data } = await axios
+      .get(`http://localhost:8083/users?username=${id}`)
+      .then((res) => res)
+      .then(setWorker(true))
+      .catch((error) => {
+        setMain(true);
+        setWorker(false);
+        throw error;
+      });
 
-  return data;
-};
- useQuery(
-  ['adminData', id],
-  fetchAdminData,
-  {
-    onSuccess: (data) => {
-      setUserName(data.name);
-      setRole(data.userType);
-    },
-  }
-);
-const [userName, setUserName] = useState();
-const [role, setRole] = useState();
+    return data;
+  };
+  useQuery(
+    ['adminData', id],
+    fetchAdminData,
+    {
+      onSuccess: (data) => {
+        setUserName(data.name);
+        setRole(data.userType);
+      },
+    }
+  );
+  const [userName, setUserName] = useState();
+  const [role, setRole] = useState();
   return (
     <StyledNavBlack>
       <StyledNavBar>
@@ -79,7 +79,7 @@ const [role, setRole] = useState();
         )}
         {worker && (
           <RightNavElement userName={userName}
-          role={role}></RightNavElement>
+            role={role}></RightNavElement>
         )}
 
       </StyledNavBar>
