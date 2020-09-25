@@ -146,15 +146,17 @@ export const Login = (props) => {
         `http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
-        console.log(response.data);
-        let r = response.data;
-        console.log(JSON.parse(response.data));
-        if (r.result === 'true') {
+        console.log(response.status);
+        let r = response.status;
+        if (r === 200) {
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
+          console.log(localStorage.getItem('username'));
           auth.login(() => {
             //check standard user and then transfer to admin panel
-            history.push('/about');
+            setLoginerror('sucess');
+            history.push('/user');
+  
           });
         } else {
           setLoginerror('The username or password is incorrect.');

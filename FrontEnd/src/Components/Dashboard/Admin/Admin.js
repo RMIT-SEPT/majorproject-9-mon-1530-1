@@ -148,7 +148,7 @@ const Admin = ({ id }) => {
 };
 
 Admin.defaultProps = {
-  id: 'lizatawaf',
+  id: localStorage.getItem('username'),
 };
 
 export default Admin;

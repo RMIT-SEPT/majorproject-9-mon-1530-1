@@ -25,15 +25,8 @@ const toolbar = () => {
           href="http://localhost:3000/contactus"
           style={{ textDecoration: 'none' }}
         >
-          <GreenNavLink>New Booking</GreenNavLink>
-        </a>
-        <a
-          href="http://localhost:3000/contactus"
-          style={{ textDecoration: 'none' }}
-        >
           <GreenNavLink>Contact-us</GreenNavLink>
         </a>
-        <GreenNavLink>Appointments </GreenNavLink>
         <a
           href="http://localhost:3000/about"
           style={{ textDecoration: 'none' }}
