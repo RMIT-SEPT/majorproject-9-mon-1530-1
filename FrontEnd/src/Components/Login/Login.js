@@ -161,7 +161,6 @@ const Login = (props) => {
       });
   };
   const isLoggedIn = localStorage.getItem('isAuth');
-  {
     if (isLoggedIn) {
       return (<Redirect to="/admin" />);
     } else {
@@ -252,9 +251,7 @@ const Login = (props) => {
         </Grid>
       </form>);
     }
-  }
-
-};
+  };
 Login.defaultProps = {
   id: localStorage.getItem('username'),
 };

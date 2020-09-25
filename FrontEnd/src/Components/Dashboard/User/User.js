@@ -264,7 +264,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'lizatawaf',
+  id: localStorage.getItem('username')
 };
 
 export default User;
