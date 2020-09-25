@@ -32,7 +32,7 @@ public class PostBlackBoxTest extends BookingBlackBoxHelper {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).startsWith("Booking provided conflicts with existing booking: ");
+        assertThat(result.getBody()).startsWith("{\"message\":\"Booking provided conflicts with existing booking: ");
     }
 
     @Test

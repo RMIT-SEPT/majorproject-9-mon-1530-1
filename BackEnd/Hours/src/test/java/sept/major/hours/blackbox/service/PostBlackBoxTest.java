@@ -30,7 +30,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).startsWith("Hours provided conflicts with existing hours: ");
+        assertThat(result.getBody()).startsWith("{\"message\":\"Hours provided conflicts with existing hours: ");
     }
 
     @Test

@@ -44,7 +44,7 @@ public class DeleteBlackboxTest extends BookingBlackBoxHelper {
          */
         ResponseEntity<String> getResult = testRestTemplate.getForEntity(getUrl(requestParameters), String.class);
         assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(getResult.getBody()).isEqualTo(String.format("No record with a identifier of %s was found", bookingId));
+        assertThat(getResult.getBody()).isEqualTo(String.format("{\"message\":\"No record with a identifier of %s was found\"}", bookingId));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class DeleteBlackboxTest extends BookingBlackBoxHelper {
 
         ResponseEntity<String> deleteResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.DELETE, new HttpEntity<>(new HashMap<String, String>()), String.class);
         assertThat(deleteResult.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(String.format("No record with a identifier of %s was found", bookingId)).isEqualTo(deleteResult.getBody());
+        assertThat(String.format("{\"message\":\"No record with a identifier of %s was found\"}", bookingId)).isEqualTo(deleteResult.getBody());
 
     }
 

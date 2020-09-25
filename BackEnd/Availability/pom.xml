@@ -73,7 +73,7 @@
         <dependency>
             <groupId>sept.major</groupId>
             <artifactId>common</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
 
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api &ndash;&gt;-->
@@ -84,9 +84,9 @@
         <!--</dependency>-->
 
         <dependency>
-       		<!-- build fails without this dependency on circileci -->
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-validation</artifactId>
+            <!-- build fails without this dependency on circileci -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
 		<dependency>

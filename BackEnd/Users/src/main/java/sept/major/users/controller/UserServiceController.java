@@ -8,6 +8,8 @@ import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.service.UserService;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +53,7 @@ public class UserServiceController {
             List<UserEntity> entityList = userService.readBulkUsers(userType);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -65,13 +67,16 @@ public class UserServiceController {
      */
     @PatchMapping("/password") //TODO change to put
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("username", username);
+        response.put("oldPassword", oldPassword);
 		try {
 			userService.updatePassword(username, oldPassword, newPassword);
-			return new ResponseEntity("place holder message: password updated" + " username:" + username
-                    + " oldPassword:" + oldPassword, HttpStatus.OK);
+            response.put("status", "successful");
+            return new ResponseEntity(response, HttpStatus.OK);
 		} catch (RuntimeException e) {
-			return new ResponseEntity("place holder message: provided input is incorrect" + " username:" + username
-					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
+            response.put("status", "failed");
+            return new ResponseEntity(response, HttpStatus.NOT_FOUND);
 		}
 	
 	}
@@ -87,7 +92,17 @@ public class UserServiceController {
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
     	System.out.println("username:"+ username + " password:" + password);
     	boolean result = userService.comparePassword(username,password);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("username", username);
+        response.put("password", password);
+        if (result) {
+            response.put("result", "successful");
+            return new ResponseEntity(response, HttpStatus.OK);
+        } else {
+            response.put("result", "failed");
+            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity("input," + "username:" + username + " password:" + password + ", password compare:" + result, HttpStatus.OK);
+
     }
 }

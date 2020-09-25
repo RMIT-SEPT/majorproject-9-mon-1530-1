@@ -12,6 +12,7 @@ import sept.major.common.response.ValidationError;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,9 +70,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsInRange(startDateTime, endDateTime, workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -97,9 +98,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -118,9 +119,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsFor(workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
