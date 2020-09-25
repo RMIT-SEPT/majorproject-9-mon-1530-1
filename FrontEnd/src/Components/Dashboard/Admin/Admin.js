@@ -53,6 +53,7 @@ const Admin = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
+        const localRole= localStorage.setItem('role', data.userType);
       },
     }
   );

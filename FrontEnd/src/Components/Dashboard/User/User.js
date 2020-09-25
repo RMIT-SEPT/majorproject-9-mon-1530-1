@@ -101,6 +101,7 @@ const User = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
+        localStorage.setItem('role', data.userType);
       },
     }
   );
