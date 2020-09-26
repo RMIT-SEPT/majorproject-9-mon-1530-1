@@ -166,12 +166,17 @@ public class AvailabilityController {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
         }
 
-        ResponseEntity responseEntity = evaluateAvailabilities(hoursList, bookingsList);
-        if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
-            return new ResponseEntity(availabilityService.getTimeSlots(date, endDate, (AvailabilityPair) responseEntity.getBody()), HttpStatus.OK);
-        } else {
-            return responseEntity;
+
+        return new ResponseEntity(availabilityService.getTimeSlots(date, endDate, availabilityService.checkAllAvailabilities(hoursList, bookingsList)), HttpStatus.OK);
+    }
+
+    @GetMapping("slot/now")
+    public ResponseEntity getTimeSlotsNow(@RequestParam(name = "from", required = false) Integer increment) {
+        LocalDate date = LocalDate.now();
+        if (increment != null) {
+            date = availabilityService.findStartOfWeek(date).plusWeeks(increment);
         }
+        return getSlotsOnDate(date.toString());
     }
 
     private ResponseEntity evaluateAvailabilities(List<HoursResponse> hoursResponses, List<BookingResponse> bookingResponses) {
