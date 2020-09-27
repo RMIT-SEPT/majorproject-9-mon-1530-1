@@ -58,4 +58,19 @@ const tempBookings = [
   },
 ];
 
-export { tempServices, tempWorkers, tempBookings };
+const tempTimeSlots = [
+  {
+    startDateTime: '2020-10-01T14:00:00',
+    endDateTime: '2020-10-01T15:00:00',
+  },
+  {
+    startDateTime: '2020-10-02T09:00:00',
+    endDateTime: '2020-10-02T10:00:00',
+  },
+  {
+    startDateTime: '2020-10-01T08:00:00',
+    endDateTime: '2020-10-01T09:00:00',
+  },
+];
+
+export { tempServices, tempWorkers, tempBookings, tempTimeSlots };
