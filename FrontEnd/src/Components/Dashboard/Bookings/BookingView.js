@@ -109,36 +109,33 @@ function generateDays(startDate, endDate) {
 
 function generateTimesForDays(startDate, endDate, timeSlots) {
   var indents = [];
-  var localTimeSlots = [...timeSlots];
-  var j = 0;
+  var dateKeys = Object.keys(timeSlots);
+  
+  var longestDay = 0; //this is used to determine the height of the table
+  for (var i = 0; i < dateKeys.length; i++)
+  {
+    var currentDayTimeSlot = timeSlots[dateKeys[i]];
+    
+    if (currentDayTimeSlot.length > longestDay)
+      longestDay = currentDayTimeSlot.length;
+  }
+  
+  var localTimeSlots = JSON.parse(JSON.stringify(timeSlots));  
 
-  //this is going from left to right row by row
-  //current logic goes like this
-  //we loop through one row no matter what but as said row by row
-  //if there has been no change (i.e. no time slot added)
-  //then we break
-  //if a timeslot has been added then we need to ensure not to
-  //add an empty timeslot in its position otherwise it will be unaligned
-  //empty timeslots are used to make sure that the time slots align
-  //under their corresponding dates
-  //there is a local copy of the timeSlots as we 
-  //go through and pop (splice) the selected element
-  while (localTimeSlots.length > 0) {
-    var timeLength = localTimeSlots.length;
-    var changed = false;
-    for (j = 0; j < days.length; j++) {
+  //this loop is the height
+  for (var i = 0; i < longestDay; i++)
+  {
+    //this loop is the row
+    for (var j = 0; j < days.length; j++) {
+      var currentDayTimeSlot = localTimeSlots[dateKeys[j]];
       var insidelocalStartDate = new Date(
         startDate.valueOf() + 1000 * 60 * 60 * 24 * j
       );
-
-      for (var i = 0; i < localTimeSlots.length; i++) {
-        if (localTimeSlots.length === 0) break;
-
+      if (currentDayTimeSlot.length > 0) {
         var currentTimeSlotStartDate = new Date(
-          localTimeSlots[i].startDateTime
+          currentDayTimeSlot[0].startDateTime
         );
-        var currentTimeSlotEndDate = new Date(localTimeSlots[i].endDateTime);
-
+        var currentTimeSlotEndDate = new Date(currentDayTimeSlot[0].endDateTime);
         if (
           (currentTimeSlotStartDate.getDate() === insidelocalStartDate.getDate())
           &&
@@ -146,65 +143,233 @@ function generateTimesForDays(startDate, endDate, timeSlots) {
           &&
           (currentTimeSlotStartDate.getFullYear() === insidelocalStartDate.getFullYear())
         ) {
-          localTimeSlots.splice(i, 1);
-          changed = true;
-          indents.push(
-            <li style={day}>
-              <Button>
-                {`
-                ${currentTimeSlotStartDate.toTimeString().substring(0,5)} 
-                - 
-                ${currentTimeSlotEndDate.toTimeString().substring(0,5)}`}
-              </Button>
-            </li>
-          );
-          break;
+          if (currentDayTimeSlot[0].available)
+          {
+            indents.push(
+              <li style={day}>
+                <Button>
+                  {`
+                  ${currentTimeSlotStartDate.toTimeString().substring(0,5)} 
+                  - 
+                  ${currentTimeSlotEndDate.toTimeString().substring(0,5)}`}
+                </Button>
+              </li>
+            );
+          } else {
+            indents.push(
+              <li style={day}>
+                <Button style={{backgroundColor : "#ffffff0a", color : "#0000003a"}}>
+                  {`
+                  ${currentTimeSlotStartDate.toTimeString().substring(0,5)} 
+                  - 
+                  ${currentTimeSlotEndDate.toTimeString().substring(0,5)}`}
+                </Button>
+              </li>
+            );}
+          currentDayTimeSlot.splice(0, 1);
         }
-      }
-      if (timeLength === localTimeSlots.length) {
+      } else {
         indents.push(
           <li style={day}>
             <br />
           </li>
         );
-      } else {
-        timeLength = localTimeSlots.length;
       }
     }
-    //if nothing has happened (no time slots added through this row, then break)
-    if (!changed && timeLength === localTimeSlots.length) break;
   }
 
   return indents;
 }
 
-//direction is bool
-//true to go forward 1 week
-//false to go back 1 week
-
-//https://www.w3schools.com/howto/howto_css_calendar.asp
-//https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_calendar
 const BookingView = ({ timeSlots }) => {
   const [date, setTheDate] = useState(new Date());
   const [weekStartDate, setWeekStartDate] = useState(getWeekStartDate(date));
   const [weekEndDate, setWeekEndDate] = useState(getWeekEndDate(date));
 
-  // changeDateRange(date, currentWeekDate, currentWeekEnd);
-
-  // function moveDate(startDate, endDate, direction) {
-  //     if (direction) {
-  //         startDate.setDate(startDate.getDate() + 7);
-  //         endDate.setDate(endDate.getDate() + 7);
-  //     } else {
-  //         startDate.setDate(startDate.getDate() - 7);
-  //         endDate.setDate(endDate.getDate() - 7);
-  //     }
-
-  //     console.log("button fired");
-  // }
-
-  //from today till end of the week
-  // const daysToEnd = days.slice(date.getDay() - 1, days.length);
+  //sample return of what should come from the get endpoint
+  const sampleReturn = {
+    "27/09/2020": {},
+    "28/09/2020": {},
+    "29/09/2020": {},
+    "30/09/2020": [
+        {
+            "startDateTime": "2020-09-30T09:00",
+            "endDateTime": "2020-09-30T10:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T10:00",
+            "endDateTime": "2020-09-30T11:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T11:00",
+            "endDateTime": "2020-09-30T12:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T12:00",
+            "endDateTime": "2020-09-30T13:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-09-30T13:00",
+            "endDateTime": "2020-09-30T14:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-09-30T14:00",
+            "endDateTime": "2020-09-30T15:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T15:00",
+            "endDateTime": "2020-09-30T16:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T16:00",
+            "endDateTime": "2020-09-30T17:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-09-30T17:00",
+            "endDateTime": "2020-09-30T18:00",
+            "available": false
+        }
+    ],
+    "01/10/2020": [
+        {
+            "startDateTime": "2020-10-01T17:00",
+            "endDateTime": "2020-10-01T18:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T18:00",
+            "endDateTime": "2020-10-01T19:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T19:00",
+            "endDateTime": "2020-10-01T20:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T20:00",
+            "endDateTime": "2020-10-01T21:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T21:00",
+            "endDateTime": "2020-10-01T22:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T22:00",
+            "endDateTime": "2020-10-01T23:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-01T23:00",
+            "endDateTime": "2020-10-01T24:00",
+            "available": false
+        }
+    ],
+    "02/10/2020": [
+        {
+            "startDateTime": "2020-10-02T09:00",
+            "endDateTime": "2020-10-02T10:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T10:00",
+            "endDateTime": "2020-10-02T11:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T11:00",
+            "endDateTime": "2020-10-02T12:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T12:00",
+            "endDateTime": "2020-10-02T13:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T13:00",
+            "endDateTime": "2020-10-02T14:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T14:00",
+            "endDateTime": "2020-10-02T15:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T15:00",
+            "endDateTime": "2020-10-02T16:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T16:00",
+            "endDateTime": "2020-10-02T17:00",
+            "available": false
+        },
+        {
+            "startDateTime": "2020-10-02T17:00",
+            "endDateTime": "2020-10-02T18:00",
+            "available": false
+        }
+    ],
+    "03/10/2020": [
+        {
+            "startDateTime": "2020-10-03T00:00",
+            "endDateTime": "2020-10-03T01:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T01:00",
+            "endDateTime": "2020-10-03T02:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T02:00",
+            "endDateTime": "2020-10-03T02:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T02:00",
+            "endDateTime": "2020-10-03T03:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T03:00",
+            "endDateTime": "2020-10-03T04:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T04:00",
+            "endDateTime": "2020-10-03T05:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T05:00",
+            "endDateTime": "2020-10-03T06:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T06:00",
+            "endDateTime": "2020-10-03T07:00",
+            "available": true
+        },
+        {
+            "startDateTime": "2020-10-03T07:00",
+            "endDateTime": "2020-10-03T08:00",
+            "available": true
+        }
+    ]
+  };
 
   return (
     <>
@@ -227,10 +392,6 @@ const BookingView = ({ timeSlots }) => {
                 const nextWeekDate = new Date(
                   date.valueOf() + 1000 * 60 * 60 * 24 * 7
                 );
-                // if (date.getDate() > nextWeekDate.getDate()) {
-                //   //addd month
-                //   nextWeekDate.setMonth(nextWeekDate.getMonth() + 1);
-                // }
                 setTheDate(nextWeekDate);
                 setWeekStartDate(getWeekStartDate(nextWeekDate));
                 setWeekEndDate(getWeekEndDate(nextWeekDate));
@@ -254,7 +415,7 @@ const BookingView = ({ timeSlots }) => {
       </div>
       <ul style={weekdays}>
         {generateDays(weekStartDate, weekEndDate)}
-        {generateTimesForDays(weekStartDate, weekEndDate, timeSlots)}
+        {generateTimesForDays(weekStartDate, weekEndDate, sampleReturn)}
       </ul>
     </>
   );
