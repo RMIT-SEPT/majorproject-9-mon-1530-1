@@ -16,12 +16,7 @@ import {
 } from '../DashboardComponents';
 import { ServiceCard, WorkerRadioButton } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import {
-  tempServices,
-  tempWorkers,
-  tempBookings,
-  tempTimeSlots,
-} from './UserMockData';
+import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
@@ -224,7 +219,7 @@ const User = ({ id }) => {
                 Back
               </Button>
               <DashboardModule title="Availability">
-                <BookingView timeSlots={tempTimeSlots} />
+                <BookingView />
               </DashboardModule>
 
               <Button type="button" onClick={mutate}>
