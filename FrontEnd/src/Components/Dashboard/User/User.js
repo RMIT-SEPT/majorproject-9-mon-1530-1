@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import styled from 'styled-components';
 import axios from 'axios';
 import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
 import BarLoader from 'react-spinners/BarLoader';
@@ -16,6 +15,7 @@ import {
   BookingGrid,
   PanelGrid,
   Button,
+  StyledStateContainer,
 } from '../DashboardComponents';
 import {
   ServiceCard,

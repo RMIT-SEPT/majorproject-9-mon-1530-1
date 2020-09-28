@@ -112,6 +112,14 @@ const StyledGreenText = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
 
+const StyledStateContainer = styled.div`
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
 const DashboardModule = ({ children, title }) => {
   return (
     <StyledDashboardModule>
@@ -175,4 +183,5 @@ export {
   Title,
   Button,
   StyledGreenText,
+  StyledStateContainer,
 };
