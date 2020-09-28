@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
 import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
-import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -15,7 +14,8 @@ import {
   BookingGrid,
   PanelGrid,
   Button,
-  StyledStateContainer,
+  Loading,
+  Error,
 } from '../DashboardComponents';
 import {
   ServiceCard,
@@ -134,16 +134,8 @@ const User = ({ id }) => {
 
   return (
     <>
-      {isLoading && (
-        <StyledStateContainer>
-          <BarLoader
-            height={8}
-            width={200}
-            color={theme.colours.green.primary}
-          />
-        </StyledStateContainer>
-      )}
-      {isError && <StyledStateContainer>Error...</StyledStateContainer>}
+      {isLoading && <Loading />}
+      {isError && <Error />}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Watch, Clock, User } from 'react-feather';
+import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../App';
 import hairdresserImage from '../../media/hairdresser-card.png';
 
@@ -170,6 +171,18 @@ const UpcomingAppointmentCard = ({ booking }) => {
   );
 };
 
+const Loading = () => {
+  return (
+    <StyledStateContainer>
+      <BarLoader height={8} width={200} color={theme.colours.green.primary} />
+    </StyledStateContainer>
+  );
+};
+
+const Error = () => {
+  return <StyledStateContainer>Error...</StyledStateContainer>;
+};
+
 export {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -184,4 +197,6 @@ export {
   Button,
   StyledGreenText,
   StyledStateContainer,
+  Loading,
+  Error,
 };
