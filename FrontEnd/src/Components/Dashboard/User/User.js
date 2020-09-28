@@ -32,8 +32,6 @@ const User = ({ id }) => {
   const {
     setCustomerId,
     setWorkerId,
-    setStartTime,
-    setEndTime,
     clearBooking,
     submitBooking,
   } = useContext(BookingContext);
@@ -118,10 +116,10 @@ const User = ({ id }) => {
   const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(false);
+  const [main, setMain] = useState(true);
   const [service, setService] = useState(false);
   const [worker, setWorker] = useState(false);
-  const [booking, setBooking] = useState(true);
+  const [booking, setBooking] = useState(false);
 
   return (
     <>

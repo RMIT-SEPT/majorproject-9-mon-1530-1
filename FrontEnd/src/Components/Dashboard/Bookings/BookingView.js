@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button } from '../../Dashboard/DashboardComponents';
 import { days, monthNames, MILLISECONDS_TO_DAYS_FACTOR } from './BookingUtils';
 import {
@@ -11,6 +11,8 @@ import {
 } from './BookingView.styles';
 import { TimeSlotView, DisabledButton } from './BookingComponents';
 import { sampleReturn } from './BookingsMockData';
+import { BookingContext } from '../../../Contexts/BookingContext';
+import { StyledGreenText } from '../DashboardComponents';
 
 function getWeekEndDate(viewDate) {
   let endDate = new Date(
@@ -49,7 +51,9 @@ function generateDays(startDate, endDate) {
     );
 
     indents.push(
-      <li style={day}>{`${days[i % days.length]} ${currentDate.getDate()} ${
+      <li key={days[i % days.length]} style={day}>{`${
+        days[i % days.length]
+      } ${currentDate.getDate()} ${
         needMonth ? monthNames[currentDate.getMonth()] : ''
       }`}</li>
     );
@@ -60,6 +64,7 @@ function generateDays(startDate, endDate) {
 function generateTimesForDays(startDate, timeSlots) {
   var indents = [];
   var dateKeys = Object.keys(timeSlots);
+  var counter = 0;
 
   var longestDay = 0; //this is used to determine the height of the table
   for (var i = 0; i < dateKeys.length; i++) {
@@ -92,7 +97,7 @@ function generateTimesForDays(startDate, timeSlots) {
         ) {
           if (currentSlot[0].available) {
             indents.push(
-              <li style={day}>
+              <li key={currentTimeSlotStartDate} style={day}>
                 <TimeSlotView
                   startTime={currentTimeSlotStartDate}
                   endTime={currentTimeSlotEndDate}
@@ -106,7 +111,7 @@ function generateTimesForDays(startDate, timeSlots) {
             );
           } else {
             indents.push(
-              <li style={day}>
+              <li key={currentTimeSlotStartDate} style={day}>
                 <DisabledButton disabled>
                   {`
                   ${currentTimeSlotStartDate.toTimeString().substring(0, 5)} 
@@ -120,10 +125,11 @@ function generateTimesForDays(startDate, timeSlots) {
         }
       } else {
         indents.push(
-          <li style={day}>
+          <li key={counter} style={day}>
             <br />
           </li>
         );
+        counter++;
       }
     }
   }
@@ -132,6 +138,8 @@ function generateTimesForDays(startDate, timeSlots) {
 }
 
 const BookingView = ({ timeSlots }) => {
+  const { startTime, endTime } = useContext(BookingContext);
+
   const [viewDate, setViewDate] = useState(new Date());
   const [weekStartDate, setWeekStartDate] = useState(
     getWeekStartDate(viewDate)
@@ -190,6 +198,13 @@ const BookingView = ({ timeSlots }) => {
         {generateDays(weekStartDate, weekEndDate)}
         {generateTimesForDays(weekStartDate, sampleReturn)}
       </ul>
+      <div>
+        Selected time:{' '}
+        <StyledGreenText>
+          {startTime && startTime.toLocaleString()} -{' '}
+          {endTime && endTime.toLocaleString()}
+        </StyledGreenText>
+      </div>
     </>
   );
 };

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Title } from '../DashboardComponents';
+import { BookingContext } from '../../../Contexts/BookingContext';
 
 // Components defined here are specifically used for booking appointments
 
@@ -201,13 +202,16 @@ const DateTimeSelector = ({ label, onChange }) => {
 };
 
 const TimeSlotView = ({ children, startTime, endTime }) => {
+  const { setStartTime, setEndTime } = useContext(BookingContext);
+
   const [localStartTime] = useState(startTime);
   const [localEndTime] = useState(endTime);
 
   return (
     <TimeSlot
       onClick={() => {
-        console.log(localStartTime, localEndTime);
+        setStartTime(localStartTime);
+        setEndTime(localEndTime);
       }}
     >
       {children}
