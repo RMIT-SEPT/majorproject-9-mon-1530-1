@@ -31,6 +31,7 @@ jobs: # a collection of steps
         name: Deploy Elastic Beanstalk
         command: |
           cd setup/beanstalk_deployment/<< parameters.ebEnvironmentName >>
+          eb init -r us-east-1 << parameters.ebEnvironmentName >>
           eb deploy
           
 
