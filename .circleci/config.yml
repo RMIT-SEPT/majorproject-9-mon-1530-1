@@ -11,15 +11,16 @@ jobs: # a collection of steps
       - image: circleci/python:3.8.6
 
     steps:
+    - checkout
     - run: echo "--- START ----" 
     - run: echo 'parameter, << parameters.ebEnvironmentName >>' 
     
-    #setup AWS eb cli
+    #setup AWS eb cli  (Elastic Beanstalk)
     - run:
-        name: Install AWS EB CLI (Elastic Beanstalk)
+        name: Install AWS EB CLI
         command: |
           sudo apt-get update
-#          sudo apt-get -y -qq install awscli
+          # sudo apt-get -y -qq install awscli
           pip install awsebcli
 
     - run: 
