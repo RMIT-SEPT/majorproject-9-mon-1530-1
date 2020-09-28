@@ -9,7 +9,8 @@ jobs: # a collection of steps
   deploy-beanstalk:
     docker:
       - image: circleci/python:3.8.6
-    
+
+    steps:
     - run: echo "--- START ----" 
     - run: echo 'parameter, << parameters.ebEnvironmentName >>' 
     
