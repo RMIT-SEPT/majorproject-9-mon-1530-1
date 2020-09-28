@@ -10,6 +10,10 @@ jobs: # a collection of steps
     docker:
       - image: circleci/python:3.8.6
 
+    parameters:
+      ebEnvironmentName:
+        type: string
+
     steps:
     - checkout
     - run: echo "--- START ----" 
