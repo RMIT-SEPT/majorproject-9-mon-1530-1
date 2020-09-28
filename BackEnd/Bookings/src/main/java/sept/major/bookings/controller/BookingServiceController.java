@@ -15,6 +15,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @RestController
 @RequestMapping("/bookings")
 @CrossOrigin
@@ -38,6 +40,13 @@ public class BookingServiceController {
                                    @RequestParam(required = false) String workerUsername,
                                    @RequestParam(required = false) String customerUsername
     ) {
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+        if (isUsernameInvalid(customerUsername)) {
+            return new ResponseEntity(new ValidationError("customerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+
         LocalDateTime startDateTime;
         try {
             startDateTime = LocalDateTime.parse(startDateTimeString);
@@ -71,11 +80,18 @@ public class BookingServiceController {
     public ResponseEntity getDate(@RequestParam(name = "date") String dateString,
                                    @RequestParam(required = false) String workerUsername,
                                    @RequestParam(required = false) String customerUsername) {
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+        if (isUsernameInvalid(customerUsername)) {
+            return new ResponseEntity(new ValidationError("customerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+
         LocalDate date;
         try {
             date = (dateString == null ? null : LocalDate.parse(dateString));
         } catch (DateTimeParseException e) {
-            return new ResponseEntity(new ValidationError("startDate", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ValidationError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         }
         try {
             List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);
@@ -91,6 +107,13 @@ public class BookingServiceController {
     @GetMapping("/all")
     public ResponseEntity getAllBookings(@RequestParam(required = false) String workerUsername,
                                          @RequestParam(required = false) String customerUsername) {
+        if (isUsernameInvalid(workerUsername)) {
+            return new ResponseEntity(new ValidationError("workerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+        if (isUsernameInvalid(customerUsername)) {
+            return new ResponseEntity(new ValidationError("customerUsername", "must be a valid username"), HttpStatus.BAD_REQUEST);
+        }
+
         try {
             List<BookingEntity> entityList = bookingService.getBookingsFor(workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
@@ -104,14 +127,7 @@ public class BookingServiceController {
     //get a specific booking
     @GetMapping
     public ResponseEntity getBooking(@RequestParam String bookingId) {
-        try {
-            BookingEntity entity = bookingService.getSpecificBooking(Integer.parseInt(bookingId));
-            return new ResponseEntity(entity, HttpStatus.OK);
-        } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        return bookingControllerHelper.getEntity(bookingId, Integer.class);
     }
 
     //create a new booking
@@ -130,5 +146,10 @@ public class BookingServiceController {
     @DeleteMapping
     public ResponseEntity deleteBooking(@RequestParam String bookingId) {
         return bookingControllerHelper.deleteEntity(bookingId, Integer.class);
+    }
+
+
+    private boolean isUsernameInvalid(String username) {
+        return (username != null && ("null".equals(username) || isBlank(username)));
     }
 }

@@ -1,0 +1,16 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+	{
+       "name": "Frontend",
+       "image": "kornkitti/express-hello-world",
+	   "memory": 128,
+	   "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8080
+        }
+      ]
+     }
+   ]
+}

@@ -1,18 +1,20 @@
 import React from 'react';
 import './App.css';
-import About from './Components/About';
-import Form from './Components/Form';
-import Main from './Components/Main';
-import Login from './Components/Login';
-import Contact from './Components/Contact';
+import About from './Components/About/About';
+import Form from './Components/Form/Form';
+import Main from './Components/Main/Main';
+import Login from './Components/Login/Login';
+import Contact from './Components/Contact/Contact';
 import User from './Components/Dashboard/User/User';
+import Admin from './Components/Dashboard/Admin/Admin';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import BrowserContext from './Contexts/BrowserContext';
 import BookingContext from './Contexts/BookingContext';
-import { ProtectedRoute } from './Components/ProtectedRoute.js';
-import Unauthorized from './Components/Unauthorized';
-import Authorized from './Components/Authorized';
+import { ProtectedRoute } from './Components/Auth/ProtectedRoute.js';
+import Unauthorized from './Components/Auth/Unauthorized';
+import Authorized from './Components/Auth/Authorized';
 
 const GlobalStyle = createGlobalStyle`
   body, html{
@@ -90,6 +92,7 @@ function App() {
                 <Route exact path="/about" component={About} />
                 <Route exact path="/contactus" component={Contact} />
                 <Route exact path="/user" component={User} />
+                <Route exact path="/admin" component={Admin} />
                 <Route exact path="/unauthorized" component={Unauthorized} />
                 <ProtectedRoute
                   exact
