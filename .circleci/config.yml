@@ -357,29 +357,29 @@ workflows:
   version: 2
   workflow:
     jobs:
+
+    # - deploy-beanstalk:
+        # ebEnvironmentName: bookings
+
+    # - deploy-beanstalk:
+        # ebEnvironmentName: hours
+
+    # - deploy-beanstalk:
+        # ebEnvironmentName: users
+
+    - build-deploy-front-end:
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
     - deploy-beanstalk:
         ebEnvironmentName: Sept
-    
-    - deploy-beanstalk:
-        ebEnvironmentName: availability
+        requires:
+          - build-deploy-front-end
 
-    - deploy-beanstalk:
-        ebEnvironmentName: bookings
-
-    - deploy-beanstalk:
-        ebEnvironmentName: hours
-
-    - deploy-beanstalk:
-        ebEnvironmentName: users
-
-    # - build-deploy-front-end:
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
-          
     # - build-common:
         # filters:
           # branches:
@@ -408,6 +408,9 @@ workflows:
               # - develop
               # - master
               # - /.*circleci.*/
+
+    # - deploy-beanstalk:
+        # ebEnvironmentName: availability
 
     # - build-hours:
         # requires:
