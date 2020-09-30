@@ -411,6 +411,8 @@ workflows:
 
     - deploy-beanstalk:
         ebEnvironmentName: availability
+        requires:
+          - docker-build-deploy-backend
 
     # - build-hours:
         # requires:
