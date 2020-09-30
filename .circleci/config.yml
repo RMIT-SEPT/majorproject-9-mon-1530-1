@@ -463,7 +463,7 @@ workflows:
     - deploy-beanstalk:
         ebEnvironmentName: bookings
         requires:
-          - docker-build-deploy-backend-availability-bookings
+          - docker-build-deploy-backend-bookings
 
     # - build-users:
         # requires:
