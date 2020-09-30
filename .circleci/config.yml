@@ -380,37 +380,37 @@ workflows:
         requires:
           - build-deploy-front-end
 
-    # - build-common:
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - build-common:
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - build-availability:
-        # requires:
-          # - build-common
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - build-availability:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - docker-build-deploy-backend:
-        # backedn_service_dir_name: Availability
-        # requires:
-          # - build-availability
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Availability
+        requires:
+          - build-availability
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - deploy-beanstalk:
-        # ebEnvironmentName: availability
+    - deploy-beanstalk:
+        ebEnvironmentName: availability
 
     # - build-hours:
         # requires:
