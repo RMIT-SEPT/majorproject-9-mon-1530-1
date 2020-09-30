@@ -358,8 +358,7 @@ workflows:
   workflow:
     jobs:
 
-    # - deploy-beanstalk:
-        # ebEnvironmentName: bookings
+
 
     # - deploy-beanstalk:
         # ebEnvironmentName: users
@@ -396,6 +395,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-availability
         backedn_service_dir_name: Availability
         requires:
           - build-availability
@@ -409,7 +409,7 @@ workflows:
     - deploy-beanstalk:
         ebEnvironmentName: availability
         requires:
-          - docker-build-deploy-backend
+          - docker-build-deploy-backend-availability
 
     - build-hours:
         requires:
@@ -422,6 +422,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-availability-hours
         backedn_service_dir_name: Hours
         requires:
           - build-hours
@@ -435,28 +436,34 @@ workflows:
     - deploy-beanstalk:
         ebEnvironmentName: hours
         requires:
-          - docker-build-deploy-backend
+          - docker-build-deploy-backend-availability-hours
 
-    # - build-bookings:
-        # requires:
-          # - build-common
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - build-bookings:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - docker-build-deploy-backend:
-        # backedn_service_dir_name: Bookings
-        # requires:
-          # - build-bookings
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-bookings
+        backedn_service_dir_name: Bookings
+        requires:
+          - build-bookings
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - deploy-beanstalk:
+        ebEnvironmentName: bookings
+        requires:
+          - docker-build-deploy-backend-availability-bookings
 
     # - build-users:
         # requires:
