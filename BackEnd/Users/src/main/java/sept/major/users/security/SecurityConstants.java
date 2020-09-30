@@ -7,6 +7,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.util.Arrays;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecurityConstants {
 
@@ -19,12 +22,12 @@ public class SecurityConstants {
             new AntPathRequestMatcher("/token", HttpMethod.GET.name())
     );
 
-    public static final RequestMatcher USER_ENDPOINTS = new OrRequestMatcher(
+    public static final List<RequestMatcher> USER_ENDPOINTS = Arrays.asList(
             new AntPathRequestMatcher("/users", HttpMethod.GET.name()),
             new AntPathRequestMatcher("/users", HttpMethod.PATCH.name())
     );
 
-    public static final RequestMatcher ADMIN_ENDPOINTS = new OrRequestMatcher(
+    public static final List<RequestMatcher> ADMIN_ENDPOINTS = Arrays.asList(
             new AntPathRequestMatcher("/users", HttpMethod.DELETE.name()),
             new AntPathRequestMatcher("/users/bulk", HttpMethod.GET.name())
     );
