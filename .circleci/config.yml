@@ -33,7 +33,7 @@ jobs: # a collection of steps
           cd setup/beanstalk_deployment/<< parameters.ebEnvironmentName >>
           eb init -r us-east-1 << parameters.ebEnvironmentName >>
           eb deploy
-          
+
 
   build-deploy-front-end:
     docker:
@@ -360,6 +360,18 @@ workflows:
     - deploy-beanstalk:
         ebEnvironmentName: Sept
     
+    - deploy-beanstalk:
+        ebEnvironmentName: availability
+
+    - deploy-beanstalk:
+        ebEnvironmentName: bookings
+
+    - deploy-beanstalk:
+        ebEnvironmentName: hours
+
+    - deploy-beanstalk:
+        ebEnvironmentName: users
+
     # - build-deploy-front-end:
         # filters:
           # branches:
