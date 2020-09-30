@@ -11,7 +11,7 @@ jobs: # a collection of steps
       - image: circleci/python:3.8.6
 
     parameters:
-      ebEnvironmentName:
+      ebEnvironmentName:   #name of the environment as well as name of the folder that holds the Dockerrun.aws.json
         type: string
 
     steps:
@@ -362,9 +362,6 @@ workflows:
         # ebEnvironmentName: bookings
 
     # - deploy-beanstalk:
-        # ebEnvironmentName: hours
-
-    # - deploy-beanstalk:
         # ebEnvironmentName: users
 
     - build-deploy-front-end:
@@ -414,26 +411,31 @@ workflows:
         requires:
           - docker-build-deploy-backend
 
-    # - build-hours:
-        # requires:
-          # - build-common
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - build-hours:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - docker-build-deploy-backend:
-        # backedn_service_dir_name: Hours
-        # requires:
-          # - build-hours
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - docker-build-deploy-backend:
+        backedn_service_dir_name: Hours
+        requires:
+          - build-hours
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - deploy-beanstalk:
+        ebEnvironmentName: hours
+        requires:
+          - docker-build-deploy-backend
 
     # - build-bookings:
         # requires:
