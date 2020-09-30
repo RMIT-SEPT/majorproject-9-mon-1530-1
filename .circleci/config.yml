@@ -357,12 +357,6 @@ workflows:
   version: 2
   workflow:
     jobs:
-
-
-
-    # - deploy-beanstalk:
-        # ebEnvironmentName: users
-
     - build-deploy-front-end:
         filters:
           branches:
@@ -372,6 +366,7 @@ workflows:
               - /.*circleci.*/
 
     - deploy-beanstalk:
+        name: deploy-beanstalk-frontend
         ebEnvironmentName: Sept
         requires:
           - build-deploy-front-end
@@ -407,6 +402,7 @@ workflows:
               - /.*circleci.*/
 
     - deploy-beanstalk:
+        name: deploy-beanstalk-availability
         ebEnvironmentName: availability
         requires:
           - docker-build-deploy-backend-availability
@@ -434,6 +430,7 @@ workflows:
               - /.*circleci.*/
 
     - deploy-beanstalk:
+        name: deploy-beanstalk-hours
         ebEnvironmentName: hours
         requires:
           - docker-build-deploy-backend-availability-hours
@@ -461,27 +458,35 @@ workflows:
               - /.*circleci.*/
 
     - deploy-beanstalk:
+        name: deploy-beanstalk-bookings
         ebEnvironmentName: bookings
         requires:
           - docker-build-deploy-backend-bookings
 
-    # - build-users:
-        # requires:
-          # - build-common
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - build-users:
+        requires:
+          - build-common
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
 
-    # - docker-build-deploy-backend:
-        # backedn_service_dir_name: Users
-        # requires:
-          # - build-users
-        # filters:
-          # branches:
-            # only:
-              # - develop
-              # - master
-              # - /.*circleci.*/
+    - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-users
+        backedn_service_dir_name: Users
+        requires:
+          - build-users
+        filters:
+          branches:
+            only:
+              - develop
+              - master
+              - /.*circleci.*/
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-users
+        ebEnvironmentName: users
+        requires:
+          - docker-build-deploy-backend-users
