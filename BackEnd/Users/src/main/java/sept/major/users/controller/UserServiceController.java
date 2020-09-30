@@ -3,6 +3,7 @@ package sept.major.users.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
@@ -66,6 +67,7 @@ public class UserServiceController {
      * @return
      */
     @PatchMapping("/password") //TODO change to put
+    @Deprecated
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
         HashMap<String, String> response = new HashMap<>();
         response.put("username", username);
@@ -88,9 +90,10 @@ public class UserServiceController {
      * @param password
      * @return
      */
+    @Deprecated
     @GetMapping("/password/compare") //TODO change to put
     public ResponseEntity comparePassword(@RequestParam String username , String password) {
-    	System.out.println("username:"+ username + " password:" + password);
+        System.out.println("username:"+ username + " password:" + password);
 
         HashMap<String, Object> response = new HashMap<>();
         response.put("username", username);
@@ -116,5 +119,16 @@ public class UserServiceController {
         }
 
 
+    }
+
+
+    @GetMapping("/token")
+    public ResponseEntity<String> getToken(@RequestParam String username, String password) {
+        String token = userService.login(username, password);
+        if (StringUtils.isEmpty(token)) {
+            return new ResponseEntity<>("Login failed", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        }
     }
 }

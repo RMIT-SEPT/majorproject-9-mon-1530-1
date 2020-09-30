@@ -57,6 +57,9 @@ public class UserEntity implements AbstractEntity<String> {
     @NotBlank
     private String address;
 
+    @JsonIgnore
+    private String token;
+
     @Override
     public String getID() {
         return username;
