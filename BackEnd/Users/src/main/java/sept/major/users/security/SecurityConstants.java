@@ -18,17 +18,17 @@ public class SecurityConstants {
     public final static String ADMIN_CODE = "ADMIN";
 
     public static final RequestMatcher OPEN_ENDPOINTS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/users", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/token", HttpMethod.GET.name())
+            new AntPathRequestMatcher("/users/**", HttpMethod.POST.name()),
+            new AntPathRequestMatcher("/token/**", HttpMethod.GET.name())
     );
 
     public static final List<RequestMatcher> USER_ENDPOINTS = Arrays.asList(
-            new AntPathRequestMatcher("/users", HttpMethod.GET.name()),
-            new AntPathRequestMatcher("/users", HttpMethod.PATCH.name())
+            new AntPathRequestMatcher("/users/**", HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/users/**", HttpMethod.PATCH.name())
     );
 
     public static final List<RequestMatcher> ADMIN_ENDPOINTS = Arrays.asList(
-            new AntPathRequestMatcher("/users", HttpMethod.DELETE.name()),
-            new AntPathRequestMatcher("/users/bulk", HttpMethod.GET.name())
+            new AntPathRequestMatcher("/users/**", HttpMethod.DELETE.name()),
+            new AntPathRequestMatcher("/users/bulk/**", HttpMethod.GET.name())
     );
 }
