@@ -1,5 +1,14 @@
 package sept.major.bookings.blackbox.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static sept.major.bookings.BookingsTestHelper.pastDateTime;
+import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,23 +17,18 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.SneakyThrows;
 import sept.major.bookings.blackbox.BookingBlackBoxHelper;
 import sept.major.common.response.ValidationError;
 import sept.major.common.testing.RequestParameter;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static sept.major.bookings.BookingsTestHelper.pastDateTime;
-import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
-
 public class PatchBlackBoxTest extends BookingBlackBoxHelper {
 
+    @SneakyThrows
     @Test
     @DisplayName("Successfully update an entity")
     void valid() throws JsonProcessingException {

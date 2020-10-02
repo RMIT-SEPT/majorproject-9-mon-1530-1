@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import sept.major.users.controller.unit.UnitTestHelper;
 import sept.major.users.entity.UserEntity;
 
+import java.util.AbstractMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ class GetByUsernameEndpointTests extends UnitTestHelper {
     void missingValue() {
         String username = randomAlphanumericString(20);
 
-        runTest(new ResponseEntity(String.format("No record with a identifier of %s was found", username), HttpStatus.NOT_FOUND),
+        runTest(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", String.format("No record with a identifier of %s was found", username)), HttpStatus.NOT_FOUND),
                 Optional.empty(), username);
     }
 

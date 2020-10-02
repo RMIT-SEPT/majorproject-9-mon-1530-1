@@ -12,6 +12,13 @@ const StyledWorkerItem = styled.div`
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  transition: color ${(props) => props.theme.transition.short};
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: ${(props) => props.theme.colours.green.primary};
+  }
 `;
 
 const Contents = styled.div`
@@ -92,7 +99,7 @@ const WorkerHours = ({ worker, userName }) => {
   const submitHours = async () => {
     await axios.post('http://localhost:8082/hours', {
       creatorUsername: userName,
-      workerUsername: worker.name,
+      workerUsername: worker.username,
       startDateTime,
       endDateTime,
     });

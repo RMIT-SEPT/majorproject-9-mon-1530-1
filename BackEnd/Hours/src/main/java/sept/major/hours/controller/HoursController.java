@@ -13,6 +13,7 @@ import sept.major.hours.service.HoursService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,14 @@ public class HoursController {
         this.hoursService = hoursService;
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getHoursServiceHealth() {
+    	return new ResponseEntity<Object>(HttpStatus.OK);
+    }
+    
     @GetMapping("/range")
     public ResponseEntity getHoursInRange(@RequestParam(name = "startDateTime") String startDateString,
                                           @RequestParam(name = "endDateTime") String endDateString,
@@ -76,7 +85,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getHoursBetweenDates(startDate, endDate, workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
 
     }
@@ -96,7 +105,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(dateString), workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ValidationError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         } catch (ValidationErrorException e) {
@@ -119,7 +128,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getAllHours(workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

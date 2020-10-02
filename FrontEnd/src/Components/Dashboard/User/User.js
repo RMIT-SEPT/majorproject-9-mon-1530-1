@@ -11,43 +11,36 @@ import {
   SubHeading,
   Content,
   AppointmentsGrid,
-  BookingGrid,
   PanelGrid,
   Button,
+  Loading,
+  Error,
 } from '../DashboardComponents';
-import {
-  ServiceCard,
-  DateTimeSelector,
-  WorkerRadioButton,
-  TimeFlex,
-  AvailabilityView,
-} from '../Bookings/BookingComponents';
-import { BrowserContext } from '../../../Contexts/BrowserContext';
+import { ServiceCard, WorkerRadioButton } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 import UserSettings from '../../UserSettings';
+import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
 
 const User = ({ id }) => {
-  const { isFirefox, isChrome } = useContext(BrowserContext);
   const {
     setCustomerId,
     setWorkerId,
-    setStartTime,
-    setEndTime,
     clearBooking,
     submitBooking,
-    workerId,
   } = useContext(BookingContext);
 
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
+      .then((response) => response)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
+        throw error;
       });
 
     return data;
@@ -108,6 +101,7 @@ const User = ({ id }) => {
         setUserName(data.name);
         setRole(data.userType);
       },
+      retry: 3,
     }
   );
 
@@ -131,14 +125,14 @@ const User = ({ id }) => {
   // Page states for updating current view
   const [main, setMain] = useState(true);
   const [service, setService] = useState(false);
-  const [booking, setBooking] = useState(false);
   const [worker, setWorker] = useState(false);
   const [setting, setSetting] = useState(false);
+  const [booking, setBooking] = useState(false);
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Error...</div>}
+      {isLoading && <Loading />}
+      {isError && <Error />}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}
@@ -243,29 +237,10 @@ const User = ({ id }) => {
               <Button type="button" onClick={cancelBooking}>
                 Back
               </Button>
-              <BookingGrid>
-                <DashboardModule title="Availability">
-                  <AvailabilityView workerId={workerId} />
-                </DashboardModule>
+              <DashboardModule title="Availability">
+                <BookingView />
+              </DashboardModule>
 
-                <DashboardModule title="Select times">
-                  <TimeFlex>
-                    {isChrome && (
-                      <>
-                        <DateTimeSelector
-                          label="Start time"
-                          onChange={setStartTime}
-                        ></DateTimeSelector>
-                        <DateTimeSelector
-                          label="End time"
-                          onChange={setEndTime}
-                        ></DateTimeSelector>
-                      </>
-                    )}
-                    {isFirefox && <div>Firefox...</div>}
-                  </TimeFlex>
-                </DashboardModule>
-              </BookingGrid>
               <Button type="button" onClick={mutate}>
                 Submit
               </Button>
@@ -288,7 +263,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 'lizatawaf',
+  id: 's1@gmail.com',
 };
 
 export default User;

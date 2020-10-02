@@ -1,20 +1,22 @@
 package sept.major.bookings.blackbox.service;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import sept.major.bookings.blackbox.BookingBlackBoxHelper;
-import sept.major.common.response.ValidationError;
+import static org.assertj.core.api.Assertions.assertThat;
+import static sept.major.bookings.BookingsTestHelper.pastDateTime;
+import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static sept.major.bookings.BookingsTestHelper.pastDateTime;
-import static sept.major.bookings.BookingsTestHelper.randomEntityMap;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sept.major.bookings.blackbox.BookingBlackBoxHelper;
+import sept.major.common.response.ValidationError;
 
 public class PostBlackBoxTest extends BookingBlackBoxHelper {
 
@@ -30,7 +32,7 @@ public class PostBlackBoxTest extends BookingBlackBoxHelper {
         ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).startsWith("Booking provided conflicts with existing booking: ");
+        assertThat(result.getBody()).startsWith("{\"message\":\"Booking provided conflicts with existing booking: ");
     }
 
     @Test
