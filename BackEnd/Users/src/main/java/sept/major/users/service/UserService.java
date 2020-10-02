@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.service.CrudService;
@@ -20,6 +21,8 @@ public class UserService extends CrudService<UserEntity, String> {
 
     @Getter
     private UsersRepository repository;
+
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UsersRepository usersRepository) {
@@ -47,47 +50,25 @@ public class UserService extends CrudService<UserEntity, String> {
         }
     }
 
-
-    public void updatePassword(String username, String oldPassword,String newPassword) {
-		Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username,oldPassword); 
-		
-		try {
-			UserEntity user = optionalUser.get();
-			user.setPassword(newPassword);
-			repository.save(user);
-		} catch (NoSuchElementException e) {
-			System.out.println("not matched");
-			throw new RuntimeException("Error, User not found", e) ;
-		}
+    public static String hashPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 
-    @Deprecated
-    public boolean comparePassword(String username, String plainTextPassword) {
-        boolean matchFound;
-
-//		Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username,
-//				hashedPassword);
-
-        Optional<UserEntity> optionalUser = repository.findByUsername(username);
-
-        if ( optionalUser.isPresent())
-            return optionalUser.get().checkPassword(plainTextPassword);
-        else
-            matchFound = false;
-
-        return matchFound;
+    public static boolean doPasswordsMatch(String hashedPassword, String plainTextPassword) {
+        return passwordEncoder.matches(plainTextPassword, hashedPassword);
     }
 
-    public String login(String username, String plainTextPassword) {
-        Optional<UserEntity> userOptional = repository.findByUsernameAndPassword(username, plainTextPassword); // hash password
-        String token = null;
-        if (userOptional.isPresent()) {
-            token = UUID.randomUUID().toString();
-            UserEntity user = userOptional.get();
-            user.setToken(token);
+    public void updatePassword(String username, String oldPassword, String newPassword) {
+        Optional<UserEntity> optionalUser = repository.findByUsernameAndPassword(username, hashPassword(oldPassword));
+
+        try {
+            UserEntity user = optionalUser.get();
+            user.setPassword(hashPassword(newPassword));
             repository.save(user);
+        } catch (NoSuchElementException e) {
+            System.out.println("not matched");
+            throw new RuntimeException("Error, User not found", e);
         }
-        return token;
     }
 
     public Optional<User> findByToken(String username, String token) {
@@ -115,5 +96,23 @@ public class UserService extends CrudService<UserEntity, String> {
             return Optional.of(user);
         }
         return Optional.empty();
+    }
+
+    public boolean comparePassword(String username, String plainTextPassword) {
+        Optional<UserEntity> optionalUser = repository.findByUsername(username);
+        return (optionalUser.isPresent() && doPasswordsMatch(optionalUser.get().getPassword(), plainTextPassword));
+    }
+
+    public String login(String username, String plainTextPassword) {
+        Optional<UserEntity> userOptional = repository.findByUsername(username);
+
+        String token = null;
+        if (comparePassword(username, plainTextPassword)) {
+            token = UUID.randomUUID().toString();
+            UserEntity user = userOptional.get();
+            user.setToken(token);
+            repository.save(user);
+        }
+        return token;
     }
 }

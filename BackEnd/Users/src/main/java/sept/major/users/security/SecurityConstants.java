@@ -19,12 +19,12 @@ public class SecurityConstants {
 
     public static final RequestMatcher OPEN_ENDPOINTS = new OrRequestMatcher(
             new AntPathRequestMatcher("/users/**", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/token/**", HttpMethod.GET.name())
+            new AntPathRequestMatcher("/users/token/**", HttpMethod.GET.name())
     );
 
     public static final List<RequestMatcher> USER_ENDPOINTS = Arrays.asList(
-            new AntPathRequestMatcher("/users/**", HttpMethod.GET.name()),
-            new AntPathRequestMatcher("/users/**", HttpMethod.PATCH.name())
+            new AntPathRequestMatcher("/users/username/**", HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/users*", HttpMethod.PATCH.name())
     );
 
     public static final List<RequestMatcher> ADMIN_ENDPOINTS = Arrays.asList(

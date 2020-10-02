@@ -49,6 +49,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeRequests()
+                .requestMatchers(new OrRequestMatcher(OPEN_ENDPOINTS))
+                .permitAll()
+
+                .and()
+                .authenticationProvider(provider)
+                .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
+                .authorizeRequests()
                 .requestMatchers(new OrRequestMatcher(USER_ENDPOINTS))
                 .hasAuthority(USER_CODE)
 
@@ -58,13 +65,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .requestMatchers(new OrRequestMatcher(ADMIN_ENDPOINTS))
                 .hasAuthority(ADMIN_CODE)
-
-                .and()
-                .authenticationProvider(provider)
-                .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
-                .authorizeRequests()
-                .requestMatchers(new OrRequestMatcher(OPEN_ENDPOINTS))
-                .permitAll()
 
                 .and()
                 .csrf().disable()
