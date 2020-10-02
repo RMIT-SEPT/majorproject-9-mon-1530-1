@@ -17,12 +17,20 @@ const BookingContextProvider = (props) => {
   };
 
   const submitBooking = async () => {
+    // Removes 'Z' character from end of string to allow it to be passed
+    const modifiedStartTime = startTime
+      .toISOString()
+      .substring(0, startTime.toISOString().length - 1);
+    const modifiedEndTime = endTime
+      .toISOString()
+      .substring(0, endTime.toISOString().length - 1);
+
     // TODO: Handle errors
     await axios.post('http://localhost:8081/bookings', {
       workerUsername: workerId,
       customerUsername: customerId,
-      startDateTime: startTime,
-      endDateTime: endTime,
+      startDateTime: modifiedStartTime,
+      endDateTime: modifiedEndTime,
     });
   };
 

@@ -16,12 +16,7 @@ import {
 } from '../DashboardComponents';
 import { ServiceCard, WorkerRadioButton } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import {
-  tempServices,
-  tempWorkers,
-  tempBookings,
-  tempTimeSlots,
-} from './UserMockData';
+import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
@@ -32,8 +27,6 @@ const User = ({ id }) => {
   const {
     setCustomerId,
     setWorkerId,
-    setStartTime,
-    setEndTime,
     clearBooking,
     submitBooking,
   } = useContext(BookingContext);
@@ -118,10 +111,10 @@ const User = ({ id }) => {
   const [date] = useState(new Date());
 
   // Page states for updating current view
-  const [main, setMain] = useState(false);
+  const [main, setMain] = useState(true);
   const [service, setService] = useState(false);
   const [worker, setWorker] = useState(false);
-  const [booking, setBooking] = useState(true);
+  const [booking, setBooking] = useState(false);
 
   return (
     <>
@@ -226,7 +219,7 @@ const User = ({ id }) => {
                 Back
               </Button>
               <DashboardModule title="Availability">
-                <BookingView timeSlots={tempTimeSlots} />
+                <BookingView />
               </DashboardModule>
 
               <Button type="button" onClick={mutate}>
