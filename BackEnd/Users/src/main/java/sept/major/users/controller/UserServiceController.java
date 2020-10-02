@@ -83,7 +83,7 @@ public class UserServiceController {
     }
 
 
-    @GetMapping("/token")
+    @PutMapping("/token")
     public ResponseEntity<String> getToken(@RequestParam String username, String password) {
         String token = userService.login(username, password);
         if (StringUtils.isEmpty(token)) {
