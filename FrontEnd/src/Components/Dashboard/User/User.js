@@ -275,7 +275,9 @@ const User = ({ id }) => {
             <Content>
               <Heading>Settings</Heading>
               <div>
-                <UserSettings/>
+                <UserSettings
+                  id={id}
+                />
               </div>
             </Content>
           )}
