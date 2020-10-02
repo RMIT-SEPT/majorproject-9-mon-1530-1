@@ -13,6 +13,8 @@ import {
   AppointmentsGrid,
   PanelGrid,
   Button,
+  Loading,
+  Error,
 } from '../DashboardComponents';
 import { ServiceCard, WorkerRadioButton } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
@@ -34,8 +36,10 @@ const User = ({ id }) => {
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
+      .then((response) => response)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
+        throw error;
       });
 
     return data;
@@ -90,6 +94,7 @@ const User = ({ id }) => {
         setUserName(data.name);
         setRole(data.userType);
       },
+      retry: 3,
     }
   );
 
@@ -118,8 +123,8 @@ const User = ({ id }) => {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Error...</div>}
+      {isLoading && <Loading />}
+      {isError && <Error />}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}
