@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import auth from '../Auth/auth';
 import { useHistory } from 'react-router-dom';
+import { Redirect } from "react-router-dom";
 const axios = require('axios');
 
 const ColorButton = withStyles((theme) => ({
@@ -128,33 +129,27 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
-export const Login = (props) => {
+const Login = (props) => {
   const { register, handleSubmit, errors, reset } = useForm();
   const [loginerror, setLoginerror] = useState('');
   let history = useHistory();
-
-  // every time a user goes to login page it resets
-  // useEffect(() => {
-  //   auth.logout(()=>{
-
-  //   });
-  // }, [])
-
   const onSubmit = (values) => {
     axios
       .get(
         `http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
-        console.log(response.data);
-        let r = response.data;
-        console.log(JSON.parse(response.data));
-        if (r.result === 'true') {
+        console.log(response.status);
+        let r = response.status;
+        if (r === 200) {
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
+          console.log(localStorage.getItem('username'));
           auth.login(() => {
             //check standard user and then transfer to admin panel
-            history.push('/about');
+            setLoginerror('sucess');
+            history.push('/user');
+
           });
         } else {
           setLoginerror('The username or password is incorrect.');
@@ -165,8 +160,11 @@ export const Login = (props) => {
         console.log(error);
       });
   };
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+  const isLoggedIn = localStorage.getItem('isAuth');
+  if (isLoggedIn) {
+    return (<Redirect to="/admin" />);
+  } else {
+    return (<form onSubmit={handleSubmit(onSubmit)}>
       <Grid container alignItems="center" justify="center" spacing={0}>
         <Grid item xs={7}>
           {/* the logo and the img on the left  */}
@@ -244,15 +242,17 @@ export const Login = (props) => {
                 {loginerror}
                 <ColorButton type="submit" variant="contained" color="default">
                   {' '}
-                  Submit
-                </ColorButton>
+              Submit
+            </ColorButton>
               </Grid>
             </Grid>
           </Right>
         </Grid>
       </Grid>
-    </form>
-  );
+    </form>);
+  }
 };
-
+Login.defaultProps = {
+  id: localStorage.getItem('username'),
+};
 export default Login;

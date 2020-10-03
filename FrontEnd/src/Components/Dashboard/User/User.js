@@ -37,6 +37,7 @@ const User = ({ id }) => {
     const { data } = await axios
       .get(`http://localhost:8083/users?username=${id}`)
       .then((response) => response)
+      .then((res) => res)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);
         throw error;
@@ -44,7 +45,6 @@ const User = ({ id }) => {
 
     return data;
   };
-
   const clear = () => {
     setBooking(false);
     setService(false);
@@ -93,6 +93,7 @@ const User = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
+        localStorage.setItem('role', data.userType);
       },
       retry: 3,
     }
@@ -239,7 +240,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: 's1@gmail.com',
+  id: localStorage.getItem('username')
 };
 
 export default User;
