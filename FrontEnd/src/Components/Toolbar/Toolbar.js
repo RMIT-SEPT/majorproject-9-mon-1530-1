@@ -78,10 +78,27 @@ const Toolbar = ({ id }) => {
           </RightFlexElements>
         )}
         {worker && (
-          <RightNavElement userName={userName}
-            role={role}></RightNavElement>
+          <StyledNavBlack>
+            <StyledNavBar>
+              {role === 'user'
+                ? <a
+                  href="http://localhost:3000/user"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <GreenNavLink>Dashboard</GreenNavLink>
+                </a>
+                : <a
+                href="http://localhost:3000/admin"
+                style={{ textDecoration: 'none' }}
+              >
+                <GreenNavLink>Dashboard</GreenNavLink>
+              </a>
+              }
+              <RightNavElement userName={userName}
+                role={role}></RightNavElement>
+            </StyledNavBar>
+          </StyledNavBlack>
         )}
-
       </StyledNavBar>
     </StyledNavBlack>
   );

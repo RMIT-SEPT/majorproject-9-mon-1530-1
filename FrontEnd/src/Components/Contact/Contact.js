@@ -104,7 +104,7 @@ const CssTextFieldGreen = withStyles({
 const contact = (props) => {
   return (
     // this is the main grid that holds every element
-    <Grid container alignItems="center" justify="center" spacing={0}>
+    <Grid container alignItems="flex-start" justify="center" spacing={0}>
       {/* the logo and the img on the left  */}
       <Grid item xs={7}>
         <Left>
@@ -132,6 +132,7 @@ const contact = (props) => {
           <TopRight>
             Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
           </TopRight>
+          
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Bold>Send us a message </Bold>
