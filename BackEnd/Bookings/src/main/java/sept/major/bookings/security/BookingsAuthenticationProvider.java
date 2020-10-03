@@ -1,5 +1,6 @@
 package sept.major.bookings.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,8 @@ public class BookingsAuthenticationProvider extends AbstractUserDetailsAuthentic
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${sept.major.hours.authentication.service.url}")
+    private String authenticationServiceUrl;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -52,7 +55,7 @@ public class BookingsAuthenticationProvider extends AbstractUserDetailsAuthentic
 
         ResponseEntity<Map> exchange;
         try {
-            exchange = restTemplate.exchange("http://localhost:8083/users/?username={q}", HttpMethod.GET, new HttpEntity<>(headers), Map.class, username);
+            exchange = restTemplate.exchange(authenticationServiceUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class, username);
         } catch (HttpClientErrorException e) {
             return Optional.empty();
         } catch (ResourceAccessException e) {
