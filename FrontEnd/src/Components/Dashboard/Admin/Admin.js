@@ -10,6 +10,7 @@ import {
   Content,
   Button,
   DashboardModule,
+  Loading,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
@@ -70,7 +71,7 @@ const Admin = ({ id }) => {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loading />}
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
