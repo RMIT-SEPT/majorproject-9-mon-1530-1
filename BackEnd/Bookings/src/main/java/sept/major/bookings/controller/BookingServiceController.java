@@ -34,6 +34,14 @@ public class BookingServiceController {
         this.bookingControllerHelper = bookingControllerHelper;
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getBookingServiceHealth() {
+    	return new ResponseEntity<Object>(HttpStatus.OK);
+    }
+    
     //get bookings within range
     @GetMapping("/range")
     public ResponseEntity getRange(@RequestParam(name = "startDateTime") String startDateTimeString,

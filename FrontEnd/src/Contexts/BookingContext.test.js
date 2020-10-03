@@ -8,8 +8,8 @@ import BookingContextProvider, { BookingContext } from './BookingContext';
 const defaultData = {
   customerId: 'rw22448',
   workerId: 'jeffOak',
-  startTime: '2020-08-29T12:00:00',
-  endTime: '2020-08-29T13:00:00',
+  startTime: new Date(),
+  endTime: new Date(),
 };
 
 // Wrapped a component to test the context, since it needs a vehicle to test ag-
@@ -34,8 +34,8 @@ const TestComponent = () => {
       <div>
         <span data-testid="customerId">{customerId}</span>
         <span data-testid="workerId">{workerId}</span>
-        <span data-testid="startTime">{startTime}</span>
-        <span data-testid="endTime">{endTime}</span>
+        <span data-testid="startTime">{startTime && startTime.toString()}</span>
+        <span data-testid="endTime">{endTime && endTime.toString()}</span>
       </div>
       <button data-testid="clearButton" type="button" onClick={clearBooking}>
         Clear

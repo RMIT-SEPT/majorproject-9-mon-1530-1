@@ -48,6 +48,14 @@ public class UserServiceController {
         return userControllerHelper.validateInputAndPatch(UserEntity.class, username, String.class, requestBody);
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getUserServiceHealth() {
+    	return new ResponseEntity<Object>(HttpStatus.OK);
+    }
+    
     @GetMapping("/bulk")
     public ResponseEntity<List<UserEntity>> getBulkUsers(@RequestParam(required = false) String userType) {
         try {

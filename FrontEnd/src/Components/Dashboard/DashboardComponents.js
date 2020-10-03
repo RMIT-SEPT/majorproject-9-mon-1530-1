@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Watch, Clock, User } from 'react-feather';
+import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../App';
 import hairdresserImage from '../../media/hairdresser-card.png';
 
@@ -111,6 +112,18 @@ const StyledGreenText = styled.span`
   color: ${(props) => props.theme.colours.green.primary};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
+const SelectedTime = styled.span`
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  font-size:25px;
+`;
+
+const StyledStateContainer = styled.div`
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 
 const DashboardModule = ({ children, title }) => {
   return (
@@ -162,6 +175,18 @@ const UpcomingAppointmentCard = ({ booking }) => {
   );
 };
 
+const Loading = () => {
+  return (
+    <StyledStateContainer>
+      <BarLoader height={8} width={200} color={theme.colours.green.primary} />
+    </StyledStateContainer>
+  );
+};
+
+const Error = () => {
+  return <StyledStateContainer>Error...</StyledStateContainer>;
+};
+
 export {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -175,4 +200,8 @@ export {
   Title,
   Button,
   StyledGreenText,
+  SelectedTime,
+  StyledStateContainer,
+  Loading,
+  Error,
 };

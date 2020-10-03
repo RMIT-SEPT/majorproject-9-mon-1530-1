@@ -10,6 +10,7 @@ import {
   Content,
   Button,
   DashboardModule,
+  Loading,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
@@ -53,12 +54,13 @@ const Admin = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
+        const localRole= localStorage.setItem('role', data.userType);
       },
     }
   );
 
   const [userName, setUserName] = useState();
-  const [role, setRole] = useState('User');
+  const [role, setRole] = useState();
   const [date] = useState(new Date());
   const [selectedWorker, setSelectedWorker] = useState();
 
@@ -69,13 +71,13 @@ const Admin = ({ id }) => {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loading />}
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}
           role={role}
-          actions={{ bookingLink: () => {} }}
+          actions={{ bookingLink: () => { } }}
         >
           <MenuBarComponent>
             <Home
@@ -85,7 +87,7 @@ const Admin = ({ id }) => {
               size={theme.icons.size.medium}
             />
             <PlusCircle
-              onClick={() => {}}
+              onClick={() => { }}
               className="menuIcon"
               color={theme.colours.grey.primary}
               size={theme.icons.size.medium}
@@ -148,7 +150,7 @@ const Admin = ({ id }) => {
 };
 
 Admin.defaultProps = {
-  id: 'lizatawaf',
+  id: localStorage.getItem('username'),
 };
 
 export default Admin;
