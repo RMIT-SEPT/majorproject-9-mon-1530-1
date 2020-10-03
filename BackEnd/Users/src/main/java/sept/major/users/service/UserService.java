@@ -14,6 +14,7 @@ import sept.major.users.repository.UsersRepository;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static sept.major.users.security.SecurityConstants.*;
 
 @Service
@@ -51,7 +52,12 @@ public class UserService extends CrudService<UserEntity, String> {
     }
 
     public static String hashPassword(String password) {
-        return passwordEncoder.encode(password);
+        if (isNotEmpty(password)) {
+            return passwordEncoder.encode(password);
+        } else {
+            return null;
+        }
+
     }
 
     public static boolean doPasswordsMatch(String hashedPassword, String plainTextPassword) {

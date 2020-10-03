@@ -92,12 +92,19 @@ public class UserServiceController {
 
 
     @PutMapping("/token")
-    public ResponseEntity<String> getToken(@RequestParam String username, String password) {
+    public ResponseEntity<Map> getToken(@RequestParam String username, String password) {
+        Map<String, String> response = new HashMap<>();
+        response.put("username", username);
         String token = userService.login(username, password);
         if (StringUtils.isEmpty(token)) {
-            return new ResponseEntity<>("Login failed", HttpStatus.BAD_REQUEST);
+            response.put("status", "failed");
+            response.put("token", null);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            response.put("status", "successful");
+            response.put("token", token);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 }

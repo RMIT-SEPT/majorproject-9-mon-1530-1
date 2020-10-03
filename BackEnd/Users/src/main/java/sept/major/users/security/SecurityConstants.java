@@ -24,7 +24,8 @@ public class SecurityConstants {
 
     public static final List<RequestMatcher> USER_ENDPOINTS = Arrays.asList(
             new AntPathRequestMatcher("/users/username/**", HttpMethod.GET.name()),
-            new AntPathRequestMatcher("/users*", HttpMethod.PATCH.name())
+            new AntPathRequestMatcher("/users/**", HttpMethod.PATCH.name()),
+            new AntPathRequestMatcher("/users/password/**", HttpMethod.PATCH.name())
     );
 
     public static final List<RequestMatcher> ADMIN_ENDPOINTS = Arrays.asList(
