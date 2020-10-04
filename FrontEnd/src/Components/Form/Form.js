@@ -61,7 +61,7 @@ const Logo = styled.img`
 function Form() {
   return (
     <form>
-      <Grid container alignItems="center" justify="center" spacing={0}>
+      <Grid container alignItems="flex-start" justify="center" spacing={0}>
         <Grid item xs={7}>
           {/* the logo and the img on the left  */}
           <Left>

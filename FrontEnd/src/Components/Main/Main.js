@@ -118,7 +118,7 @@ function Main(props) {
               </a>
             </Grid>
             <Grid item xs={3}>
-              <img src={book} alt="big" href="http://localhost:3000/form" />
+              <img src={book} alt="big" href="http://localhost:3000/dashboard" />
             </Grid>
           </Grid>
         </Grid>
