@@ -50,7 +50,6 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
     @AfterAll
     public static void closeMockedUserServiceServer() {
         MockUserServiceServer.stopServer();
-        ;
     }
 
     protected HashMap<String, String> successfulPost(Map<String, String> entityMap) {
