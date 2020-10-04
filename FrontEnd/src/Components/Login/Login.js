@@ -156,10 +156,12 @@ const Login = (props) => {
           auth.login(() => {
             //check standard user and then transfer to admin panel
             setLoginerror('sucess');
+            window.location.reload();
             if(localStorage.getItem('role')==='admin'){
             history.push('/admin');
+
             }else{
-              history.push('/user')
+              history.push('/user');
             }
 
           });

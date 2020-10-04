@@ -29,7 +29,7 @@ const Admin = ({ id }) => {
     })
       .then((res) => res)
       .catch((error) => {
-        console.log('Error fetching user data: ' + error);
+        console.log('admin error' + error);
         throw error;
       });
 
