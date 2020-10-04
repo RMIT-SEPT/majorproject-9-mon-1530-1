@@ -16,11 +16,17 @@ import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
 
 // Admin dashboard component for a logged in admin.
-
+const token = localStorage.getItem('token');
+console.log(token);
 const Admin = ({ id }) => {
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+    .get(`http://localhost:8083/users/username?username=${id}`, {
+      headers: {
+        'Authorization': `${token}`,
+        'username': `${id}`
+      }
+    })
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching user data: ' + error);

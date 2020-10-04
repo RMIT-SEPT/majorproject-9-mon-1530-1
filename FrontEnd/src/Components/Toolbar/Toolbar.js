@@ -20,9 +20,15 @@ import { useQuery } from 'react-query';
 const Toolbar = ({ id }) => {
   const [main, setMain] = useState(false);
   const [worker, setWorker] = useState(false);
+  const token = localStorage.getItem('token');
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+    .get(`http://localhost:8083/users/username?username=${id}`, {
+      headers: {
+        'Authorization': `${token}`,
+        'username': `${id}`
+      }
+    })
       .then((res) => res)
       .then(setWorker(true))
       .catch((error) => {
