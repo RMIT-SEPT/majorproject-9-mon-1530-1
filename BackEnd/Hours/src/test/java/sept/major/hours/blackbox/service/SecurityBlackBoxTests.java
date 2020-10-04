@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static sept.major.hours.blackbox.UserServiceMockServer.*;
+import static sept.major.common.testing.MockUserServiceServer.*;
 
 public class SecurityBlackBoxTests extends HoursBlackBoxTests {
 

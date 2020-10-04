@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.testing.BlackboxTestHelper;
+import sept.major.common.testing.MockUserServiceServer;
 import sept.major.common.testing.RequestParameter;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static sept.major.common.testing.MockUserServiceServer.getAuthorizedAdminHeaders;
+import static sept.major.common.testing.MockUserServiceServer.getAuthorizedUserHeaders;
 
 public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
 
@@ -41,12 +44,13 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
 
     @BeforeAll
     public static void setupMockUserServiceServer() {
-        UserServiceMockServer.startUpServer();
+        MockUserServiceServer.startUpServer();
     }
 
     @AfterAll
     public static void closeMockedUserServiceServer() {
-        UserServiceMockServer.stopServer();
+        MockUserServiceServer.stopServer();
+        ;
     }
 
     protected HashMap<String, String> successfulPost(Map<String, String> entityMap) {
@@ -141,7 +145,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.GET,
-                UserServiceMockServer.getAuthorizedUserHeaders(),
+                getAuthorizedUserHeaders(),
                 returnType);
 
     }
@@ -150,7 +154,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.PATCH,
-                UserServiceMockServer.getAuthorizedAdminHeaders(body),
+                getAuthorizedAdminHeaders(body),
                 String.class);
     }
 
@@ -158,7 +162,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
         return testRestTemplate.exchange(
                 getUrl(),
                 HttpMethod.POST,
-                UserServiceMockServer.getAuthorizedAdminHeaders(body),
+                getAuthorizedAdminHeaders(body),
                 String.class);
     }
 
@@ -166,7 +170,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.DELETE,
-                UserServiceMockServer.getAuthorizedAdminHeaders(),
+                getAuthorizedAdminHeaders(),
                 String.class);
     }
 

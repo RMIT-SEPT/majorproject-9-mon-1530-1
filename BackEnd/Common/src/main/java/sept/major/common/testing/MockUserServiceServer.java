@@ -1,4 +1,4 @@
-package sept.major.hours.blackbox;
+package sept.major.common.testing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -18,7 +18,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class UserServiceMockServer {
+public class MockUserServiceServer {
 
     private static final Integer port = generateMockServerPort();
 
