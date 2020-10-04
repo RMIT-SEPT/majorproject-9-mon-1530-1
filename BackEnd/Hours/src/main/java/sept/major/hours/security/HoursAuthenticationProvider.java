@@ -1,5 +1,6 @@
 package sept.major.hours.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,13 @@ public class HoursAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${sept.major.hours.authentication.host}")
+    private String host;
+    @Value("${sept.major.hours.authentication.port}")
+    private String port;
+    @Value("${sept.major.hours.authentication.endpoint}")
+    private String endpoint;
+
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -52,7 +60,7 @@ public class HoursAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
         ResponseEntity<Map> exchange;
         try {
-            exchange = restTemplate.exchange("http://localhost:8083/users/?username={q}", HttpMethod.GET, new HttpEntity<>(headers), Map.class, username);
+            exchange = restTemplate.exchange(String.format("%s:%s%s?username=%s", host, port, endpoint, username), HttpMethod.GET, new HttpEntity<>(headers), Map.class);
         } catch (HttpClientErrorException e) {
             return Optional.empty();
         } catch (ResourceAccessException e) {
