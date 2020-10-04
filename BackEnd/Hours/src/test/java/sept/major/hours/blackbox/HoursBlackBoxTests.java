@@ -149,7 +149,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
 
     }
 
-    protected ResponseEntity patchRequest(String url, Object body) {
+    protected ResponseEntity<String> patchRequest(String url, Object body) {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.PATCH,
@@ -157,7 +157,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
                 String.class);
     }
 
-    protected ResponseEntity postRequest(Object body) {
+    protected ResponseEntity<String> postRequest(Object body) {
         return testRestTemplate.exchange(
                 getUrl(),
                 HttpMethod.POST,
@@ -165,7 +165,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
                 String.class);
     }
 
-    protected ResponseEntity deleteRequest(String url) {
+    protected ResponseEntity<String> deleteRequest(String url) {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.DELETE,
@@ -182,7 +182,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
 
     }
 
-    protected ResponseEntity patchRequest(String url, HttpEntity httpEntity) {
+    protected ResponseEntity<String> patchRequest(String url, HttpEntity httpEntity) {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.PATCH,
@@ -190,7 +190,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
                 String.class);
     }
 
-    protected ResponseEntity postRequest(HttpEntity httpEntity) {
+    protected ResponseEntity<String> postRequest(HttpEntity httpEntity) {
         return testRestTemplate.exchange(
                 getUrl(),
                 HttpMethod.POST,
@@ -198,7 +198,7 @@ public abstract class HoursBlackBoxTests extends BlackboxTestHelper {
                 String.class);
     }
 
-    protected ResponseEntity deleteRequest(String url, HttpEntity httpEntity) {
+    protected ResponseEntity<String> deleteRequest(String url, HttpEntity httpEntity) {
         return testRestTemplate.exchange(
                 url,
                 HttpMethod.DELETE,
