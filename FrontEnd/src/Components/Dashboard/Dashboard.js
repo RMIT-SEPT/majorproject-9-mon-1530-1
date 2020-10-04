@@ -94,7 +94,6 @@ const MenuBarComponent = ({ children }) => {
             size={theme.icons.size.medium}
             onClick={() => {
               clear();
-
             }} />
 
         </Link>
