@@ -86,18 +86,18 @@ const MenuBarComponent = ({ children }) => {
     <MenuBar>
       <MenuContainer>
         {children}
-       <Link to="/">
-       <LogOut
-          className="menuIcon"
-          data-testid="logOutIcon"
-          color={theme.colours.grey.primary}
-          size={theme.icons.size.medium}
-          onClick= {()=>{
-            clear();
+        <Link to="/">
+          <LogOut
+            className="menuIcon"
+            data-testid="logOutIcon"
+            color={theme.colours.grey.primary}
+            size={theme.icons.size.medium}
+            onClick={() => {
+              clear();
 
-          }}/>
-         
-      </Link>
+            }} />
+
+        </Link>
 
       </MenuContainer>
     </MenuBar>
