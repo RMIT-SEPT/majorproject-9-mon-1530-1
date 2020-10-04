@@ -16,7 +16,6 @@ import { useQuery } from 'react-query';
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
 
-
 const Toolbar = ({ id }) => {
   const [main, setMain] = useState(false);
   const [worker, setWorker] = useState(false);
@@ -33,16 +32,12 @@ const Toolbar = ({ id }) => {
 
     return data;
   };
-  useQuery(
-    ['adminData', id],
-    fetchAdminData,
-    {
-      onSuccess: (data) => {
-        setUserName(data.name);
-        setRole(data.userType);
-      },
-    }
-  );
+  useQuery(['adminData', id], fetchAdminData, {
+    onSuccess: (data) => {
+      setUserName(data.name);
+      setRole(data.userType);
+    },
+  });
   const [userName, setUserName] = useState();
   const [role, setRole] = useState();
   return (
@@ -51,37 +46,29 @@ const Toolbar = ({ id }) => {
         <StyledLogoLink href="/">
           <img src={logo} alt="logo" />
         </StyledLogoLink>
-        <a
-          href="http://localhost:3000/contactus"
-          style={{ textDecoration: 'none' }}
-        >
+        <a href="/contactus" style={{ textDecoration: 'none' }}>
           <GreenNavLink>Contact-us</GreenNavLink>
         </a>
-        <a
-          href="http://localhost:3000/about"
-          style={{ textDecoration: 'none' }}
-        >
+        <a href="/about" style={{ textDecoration: 'none' }}>
           <GreenNavLink>About</GreenNavLink>
         </a>
         {main && (
           <RightFlexElements>
             <GreenNavLink>
-              <a href="http://localhost:3000/login">
+              <a href="/login">
                 <img className="login" src={login} alt="login" />{' '}
               </a>
             </GreenNavLink>
             <GreenNavLink>
-              <a href="http://localhost:3000/form">
+              <a href="/form">
                 <img className="small" src={small} alt="small" />{' '}
               </a>
             </GreenNavLink>
           </RightFlexElements>
         )}
         {worker && (
-          <RightNavElement userName={userName}
-            role={role}></RightNavElement>
+          <RightNavElement userName={userName} role={role}></RightNavElement>
         )}
-
       </StyledNavBar>
     </StyledNavBlack>
   );
