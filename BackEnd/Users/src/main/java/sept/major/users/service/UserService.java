@@ -2,6 +2,7 @@ package sept.major.users.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -109,16 +110,16 @@ public class UserService extends CrudService<UserEntity, String> {
         return (optionalUser.isPresent() && doPasswordsMatch(optionalUser.get().getPassword(), plainTextPassword));
     }
 
-    public String login(String username, String plainTextPassword) {
+    public Pair<Optional<String>, Optional<UserEntity>> login(String username, String plainTextPassword) {
         Optional<UserEntity> userOptional = repository.findByUsername(username);
 
-        String token = null;
+        Optional<String> token = Optional.empty();
         if (comparePassword(username, plainTextPassword)) {
-            token = UUID.randomUUID().toString();
+            token = Optional.of(UUID.randomUUID().toString());
             UserEntity user = userOptional.get();
-            user.setToken(token);
+            user.setToken(token.get());
             repository.save(user);
         }
-        return token;
+        return Pair.of(token, userOptional);
     }
 }

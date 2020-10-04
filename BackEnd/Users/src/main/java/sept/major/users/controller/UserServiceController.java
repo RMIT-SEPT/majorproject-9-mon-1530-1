@@ -1,18 +1,15 @@
 package sept.major.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.service.UserService;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -93,18 +90,21 @@ public class UserServiceController {
 
     @PutMapping("/token")
     public ResponseEntity<Map> getToken(@RequestParam String username, String password) {
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("username", username);
-        String token = userService.login(username, password);
-        if (StringUtils.isEmpty(token)) {
+        Pair<Optional<String>, Optional<UserEntity>> loginResult = userService.login(username, password);
+        if (loginResult.getFirst().isPresent()) {
+            response.put("status", "successful");
+            response.put("token", loginResult.getFirst().get());
+            if (loginResult.getSecond().isPresent()) {
+                response.put("user", loginResult.getSecond().get());
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
             response.put("status", "failed");
             response.put("token", null);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } else {
-            response.put("status", "successful");
-            response.put("token", token);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 }
