@@ -28,8 +28,12 @@ public class BookingsAuthenticationProvider extends AbstractUserDetailsAuthentic
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${sept.major.hours.authentication.service.url}")
-    private String authenticationServiceUrl;
+    @Value("${sept.major.hours.authentication.host}")
+    private String host;
+    @Value("${sept.major.hours.authentication.port}")
+    private String port;
+    @Value("${sept.major.hours.authentication.endpoint}")
+    private String endpoint;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -55,7 +59,7 @@ public class BookingsAuthenticationProvider extends AbstractUserDetailsAuthentic
 
         ResponseEntity<Map> exchange;
         try {
-            exchange = restTemplate.exchange(authenticationServiceUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class, username);
+            exchange = restTemplate.exchange(String.format("%s:%s%s?username=%s", host, port, endpoint, username), HttpMethod.GET, new HttpEntity<>(headers), Map.class);
         } catch (HttpClientErrorException e) {
             return Optional.empty();
         } catch (ResourceAccessException e) {
