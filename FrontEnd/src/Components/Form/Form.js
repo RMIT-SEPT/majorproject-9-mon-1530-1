@@ -72,7 +72,7 @@ function Form() {
               alignItems="center"
             >
               <Grid item xs={12}>
-                <a href="http://localhost:3000/">
+                <a href="/">
                   {' '}
                   <Logo src={logo} alt="logo" />{' '}
                 </a>
@@ -88,8 +88,7 @@ function Form() {
           <Right>
             {/* a link to the log in page  */}
             <TopRight>
-              Already a member?{' '}
-              <a href="http://localhost:3000/login"> Log-in</a>{' '}
+              Already a member? <a href="/login"> Log-in</a>{' '}
             </TopRight>
             <Grid container spacing={1}>
               {/* the form to login  */}

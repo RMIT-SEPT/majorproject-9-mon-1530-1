@@ -37,6 +37,14 @@ public class HoursController {
         this.hoursService = hoursService;
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getHoursServiceHealth() {
+    	return new ResponseEntity<Object>(HttpStatus.OK);
+    }
+    
     @GetMapping("/range")
     public ResponseEntity getHoursInRange(@RequestParam(name = "startDateTime") String startDateString,
                                           @RequestParam(name = "endDateTime") String endDateString,

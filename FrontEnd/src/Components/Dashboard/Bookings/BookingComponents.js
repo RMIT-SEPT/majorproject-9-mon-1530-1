@@ -1,12 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-import {
-  Title,
-  AvailabilityGrid,
-  StyledGreenText,
-} from '../DashboardComponents';
+import { Title } from '../DashboardComponents';
+import { BookingContext } from '../../../Contexts/BookingContext';
 
 // Components defined here are specifically used for booking appointments
 
@@ -24,13 +19,6 @@ const StyledWorkerCard = styled.div`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
 `;
 
-const StyledAvailabilityCard = styled.div`
-  height: 60px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-`;
-
 const CardContents = styled.div`
   display: flex;
   margin: 16px 24px;
@@ -42,11 +30,6 @@ const CardContents = styled.div`
     color: ${(props) => props.theme.colours.green.primary};
   }
 `;
-
-const AvailiabilityContents = styled.div`
-  margin: 8px 24px;
-`;
-
 const TempServiceIcon = styled.div`
   width: 74px;
   height: 74px;
@@ -117,8 +100,45 @@ const StyledHr = styled.hr`
   margin-bottom: 0;
 `;
 
-const StyledSelectedWorker = styled.div`
-  margin-bottom: 8px;
+const TimeSlot = styled.button`
+  margin-top: 12px;
+  padding: 4px 24px;
+  font-family: ${(props) => props.theme.font.primary};
+  font-size: 16px;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  color: white;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  background-color: ${(props) => props.theme.colours.green.primary};
+  outline: 0px;
+  transition: background-color ${(props) => props.theme.transition.short};
+
+  &:hover {
+    background-color: ${(props) => props.theme.colours.green.secondary};
+  }
+
+  &:active {
+    background-color: ${(props) => props.theme.colours.green.tertiary};
+    border: 2px solid black;
+    position: relative;
+    top: 4px;
+  }
+`;
+
+const DisabledButton = styled.button`
+  margin-top: 12px;
+  padding: 4px 24px;
+  font-family: ${(props) => props.theme.font.primary};
+  font-size: 16px;
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  color: #0000003a;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff0a;
+  outline: 0px;
+  transition: background-color ${(props) => props.theme.transition.short};
 `;
 
 const ServiceCard = ({ service, onClick }) => {
@@ -181,99 +201,21 @@ const DateTimeSelector = ({ label, onChange }) => {
   );
 };
 
-const AvailabilityView = ({ workerId }) => {
-  const dayMap = {
-    0: 'Sunday',
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-  };
+const TimeSlotView = ({ children, startTime, endTime }) => {
+  const { setStartTime, setEndTime } = useContext(BookingContext);
 
-  const [availability, setAvailability] = useState([]);
-
-  const fetchWorkerAvailability = async (key, workerId) => {
-    const { data } = await axios
-      .get(
-        `http://localhost:8084/availability/all?workerUsername=${workerId}&creatorUsername=${'lizatawaf'}`
-      )
-      .then((res) => res)
-      .catch((error) => {
-        console.log('Error fetching availability data: ' + error);
-        throw error;
-      });
-
-    return data;
-  };
-
-  useQuery(['workerAvailability', workerId], fetchWorkerAvailability, {
-    onSuccess: (data) => {
-      console.log('Fetch availiability success');
-      console.log(data);
-      setAvailability(data);
-    },
-  });
+  const [localStartTime] = useState(startTime);
+  const [localEndTime] = useState(endTime);
 
   return (
-    <div>
-      <SelectedWorker workerId={workerId} />
-      <AvailabilityGrid>
-        {availability.length === 0 && <div>No availability found...</div>}
-        {availability.map((time) => {
-          const localStartDate = new Date(time.startDateTime);
-
-          return (
-            <StyledAvailabilityCard key={time.startDateTime}>
-              <AvailiabilityContents>
-                <StyledGreenText>
-                  {dayMap[localStartDate.getDay()]}, {localStartDate.getDate()}/
-                  {localStartDate.getMonth()}/{localStartDate.getFullYear()}
-                </StyledGreenText>
-                <div>
-                  {time.startDateTime.split('T')[1]} to{' '}
-                  {time.endDateTime.split('T')[1]}
-                </div>
-              </AvailiabilityContents>
-            </StyledAvailabilityCard>
-          );
-        })}
-      </AvailabilityGrid>
-    </div>
-  );
-};
-
-const SelectedWorker = ({ workerId }) => {
-  const [worker, setWorker] = useState({});
-
-  const fetchWorkerDetails = async (key, workerId) => {
-    const { data } = await axios
-      .get(`http://localhost:8083/users?username=${workerId}`)
-      .then((res) => res)
-      .catch((error) => {
-        console.log('Error fetching worker data: ' + error);
-        throw error;
-      });
-
-    return data;
-  };
-
-  useQuery(['workerDetails', workerId], fetchWorkerDetails, {
-    onSuccess: (data) => {
-      console.log(data);
-      setWorker(data);
-    },
-  });
-
-  return (
-    <StyledSelectedWorker>
-      {worker.username && (
-        <>
-          Selected worker: <StyledGreenText>{worker.name}</StyledGreenText>
-        </>
-      )}
-    </StyledSelectedWorker>
+    <TimeSlot
+      onClick={() => {
+        setStartTime(localStartTime);
+        setEndTime(localEndTime);
+      }}
+    >
+      {children}
+    </TimeSlot>
   );
 };
 
@@ -282,5 +224,6 @@ export {
   DateTimeSelector,
   WorkerRadioButton,
   TimeFlex,
-  AvailabilityView,
+  TimeSlotView,
+  DisabledButton,
 };

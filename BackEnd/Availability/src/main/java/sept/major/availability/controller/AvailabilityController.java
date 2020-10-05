@@ -41,6 +41,14 @@ public class AvailabilityController {
     private BookingServiceConnector bookingServiceConnector;
 
     /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getAvailabilityServiceHealth() {
+    	return new ResponseEntity<Object>(HttpStatus.OK);
+    }
+    
+    /**
      * This method will get user's available hours in the range get user's booked times overlay the booking on the availability calculate the result and return
      * as a list
      *
