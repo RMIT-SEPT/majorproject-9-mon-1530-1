@@ -201,6 +201,40 @@ const DateTimeSelector = ({ label, onChange }) => {
   );
 };
 
+const DateSelector = ({ label, onChange }) => {
+  return (
+    <DateTimeSelectorWrapper>
+      <label htmlFor={label}>{label}</label>
+      <StyledDateTimeInput
+        type="date"
+        id={label}
+        name={label}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+      <StyledHr />
+    </DateTimeSelectorWrapper>
+  );
+};
+
+const TimeSelector = ({ label, onChange }) => {
+  return (
+    <DateTimeSelectorWrapper>
+      <label htmlFor={label}>{label}</label>
+      <StyledDateTimeInput
+        type="time"
+        id={label}
+        name={label}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+      <StyledHr />
+    </DateTimeSelectorWrapper>
+  );
+};
+
 const TimeSlotView = ({ children, startTime, endTime }) => {
   const { setStartTime, setEndTime } = useContext(BookingContext);
 
@@ -226,4 +260,6 @@ export {
   TimeFlex,
   TimeSlotView,
   DisabledButton,
+  DateSelector,
+  TimeSelector,
 };
