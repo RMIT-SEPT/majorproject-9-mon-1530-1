@@ -7,22 +7,22 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^26.0.10",
+    "@types/jest": "^26.0.14",
     "axios": "^0.20.0",
     "mutationobserver-shim": "^0.3.7",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
-    "react-datetime-picker": "^3.0.2",
+    "react-datetime-picker": "^3.0.4",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.8",
-    "react-hook-form": "^6.6.0",
-    "react-query": "^2.5.14",
-    "react-query-devtools": "^2.4.3",
+    "react-hook-form": "^6.9.0",
+    "react-query": "^2.23.1",
+    "react-query-devtools": "^2.5.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-spinners": "^0.9.0",
     "react-text-loop": "^2.3.0",
-    "styled-components": "^5.1.1",
+    "styled-components": "^5.2.0",
     "styled-components-breakpoint": "^3.0.0-preview.20"
   },
   "scripts": {
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.3"
+    "enzyme-adapter-react-16": "^1.15.5"
   },
   "jest": {
     "collectCoverageFrom": [
