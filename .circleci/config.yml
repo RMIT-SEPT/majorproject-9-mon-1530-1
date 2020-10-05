@@ -357,7 +357,12 @@ workflows:
   version: 2
   workflow:
     jobs:
+    - Hold-For-Approval:
+        type: approval
+
     - build-deploy-front-end:
+        requires:
+          - Hold-For-Approval
         filters:
           branches:
             only:
