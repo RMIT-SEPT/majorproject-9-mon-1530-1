@@ -361,8 +361,6 @@ workflows:
         type: approval
 
     - build-deploy-front-end:
-        requires:
-          - Hold-For-Approval
         filters:
           branches:
             only:
@@ -375,6 +373,7 @@ workflows:
         ebEnvironmentName: Sept
         requires:
           - build-deploy-front-end
+          - Hold-For-Approval
 
     - build-common:
         filters:
@@ -411,6 +410,7 @@ workflows:
         ebEnvironmentName: availability
         requires:
           - docker-build-deploy-backend-availability
+          - Hold-For-Approval
 
     - build-hours:
         requires:
@@ -439,6 +439,7 @@ workflows:
         ebEnvironmentName: hours
         requires:
           - docker-build-deploy-backend-availability-hours
+          - Hold-For-Approval
 
     - build-bookings:
         requires:
@@ -467,6 +468,7 @@ workflows:
         ebEnvironmentName: bookings
         requires:
           - docker-build-deploy-backend-bookings
+          - Hold-For-Approval
 
     - build-users:
         requires:
@@ -495,3 +497,4 @@ workflows:
         ebEnvironmentName: users
         requires:
           - docker-build-deploy-backend-users
+          - Hold-For-Approval
