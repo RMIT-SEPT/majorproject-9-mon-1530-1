@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { ChevronDown } from 'react-feather';
 import {
-    RightFlexElements,
-    StyledUserTagName,
+  RightFlexElements,
+  StyledUserTagName,
 } from '../Navigation/Nav';
 
 const UserName = styled.div`
@@ -27,16 +27,16 @@ const Logo = styled.div`
   margin: 0px 12px 0px 24px;
 `;
 const rightNavElement = ({ userName, role }) => {
-    return (
-        <RightFlexElements>
-            <StyledUserTagName>
-                <UserName>{userName || 'empty'}</UserName>
-                <Role>{role || 'empty'}</Role>
-            </StyledUserTagName>
-            <Logo></Logo>
-            <ChevronDown size={28} />
-        </RightFlexElements>
-    );
+  return (
+    <RightFlexElements>
+      <StyledUserTagName>
+        <UserName>{userName || 'empty'}</UserName>
+        <Role>{role || 'empty'}</Role>
+      </StyledUserTagName>
+      <Logo></Logo>
+      <ChevronDown size={28} />
+    </RightFlexElements>
+  );
 };
 
 export default rightNavElement;
