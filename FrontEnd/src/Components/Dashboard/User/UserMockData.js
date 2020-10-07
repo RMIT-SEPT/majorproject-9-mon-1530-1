@@ -1,27 +1,3 @@
-const tempServices = [
-  {
-    serviceName: "Jim's Cleaning",
-    address: '48 Edinburgh Road, Mooroolbark, Victoria 3138',
-    phoneNumber: '131 546',
-  },
-  {
-    serviceName: 'Man Oh Man',
-    address: '137 Chapel Street Windsor, VIC 3181 Melbourne',
-    phoneNumber: '03 9530 2393',
-  },
-
-  {
-    serviceName: 'Nail Lisa',
-    address: 'No address available',
-    phoneNumber: '03 9561 2313',
-  },
-  {
-    serviceName: 'Bob the Builder',
-    address: 'Channel 3, ABC, Australia',
-    phoneNumber: '123 456',
-  },
-];
-
 const tempWorkers = [
   {
     workerUserName: 'kath123',
@@ -58,4 +34,4 @@ const tempBookings = [
   },
 ];
 
-export { tempServices, tempWorkers, tempBookings };
+export { tempWorkers, tempBookings };
