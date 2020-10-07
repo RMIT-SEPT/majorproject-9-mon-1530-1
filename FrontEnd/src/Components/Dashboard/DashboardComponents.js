@@ -175,17 +175,25 @@ const UpcomingAppointmentCard = ({ booking }) => {
 
 const BookingsList = ({ id }) => {
   const [bookingsList, setBookingsList] = useState([]);
+  const [date] = useState(new Date());
 
   const fetchBookingsList = async (key) => {
+    const dateIso = date.toISOString();
+    console.log(dateIso.substring(0, dateIso.length - 1));
     const { data } = await axios
-      .get(`http://localhost:8081/bookings/all`)
+      .get(
+        `http://localhost:8081/bookings/range?startDateTime=${dateIso.substring(
+          0,
+          dateIso.length - 1
+        )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of bookings: ' + error);
         throw error;
       });
 
-    return data.filter((booking) => booking.customerUsername === id);
+    return data;
   };
 
   useQuery(['bookings'], fetchBookingsList, {
