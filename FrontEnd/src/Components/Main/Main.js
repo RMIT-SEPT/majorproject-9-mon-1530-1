@@ -112,7 +112,7 @@ function Main(props) {
           >
             <Grid item xs={3}>
               {/* signup and book pages  */}
-              <a href="http://localhost:3000/form">
+              <a href="/form">
                 {' '}
                 <img style={{ marginLeft: '10%' }} src={big} alt="big" />{' '}
               </a>

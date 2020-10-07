@@ -115,7 +115,7 @@ const contact = (props) => {
             alignItems="center"
           >
             <Grid item xs={12}>
-              <a href="http://localhost:3000/">
+              <a href="/">
                 {' '}
                 <Logo src={logo} alt="logo" />{' '}
               </a>
@@ -130,7 +130,7 @@ const contact = (props) => {
       <Grid item xs={5}>
         <Right>
           <TopRight>
-            Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
+            Not a member? <a href="/form">Sign up</a>{' '}
           </TopRight>
 
           <Grid container spacing={1}>
