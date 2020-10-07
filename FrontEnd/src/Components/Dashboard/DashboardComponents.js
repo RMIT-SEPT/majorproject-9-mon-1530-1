@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 import styled from 'styled-components';
 import { Watch, Clock, User } from 'react-feather';
 import BarLoader from 'react-spinners/BarLoader';
@@ -171,6 +173,45 @@ const UpcomingAppointmentCard = ({ booking }) => {
   );
 };
 
+const BookingsList = ({ id }) => {
+  const [bookingsList, setBookingsList] = useState([]);
+  const [date] = useState(new Date());
+
+  const fetchBookingsList = async (key) => {
+    const dateIso = date.toISOString();
+    console.log(dateIso.substring(0, dateIso.length - 1));
+    const { data } = await axios
+      .get(
+        `http://localhost:8081/bookings/range?startDateTime=${dateIso.substring(
+          0,
+          dateIso.length - 1
+        )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`
+      )
+      .then((res) => res)
+      .catch((error) => {
+        console.log('Error fetching list of bookings: ' + error);
+        throw error;
+      });
+
+    return data;
+  };
+
+  useQuery(['bookings'], fetchBookingsList, {
+    onSuccess: (data) => {
+      console.log(data);
+      setBookingsList(data);
+    },
+  });
+
+  return (
+    <>
+      {bookingsList.map((booking) => (
+        <UpcomingAppointmentCard key={booking.bookingId} booking={booking} />
+      ))}
+    </>
+  );
+};
+
 const Loading = () => {
   return (
     <StyledStateContainer>
@@ -199,4 +240,5 @@ export {
   StyledStateContainer,
   Loading,
   Error,
+  BookingsList,
 };
