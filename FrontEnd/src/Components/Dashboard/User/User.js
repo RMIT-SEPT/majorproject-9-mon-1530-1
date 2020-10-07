@@ -16,9 +16,9 @@ import {
   Loading,
   Error,
 } from '../DashboardComponents';
-import { WorkerRadioButton } from '../Bookings/BookingComponents';
+import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import { tempWorkers, tempBookings } from './UserMockData';
+import { tempBookings } from './UserMockData';
 import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
@@ -171,16 +171,10 @@ const User = ({ id }) => {
               </Button>
               <DashboardModule title="Choose a worker">
                 <PanelGrid>
-                  {tempWorkers.map((worker) => (
-                    <WorkerRadioButton
-                      type="radio"
-                      worker={worker}
-                      key={worker.workerUserName}
-                      name="selectWorker"
-                      onChange={setWorkerId}
-                      onClick={selectBooking}
-                    ></WorkerRadioButton>
-                  ))}
+                  <WorkerRadioList
+                    selectBooking={selectBooking}
+                    setWorkerId={setWorkerId}
+                  />
                 </PanelGrid>
               </DashboardModule>
             </Content>

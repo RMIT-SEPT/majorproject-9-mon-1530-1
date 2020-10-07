@@ -1,22 +1,3 @@
-const tempWorkers = [
-  {
-    workerUserName: 'kath123',
-    workerFullName: 'Kathreen McDonald',
-  },
-  {
-    workerUserName: 'markTheMark',
-    workerFullName: 'Mark Falley',
-  },
-  {
-    workerUserName: 'realSarahX',
-    workerFullName: 'Sarah Mickey',
-  },
-  {
-    workerUserName: 'JohnLeLemon',
-    workerFullName: 'John Lim Le',
-  },
-];
-
 const tempBookings = [
   {
     bookingId: '1',
@@ -34,4 +15,4 @@ const tempBookings = [
   },
 ];
 
-export { tempWorkers, tempBookings };
+export { tempBookings };
