@@ -6,7 +6,6 @@ import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
   DashboardModule,
-  UpcomingAppointmentCard,
   Heading,
   SubHeading,
   Content,
@@ -15,10 +14,10 @@ import {
   Button,
   Loading,
   Error,
+  BookingsList,
 } from '../DashboardComponents';
 import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import { tempBookings } from './UserMockData';
 import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
@@ -152,13 +151,11 @@ const User = ({ id }) => {
                 {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
                 <AppointmentsGrid>
-                  {tempBookings.map((booking) => (
-                    <UpcomingAppointmentCard
-                      key={booking.bookingId}
-                      booking={booking}
-                    />
-                  ))}
+                  <BookingsList id={userId} />
                 </AppointmentsGrid>
+                <Button type="button" onClick={bookAppointment}>
+                  Book
+                </Button>
               </DashboardModule>
             </Content>
           )}

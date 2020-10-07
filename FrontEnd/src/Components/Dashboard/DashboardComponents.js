@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 import styled from 'styled-components';
 import { Watch, Clock, User } from 'react-feather';
 import BarLoader from 'react-spinners/BarLoader';
@@ -171,6 +173,37 @@ const UpcomingAppointmentCard = ({ booking }) => {
   );
 };
 
+const BookingsList = ({ id }) => {
+  const [bookingsList, setBookingsList] = useState([]);
+
+  const fetchBookingsList = async (key) => {
+    const { data } = await axios
+      .get(`http://localhost:8081/bookings/all`)
+      .then((res) => res)
+      .catch((error) => {
+        console.log('Error fetching list of bookings: ' + error);
+        throw error;
+      });
+
+    return data.filter((booking) => booking.customerUsername === id);
+  };
+
+  useQuery(['bookings'], fetchBookingsList, {
+    onSuccess: (data) => {
+      console.log(data);
+      setBookingsList(data);
+    },
+  });
+
+  return (
+    <>
+      {bookingsList.map((booking) => (
+        <UpcomingAppointmentCard key={booking.bookingId} booking={booking} />
+      ))}
+    </>
+  );
+};
+
 const Loading = () => {
   return (
     <StyledStateContainer>
@@ -199,4 +232,5 @@ export {
   StyledStateContainer,
   Loading,
   Error,
+  BookingsList,
 };
