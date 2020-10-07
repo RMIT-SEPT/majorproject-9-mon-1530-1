@@ -3,8 +3,14 @@ import styled from 'styled-components';
 const month = {
   padding: '30px 0px',
   width: '100%',
-  background: '#5ac490',
+  background: 'white',
   textAlign: 'center',
+  border: 'solid',
+  borderWidth: 'thin',
+  borderRadius: '5px',
+  borderColor: '#5ac490',
+  fontSize:'20px',
+  fontWight:'Bold',
 };
 const prev = {
   float: 'left',
@@ -19,9 +25,13 @@ const next = {
 };
 
 const weekdays = {
-  margin: '0',
-  padding: '10px 0',
-  backgroundColor: '#ddd',
+  margin: '10',
+  padding: '30px 0',
+  backgroundColor: 'white',
+  border: 'solid',
+  borderWidth: 'thin',
+  borderRadius: '5px',
+  borderColor: '#5ac490',
 };
 
 const day = {

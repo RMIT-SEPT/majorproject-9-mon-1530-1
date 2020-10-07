@@ -31,14 +31,19 @@ const User = ({ id }) => {
     clearBooking,
     submitBooking,
   } = useContext(BookingContext);
-
+  const token = localStorage.getItem('token');
   const fetchUserData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+      .get(`http://localhost:8083/users/username?username=${id}`, {
+        headers: {
+          'Authorization': `${token}`,
+          'username': `${id}`
+        }
+      })
       .then((response) => response)
       .then((res) => res)
       .catch((error) => {
-        console.log('Error fetching user data: ' + error);
+        console.log('admin error' + error);
         throw error;
       });
 

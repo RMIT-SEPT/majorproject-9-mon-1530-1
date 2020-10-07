@@ -114,6 +114,10 @@ const StyledGreenText = styled.span`
   color: ${(props) => props.theme.colours.green.primary};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
+const SelectedTime = styled.span`
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  font-size:25px;
+`;
 
 const StyledStateContainer = styled.div`
   display: flex;
@@ -237,6 +241,7 @@ export {
   Title,
   Button,
   StyledGreenText,
+  SelectedTime,
   StyledStateContainer,
   Loading,
   Error,

@@ -83,7 +83,7 @@ const StyledDateTimeInput = styled.input`
   display: block;
   border: none;
   outline: none;
-  background-color: transparent;
+  background-color: #F5F5F5;
   position: relative;
   right: 2px;
   margin-top: 4px;
@@ -135,11 +135,11 @@ const DisabledButton = styled.button`
   font-family: ${(props) => props.theme.font.primary};
   font-size: 16px;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  color: #0000003a;
+  color: #B8B2B2;
   border: 2px solid transparent;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-  background-color: #ffffff0a;
+  background-color: white;
   outline: 0px;
   transition: background-color ${(props) => props.theme.transition.short};
 `;
