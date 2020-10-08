@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import sept.major.common.testing.RequestParameter;
+import sept.major.availability.service.RequestParameter;
 
 import java.util.ArrayList;
 import java.util.List;
