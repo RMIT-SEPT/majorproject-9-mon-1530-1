@@ -6,7 +6,6 @@ import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
   DashboardModule,
-  UpcomingAppointmentCard,
   Heading,
   SubHeading,
   Content,
@@ -15,10 +14,10 @@ import {
   Button,
   Loading,
   Error,
+  BookingsList,
 } from '../DashboardComponents';
-import { ServiceCard, WorkerRadioButton } from '../Bookings/BookingComponents';
+import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import { tempServices, tempWorkers, tempBookings } from './UserMockData';
 import { BookingView } from '../Bookings/BookingView';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
@@ -32,14 +31,19 @@ const User = ({ id }) => {
     clearBooking,
     submitBooking,
   } = useContext(BookingContext);
-
+  const token = localStorage.getItem('token');
   const fetchUserData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+      .get(`http://localhost:8083/users/username?username=${id}`, {
+        headers: {
+          'Authorization': `${token}`,
+          'username': `${id}`
+        }
+      })
       .then((response) => response)
       .then((res) => res)
       .catch((error) => {
-        console.log('Error fetching user data: ' + error);
+        console.log('admin error' + error);
         throw error;
       });
 
@@ -47,7 +51,6 @@ const User = ({ id }) => {
   };
   const clear = () => {
     setBooking(false);
-    setService(false);
     setWorker(false);
     setMain(false);
   };
@@ -56,7 +59,7 @@ const User = ({ id }) => {
   const bookAppointment = () => {
     clear();
     setCustomerId(userId);
-    setService(true);
+    setWorker(true);
   };
 
   const returnHome = () => {
@@ -68,16 +71,6 @@ const User = ({ id }) => {
   const selectBooking = () => {
     clear();
     setBooking(true);
-  };
-
-  const selectWorker = () => {
-    clear();
-    setWorker(true);
-  };
-
-  const cancelWorker = () => {
-    setWorker(false);
-    setService(true);
   };
 
   const cancelBooking = () => {
@@ -118,7 +111,6 @@ const User = ({ id }) => {
 
   // Page states for updating current view
   const [main, setMain] = useState(true);
-  const [service, setService] = useState(false);
   const [worker, setWorker] = useState(false);
   const [booking, setBooking] = useState(false);
 
@@ -164,33 +156,11 @@ const User = ({ id }) => {
                 {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
                 <AppointmentsGrid>
-                  {tempBookings.map((booking) => (
-                    <UpcomingAppointmentCard
-                      key={booking.bookingId}
-                      booking={booking}
-                    />
-                  ))}
+                  <BookingsList id={userId} />
                 </AppointmentsGrid>
-              </DashboardModule>
-            </Content>
-          )}
-          {service && (
-            <Content>
-              <Heading>New booking</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={returnHome}>
-                Back
-              </Button>
-              <DashboardModule title="Choose a service">
-                <PanelGrid>
-                  {tempServices.map((service) => (
-                    <ServiceCard
-                      key={service.serviceName}
-                      onClick={selectWorker}
-                      service={service}
-                    ></ServiceCard>
-                  ))}
-                </PanelGrid>
+                <Button type="button" onClick={bookAppointment}>
+                  Book
+                </Button>
               </DashboardModule>
             </Content>
           )}
@@ -198,21 +168,15 @@ const User = ({ id }) => {
             <Content>
               <Heading>New booking</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={cancelWorker}>
+              <Button type="button" onClick={returnHome}>
                 Back
               </Button>
               <DashboardModule title="Choose a worker">
                 <PanelGrid>
-                  {tempWorkers.map((worker) => (
-                    <WorkerRadioButton
-                      type="radio"
-                      worker={worker}
-                      key={worker.workerUserName}
-                      name="selectWorker"
-                      onChange={setWorkerId}
-                      onClick={selectBooking}
-                    ></WorkerRadioButton>
-                  ))}
+                  <WorkerRadioList
+                    selectBooking={selectBooking}
+                    setWorkerId={setWorkerId}
+                  />
                 </PanelGrid>
               </DashboardModule>
             </Content>
@@ -240,7 +204,7 @@ const User = ({ id }) => {
 };
 
 User.defaultProps = {
-  id: localStorage.getItem('username')
+  id: localStorage.getItem('username'),
 };
 
 export default User;

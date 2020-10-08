@@ -58,7 +58,9 @@ public class AvailabilityController {
      * @param creatorUsername
      */
     @GetMapping("/range")
-    public ResponseEntity getAvailabilityInRange(@RequestParam(name = "startDateTime") String startDateString,
+    public ResponseEntity getAvailabilityInRange(@RequestHeader("Authorization") String token,
+                                                 @RequestHeader("username") String requesterUsername,
+                                                 @RequestParam(name = "startDateTime") String startDateString,
                                                  @RequestParam(name = "endDateTime") String endDateString,
                                                  @RequestParam(required = false) String workerUsername,
                                                  @RequestParam(required = false) String creatorUsername,
@@ -69,9 +71,9 @@ public class AvailabilityController {
         List<HoursResponse> hoursList;
         List<BookingResponse> bookingsList;
         try {
-            hoursList = hoursServiceConnector.getRange(startDateString, endDateString, workerUsername, customerUsername);
+            hoursList = hoursServiceConnector.getRange(token, requesterUsername, startDateString, endDateString, workerUsername, customerUsername);
             log.info(hoursList.toString());
-            bookingsList = bookingServiceConnector.getRange(startDateString, endDateString, workerUsername, creatorUsername);
+            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, startDateString, endDateString, workerUsername, creatorUsername);
             log.info(bookingsList.toString());
         } catch (ServiceConnectorException e) {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
@@ -89,7 +91,9 @@ public class AvailabilityController {
      * @return
      */
     @GetMapping("/date")
-    public ResponseEntity getAvailabilityInDate(@RequestParam(name = "date") String dateString,
+    public ResponseEntity getAvailabilityInDate(@RequestHeader("Authorization") String token,
+                                                @RequestHeader("username") String requesterUsername,
+                                                @RequestParam(name = "date") String dateString,
                                                 @RequestParam(required = false) String workerUsername,
                                                 @RequestParam(required = false) String creatorUsername,
                                                 @RequestParam(required = false) String customerUsername) {
@@ -99,9 +103,9 @@ public class AvailabilityController {
         List<HoursResponse> hoursList;
         List<BookingResponse> bookingsList;
         try {
-            hoursList = hoursServiceConnector.getDate(dateString, workerUsername, customerUsername);
+            hoursList = hoursServiceConnector.getDate(token, requesterUsername, dateString, workerUsername, customerUsername);
             log.info(hoursList.toString());
-            bookingsList = bookingServiceConnector.getDate(dateString, workerUsername, creatorUsername);
+            bookingsList = bookingServiceConnector.getDate(token, requesterUsername, dateString, workerUsername, creatorUsername);
             log.info(bookingsList.toString());
         } catch (ServiceConnectorException e) {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
@@ -120,7 +124,9 @@ public class AvailabilityController {
      * @return
      */
     @GetMapping("/all")
-    public ResponseEntity getAllAvailabilities(@RequestParam(required = false) String workerUsername,
+    public ResponseEntity getAllAvailabilities(@RequestHeader("Authorization") String token,
+                                               @RequestHeader("username") String requesterUsername,
+                                               @RequestParam(required = false) String workerUsername,
                                                @RequestParam(required = false) String creatorUsername,
                                                @RequestParam(required = false) String customerUsername) {
         log.info("workerUsername:{}, creatorUsername:{}, ", workerUsername, creatorUsername);
@@ -128,9 +134,9 @@ public class AvailabilityController {
         List<HoursResponse> hoursList;
         List<BookingResponse> bookingsList;
         try {
-            hoursList = hoursServiceConnector.getAll(workerUsername, customerUsername);
+            hoursList = hoursServiceConnector.getAll(token, requesterUsername, workerUsername, customerUsername);
             log.info(hoursList.toString());
-            bookingsList = bookingServiceConnector.getAll(workerUsername, creatorUsername);
+            bookingsList = bookingServiceConnector.getAll(token, requesterUsername, workerUsername, creatorUsername);
             log.info(bookingsList.toString());
         } catch (ServiceConnectorException e) {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
@@ -152,7 +158,9 @@ public class AvailabilityController {
 
 
     @GetMapping("slot/date")
-    public ResponseEntity getSlotsOnDate(@RequestParam(name = "date") String dateString) {
+    public ResponseEntity getSlotsOnDate(@RequestHeader("Authorization") String token,
+                                         @RequestHeader("username") String requesterUsername,
+                                         @RequestParam(name = "date") String dateString) {
         LocalDate date;
         try {
             date = LocalDate.parse(dateString);
@@ -166,9 +174,9 @@ public class AvailabilityController {
         LocalDate endDate = availabilityService.findEndOfWeek(date);
 
         try {
-            hoursList = hoursServiceConnector.getRange(date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
+            hoursList = hoursServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
             log.info(hoursList.toString());
-            bookingsList = bookingServiceConnector.getRange(date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
+            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
             log.info(bookingsList.toString());
         } catch (ServiceConnectorException e) {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
@@ -179,12 +187,14 @@ public class AvailabilityController {
     }
 
     @GetMapping("slot/now")
-    public ResponseEntity getTimeSlotsNow(@RequestParam(name = "from", required = false) Integer increment) {
+    public ResponseEntity getTimeSlotsNow(@RequestHeader("Authorization") String token,
+                                          @RequestHeader("username") String requesterUsername,
+                                          @RequestParam(name = "from", required = false) Integer increment) {
         LocalDate date = LocalDate.now();
         if (increment != null) {
             date = availabilityService.findStartOfWeek(date).plusWeeks(increment);
         }
-        return getSlotsOnDate(date.toString());
+        return getSlotsOnDate(token, requesterUsername, date.toString());
     }
 
     private ResponseEntity evaluateAvailabilities(List<HoursResponse> hoursResponses, List<BookingResponse> bookingResponses) {

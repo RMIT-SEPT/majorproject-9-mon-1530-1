@@ -135,20 +135,33 @@ const Login = (props) => {
   let history = useHistory();
   const onSubmit = (values) => {
     axios
-      .get(
-        `http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`
+      .put(
+        `http://localhost:8083/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
         console.log(response.status);
+
+
+
         let r = response.status;
         if (r === 200) {
+          const data = response.data
+          localStorage.setItem("token", data.token)
+
+          console.log(`token: ${data.token}`)
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
           console.log(localStorage.getItem('username'));
+          console.log(values);
           auth.login(() => {
             //check standard user and then transfer to admin panel
             setLoginerror('sucess');
-            history.push('/user');
+            window.location.reload();
+            if (localStorage.getItem('role') === 'admin') {
+              history.push('/admin');
+            } else {
+              history.push('/user');
+            }
           });
         } else {
           setLoginerror('The username or password is incorrect.');

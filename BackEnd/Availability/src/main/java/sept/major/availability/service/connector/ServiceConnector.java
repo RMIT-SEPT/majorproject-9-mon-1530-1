@@ -1,6 +1,9 @@
 package sept.major.availability.service.connector;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,30 +27,30 @@ public abstract class ServiceConnector<E> {
 
     protected abstract String getServiceName();
 
-    public List<E> getAll(String workerUsername, String secondUsername) throws ServiceConnectorException {
+    public List<E> getAll(String token, String requestUsername, String workerUsername, String secondUsername) throws ServiceConnectorException {
         List<RequestParameter> requestParameters = getUsernameParameters(workerUsername, secondUsername);
 
         String url = addRequestParameters(getServiceEndpoint() + "/all", requestParameters);
 
-        return getResponses(url);
+        return getResponses(token, requestUsername, url);
     }
 
-    public List<E> getRange(String startDateTime, String endDateTime, String workerUsername, String secondUsername) throws ServiceConnectorException {
+    public List<E> getRange(String token, String requestUsername, String startDateTime, String endDateTime, String workerUsername, String secondUsername) throws ServiceConnectorException {
         List<RequestParameter> requestParameters = getUsernameParameters(workerUsername, secondUsername);
         requestParameters.add(new RequestParameter("startDateTime", startDateTime));
         requestParameters.add(new RequestParameter("endDateTime", endDateTime));
 
 
         String url = addRequestParameters(getServiceEndpoint() + "/range", requestParameters);
-        return getResponses(url);
+        return getResponses(token, requestUsername, url);
     }
 
-    public List<E> getDate(String date, String workerUsername, String secondUsername) throws ServiceConnectorException {
+    public List<E> getDate(String token, String requestUsername, String date, String workerUsername, String secondUsername) throws ServiceConnectorException {
         List<RequestParameter> requestParameters = getUsernameParameters(workerUsername, secondUsername);
         requestParameters.add(new RequestParameter("date", date));
 
         String url = addRequestParameters(getServiceEndpoint() + "/date", requestParameters);
-        return getResponses(url);
+        return getResponses(token, requestUsername, url);
     }
 
     private List<RequestParameter> getUsernameParameters(String workerUsername, String secondUsername) {
@@ -61,9 +64,12 @@ public abstract class ServiceConnector<E> {
         return requestParameters;
     }
 
-    private List<E> getResponses(String url) throws ServiceConnectorException {
+    private List<E> getResponses(String token, String requesterUsername, String url) throws ServiceConnectorException {
         try {
-            return convertResultToList(restTemplate.getForObject(url, List.class));
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", token);
+            headers.set("username", requesterUsername);
+            return convertResultToList(restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), List.class).getBody());
         } catch (ResourceAccessException e) {
             throw new ServiceConnectorException(getServiceName(), "connection to service failed, used URL: " + url);
         } catch (HttpClientErrorException e) {

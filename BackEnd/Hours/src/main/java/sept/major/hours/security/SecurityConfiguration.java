@@ -1,4 +1,4 @@
-package sept.major.users.security;
+package sept.major.hours.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,16 +18,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sept.major.users.security.SecurityConstants.*;
+import static sept.major.hours.security.SecurityConstants.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    UserAuthenticationProvider provider;
+    HoursAuthenticationProvider provider;
 
-    public SecurityConfiguration(final UserAuthenticationProvider authenticationProvider) {
+    public SecurityConfiguration(final HoursAuthenticationProvider authenticationProvider) {
         super();
         this.provider = authenticationProvider;
     }
@@ -49,13 +49,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(new OrRequestMatcher(OPEN_ENDPOINTS))
-                .permitAll()
-
-                .and()
-                .authenticationProvider(provider)
-                .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
-                .authorizeRequests()
                 .requestMatchers(new OrRequestMatcher(USER_ENDPOINTS))
                 .hasAuthority(USER_CODE)
 
@@ -68,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .csrf().disable()
-                .cors().and()
+                .cors().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .logout().disable();

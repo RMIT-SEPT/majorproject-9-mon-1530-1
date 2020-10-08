@@ -19,9 +19,15 @@ import { useQuery } from 'react-query';
 const Toolbar = ({ id }) => {
   const [main, setMain] = useState(false);
   const [worker, setWorker] = useState(false);
+  const token = localStorage.getItem('token');
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+      .get(`http://localhost:8083/users/username?username=${id}`, {
+        headers: {
+          'Authorization': `${token}`,
+          'username': `${id}`
+        }
+      })
       .then((res) => res)
       .then(setWorker(true))
       .catch((error) => {
@@ -67,7 +73,26 @@ const Toolbar = ({ id }) => {
           </RightFlexElements>
         )}
         {worker && (
-          <RightNavElement userName={userName} role={role}></RightNavElement>
+          <StyledNavBlack>
+            <StyledNavBar>
+              {role === 'user'
+                ? <a
+                  href="http://localhost:3000/user"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <GreenNavLink>Dashboard</GreenNavLink>
+                </a>
+                : <a
+                  href="http://localhost:3000/admin"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <GreenNavLink>Dashboard</GreenNavLink>
+                </a>
+              }
+              <RightNavElement userName={userName}
+                role={role}></RightNavElement>
+            </StyledNavBar>
+          </StyledNavBlack>
         )}
       </StyledNavBar>
     </StyledNavBlack>

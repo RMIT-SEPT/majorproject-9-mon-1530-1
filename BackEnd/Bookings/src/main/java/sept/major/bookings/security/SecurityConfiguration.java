@@ -1,4 +1,4 @@
-package sept.major.users.security;
+package sept.major.bookings.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,16 +18,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sept.major.users.security.SecurityConstants.*;
+import static sept.major.bookings.security.SecurityConstants.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    UserAuthenticationProvider provider;
+    BookingsAuthenticationProvider provider;
 
-    public SecurityConfiguration(final UserAuthenticationProvider authenticationProvider) {
+    public SecurityConfiguration(final BookingsAuthenticationProvider authenticationProvider) {
         super();
         this.provider = authenticationProvider;
     }
@@ -49,13 +49,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(new OrRequestMatcher(OPEN_ENDPOINTS))
-                .permitAll()
-
-                .and()
-                .authenticationProvider(provider)
-                .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
-                .authorizeRequests()
                 .requestMatchers(new OrRequestMatcher(USER_ENDPOINTS))
                 .hasAuthority(USER_CODE)
 
@@ -63,12 +56,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(new OrRequestMatcher(ADMIN_ENDPOINTS))
+                .requestMatchers(new OrRequestMatcher(EMPLOYEE_ENDPOINTS))
                 .hasAuthority(ADMIN_CODE)
 
                 .and()
                 .csrf().disable()
-                .cors().and()
+                .cors().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .logout().disable();
@@ -79,7 +72,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         List<RequestMatcher> allForbiddenEndpoints = new ArrayList<>();
         allForbiddenEndpoints.addAll(USER_ENDPOINTS);
-        allForbiddenEndpoints.addAll(ADMIN_ENDPOINTS);
+        allForbiddenEndpoints.addAll(EMPLOYEE_ENDPOINTS);
 
         final AuthenticationFilter filter = new AuthenticationFilter(new OrRequestMatcher(allForbiddenEndpoints));
         filter.setAuthenticationManager(authenticationManager());

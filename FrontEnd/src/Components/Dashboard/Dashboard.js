@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { LogOut } from 'react-feather';
 import { theme } from '../../App';
+import { Link } from 'react-router-dom';
 import logoAlt from '../../media/logo-alt.png';
 import {
   StyledNavWhite,
@@ -50,6 +51,8 @@ const MenuContainer = styled.div`
 // props gets passed in to the DashboardWrapper component to access dynamic ele-
 // ments such as the userName and role
 
+
+
 const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
     <StyledPageWrapper>
@@ -75,16 +78,26 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
 // MenuBarComponent renders the side bar for quick functionality at hand
 
 const MenuBarComponent = ({ children }) => {
+  function clear() {
+    localStorage.clear('');
+  }
+
   return (
     <MenuBar>
       <MenuContainer>
         {children}
-        <LogOut
-          className="menuIcon"
-          data-testid="logOutIcon"
-          color={theme.colours.grey.primary}
-          size={theme.icons.size.medium}
-        />
+        <Link to="/">
+          <LogOut
+            className="menuIcon"
+            data-testid="logOutIcon"
+            color={theme.colours.grey.primary}
+            size={theme.icons.size.medium}
+            onClick={() => {
+              clear();
+            }} />
+
+        </Link>
+
       </MenuContainer>
     </MenuBar>
   );

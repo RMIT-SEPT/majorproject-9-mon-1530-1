@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
 import { User } from 'react-feather';
 import { theme } from '../../../App';
 import { PanelGrid, StyledGreenText, Button } from '../DashboardComponents';
-import { DateTimeSelector, TimeFlex } from '../Bookings/BookingComponents';
+import {
+  DateTimeSelector,
+  TimeFlex,
+  DateSelector,
+  TimeSelector,
+} from '../Bookings/BookingComponents';
+import { BrowserContext } from '../../../Contexts/BrowserContext';
 
 const StyledWorkerItem = styled.div`
   height: 56px;
@@ -92,16 +98,37 @@ const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
 };
 
 const WorkerHours = ({ worker, userName }) => {
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+
   const [startDateTime, setStartDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
   const [hoursSuccess, setHoursSuccess] = useState(false);
 
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endDate, setEndDate] = useState();
+  const [endTime, setEndTime] = useState();
+
   const submitHours = async () => {
+    var localStart;
+    var localEnd;
+
+    if (isFirefox) {
+      localStart = startDate + 'T' + startTime;
+      localEnd = endDate + 'T' + endTime;
+    } else if (isChrome) {
+      localStart = startDateTime;
+      localEnd = endDateTime;
+    }
+
+    console.log(localStart);
+    console.log(localEnd);
+
     await axios.post('http://localhost:8082/hours', {
       creatorUsername: userName,
       workerUsername: worker.username,
-      startDateTime,
-      endDateTime,
+      startDateTime: localStart,
+      endDateTime: localEnd,
     });
   };
 
@@ -123,16 +150,21 @@ const WorkerHours = ({ worker, userName }) => {
         Add hours for <StyledGreenText>{worker.name}</StyledGreenText>
       </StyledConatiner>
       <TimeFlex>
-        <>
-          <DateTimeSelector
-            label="Start time"
-            onChange={setStartDateTime}
-          ></DateTimeSelector>
-          <DateTimeSelector
-            label="End time"
-            onChange={setEndDateTime}
-          ></DateTimeSelector>
-        </>
+        {isChrome && (
+          <>
+            <DateTimeSelector label="Start time" onChange={setStartDateTime} />
+            <DateTimeSelector label="End time" onChange={setEndDateTime} />
+          </>
+        )}
+        {isFirefox && (
+          <>
+            <DateSelector label="Start date" onChange={setStartDate} />
+            <TimeSelector label="Start time" onChange={setStartTime} />
+
+            <DateSelector label="End date" onChange={setEndDate} />
+            <TimeSelector label="End time" onChange={setEndTime} />
+          </>
+        )}
       </TimeFlex>
       <Button type="button" onClick={mutate}>
         Submit
