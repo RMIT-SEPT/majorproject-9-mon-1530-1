@@ -27,8 +27,10 @@ import java.util.List;
 public class AvailabilityController {
 
     private static final Logger log = LoggerFactory.getLogger(AvailabilityController.class);
+
     @Autowired
     public Environment env;
+
     @Autowired
     RestTemplate restTemplate;
     @Autowired
@@ -160,6 +162,9 @@ public class AvailabilityController {
     @GetMapping("slot/date")
     public ResponseEntity getSlotsOnDate(@RequestHeader("Authorization") String token,
                                          @RequestHeader("username") String requesterUsername,
+                                         @RequestParam(required = false) String workerUsername,
+                                         @RequestParam(required = false) String creatorUsername,
+                                         @RequestParam(required = false) String customerUsername,
                                          @RequestParam(name = "date") String dateString) {
         LocalDate date;
         try {
@@ -174,9 +179,9 @@ public class AvailabilityController {
         LocalDate endDate = availabilityService.findEndOfWeek(date);
 
         try {
-            hoursList = hoursServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
+            hoursList = hoursServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), workerUsername, creatorUsername);
             log.info(hoursList.toString());
-            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), null, null);
+            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), workerUsername, customerUsername);
             log.info(bookingsList.toString());
         } catch (ServiceConnectorException e) {
             return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
@@ -189,12 +194,15 @@ public class AvailabilityController {
     @GetMapping("slot/now")
     public ResponseEntity getTimeSlotsNow(@RequestHeader("Authorization") String token,
                                           @RequestHeader("username") String requesterUsername,
+                                          @RequestParam(required = false) String workerUsername,
+                                          @RequestParam(required = false) String creatorUsername,
+                                          @RequestParam(required = false) String customerUsername,
                                           @RequestParam(name = "from", required = false) Integer increment) {
         LocalDate date = LocalDate.now();
         if (increment != null) {
             date = availabilityService.findStartOfWeek(date).plusWeeks(increment);
         }
-        return getSlotsOnDate(token, requesterUsername, date.toString());
+        return getSlotsOnDate(token, requesterUsername, workerUsername, creatorUsername, customerUsername, date.toString());
     }
 
     private ResponseEntity evaluateAvailabilities(List<HoursResponse> hoursResponses, List<BookingResponse> bookingResponses) {
