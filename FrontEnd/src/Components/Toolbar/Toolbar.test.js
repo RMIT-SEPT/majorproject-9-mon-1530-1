@@ -13,9 +13,7 @@ const renderComponent = (component) => {
 describe('Toolbar', () => {
   it('should render Toolbar', () => {
     const { getByText } = renderComponent(<Toolbar></Toolbar>);
-    expect(getByText('New Booking')).toBeTruthy();
     expect(getByText('Contact-us')).toBeTruthy();
-    expect(getByText('Appointments')).toBeTruthy();
     expect(getByText('About')).toBeTruthy();
   });
 });

@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useQuery } from 'react-query';
 import styled from 'styled-components';
+import axios from 'axios';
 import { Title } from '../DashboardComponents';
+import { BookingContext } from '../../../Contexts/BookingContext';
 
 // Components defined here are specifically used for booking appointments
 
@@ -19,6 +22,7 @@ const StyledWorkerCard = styled.div`
 `;
 
 const CardContents = styled.div`
+  padding-top: 16px;
   display: flex;
   margin: 16px 24px;
   transition: color ${(props) => props.theme.transition.short};
@@ -79,7 +83,7 @@ const StyledDateTimeInput = styled.input`
   display: block;
   border: none;
   outline: none;
-  background-color: transparent;
+  background-color: #F5F5F5;
   position: relative;
   right: 2px;
   margin-top: 4px;
@@ -131,11 +135,11 @@ const DisabledButton = styled.button`
   font-family: ${(props) => props.theme.font.primary};
   font-size: 16px;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  color: #0000003a;
+  color: #B8B2B2;
   border: 2px solid transparent;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-  background-color: #ffffff0a;
+  background-color: white;
   outline: 0px;
   transition: background-color ${(props) => props.theme.transition.short};
 `;
@@ -161,25 +165,63 @@ const WorkerRadioButton = ({ worker, onChange, onClick }) => {
       <CardContents>
         <StyledRadioInput
           type="radio"
-          id={worker.workerUserName}
-          key={worker.workerUserName}
-          label={worker.workerFullName}
-          value={worker.workerUserName}
+          id={worker.username}
+          key={worker.username}
+          label={worker.name}
+          value={worker.name}
           name="selectWorker"
           onChange={() => {
-            onChange(worker.workerUserName);
+            onChange(worker.username);
           }}
           onClick={() => {
             onClick();
           }}
         />
         <CardContentsText>
-          <StyledLabel htmlFor={worker.workerUserName}>
-            {worker.workerFullName}
-          </StyledLabel>
+          <StyledLabel htmlFor={worker.username}>{worker.name}</StyledLabel>
         </CardContentsText>
       </CardContents>
     </StyledWorkerCard>
+  );
+};
+
+const WorkerRadioList = ({ selectBooking, setWorkerId }) => {
+  const userType = 'Worker';
+
+  const [workerList, setWorkerList] = useState([]);
+
+  const fetchWorkerList = async (key) => {
+    const { data } = await axios
+      .get(`http://localhost:8083/users/bulk?userType=${userType}`)
+      .then((res) => res)
+      .catch((error) => {
+        console.log('Error fetching list of workers: ' + error);
+        throw error;
+      });
+
+    return data;
+  };
+
+  useQuery(['workerList'], fetchWorkerList, {
+    onSuccess: (data) => {
+      console.log(data);
+      setWorkerList(data);
+    },
+  });
+
+  return (
+    <div>
+      {workerList.map((worker) => (
+        <WorkerRadioButton
+          type="radio"
+          worker={worker}
+          key={worker.username}
+          name="selectWorker"
+          onChange={setWorkerId}
+          onClick={selectBooking}
+        ></WorkerRadioButton>
+      ))}
+    </div>
   );
 };
 
@@ -200,14 +242,51 @@ const DateTimeSelector = ({ label, onChange }) => {
   );
 };
 
+const DateSelector = ({ label, onChange }) => {
+  return (
+    <DateTimeSelectorWrapper>
+      <label htmlFor={label}>{label}</label>
+      <StyledDateTimeInput
+        type="date"
+        id={label}
+        name={label}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+      <StyledHr />
+    </DateTimeSelectorWrapper>
+  );
+};
+
+const TimeSelector = ({ label, onChange }) => {
+  return (
+    <DateTimeSelectorWrapper>
+      <label htmlFor={label}>{label}</label>
+      <StyledDateTimeInput
+        type="time"
+        id={label}
+        name={label}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+      <StyledHr />
+    </DateTimeSelectorWrapper>
+  );
+};
+
 const TimeSlotView = ({ children, startTime, endTime }) => {
+  const { setStartTime, setEndTime } = useContext(BookingContext);
+
   const [localStartTime] = useState(startTime);
   const [localEndTime] = useState(endTime);
 
   return (
     <TimeSlot
       onClick={() => {
-        console.log(localStartTime, localEndTime);
+        setStartTime(localStartTime);
+        setEndTime(localEndTime);
       }}
     >
       {children}
@@ -222,4 +301,7 @@ export {
   TimeFlex,
   TimeSlotView,
   DisabledButton,
+  DateSelector,
+  TimeSelector,
+  WorkerRadioList,
 };

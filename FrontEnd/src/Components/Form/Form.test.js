@@ -1,7 +1,7 @@
 import React from 'react';
 import 'mutationobserver-shim';
 import { render } from '@testing-library/react';
-import Form from '../Components/Form';
+import Form from './Form';
 
 global.MutationObserver = window.MutationObserver;
 

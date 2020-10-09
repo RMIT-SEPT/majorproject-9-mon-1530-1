@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 import styled from 'styled-components';
 import { Watch, Clock, User } from 'react-feather';
+import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../App';
 import hairdresserImage from '../../media/hairdresser-card.png';
 
@@ -111,6 +114,18 @@ const StyledGreenText = styled.span`
   color: ${(props) => props.theme.colours.green.primary};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
 `;
+const SelectedTime = styled.span`
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  font-size:25px;
+`;
+
+const StyledStateContainer = styled.div`
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 
 const DashboardModule = ({ children, title }) => {
   return (
@@ -162,6 +177,57 @@ const UpcomingAppointmentCard = ({ booking }) => {
   );
 };
 
+const BookingsList = ({ id }) => {
+  const [bookingsList, setBookingsList] = useState([]);
+  const [date] = useState(new Date());
+
+  const fetchBookingsList = async (key) => {
+    const dateIso = date.toISOString();
+    console.log(dateIso.substring(0, dateIso.length - 1));
+    const { data } = await axios
+      .get(
+        `http://localhost:8081/bookings/range?startDateTime=${dateIso.substring(
+          0,
+          dateIso.length - 1
+        )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`
+      )
+      .then((res) => res)
+      .catch((error) => {
+        console.log('Error fetching list of bookings: ' + error);
+        throw error;
+      });
+
+    return data;
+  };
+
+  useQuery(['bookings'], fetchBookingsList, {
+    onSuccess: (data) => {
+      console.log(data);
+      setBookingsList(data);
+    },
+  });
+
+  return (
+    <>
+      {bookingsList.map((booking) => (
+        <UpcomingAppointmentCard key={booking.bookingId} booking={booking} />
+      ))}
+    </>
+  );
+};
+
+const Loading = () => {
+  return (
+    <StyledStateContainer>
+      <BarLoader height={8} width={200} color={theme.colours.green.primary} />
+    </StyledStateContainer>
+  );
+};
+
+const Error = () => {
+  return <StyledStateContainer>Error...</StyledStateContainer>;
+};
+
 export {
   DashboardModule,
   UpcomingAppointmentCard,
@@ -175,4 +241,9 @@ export {
   Title,
   Button,
   StyledGreenText,
+  SelectedTime,
+  StyledStateContainer,
+  Loading,
+  Error,
+  BookingsList,
 };

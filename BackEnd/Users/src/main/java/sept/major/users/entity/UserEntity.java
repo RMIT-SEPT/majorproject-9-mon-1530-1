@@ -6,14 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.mindrot.jbcrypt.BCrypt;
 import sept.major.common.entity.AbstractEntity;
+import sept.major.users.service.UserService;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+
+import static sept.major.users.service.UserService.hashPassword;
 
 @Getter
 @Setter
@@ -57,6 +59,9 @@ public class UserEntity implements AbstractEntity<String> {
     @NotBlank
     private String address;
 
+    @JsonIgnore
+    private String token;
+
     @Override
     public String getID() {
         return username;
@@ -69,19 +74,9 @@ public class UserEntity implements AbstractEntity<String> {
 	public void setPassword(String plainTextPassword) {
 		this.password = hashPassword(plainTextPassword);
 	}
-
-	/**
-	 * for hashing password string using spring BCrypt library
-	 * @param plainTextPassword
-	 * @return hashed string
-	 */
-	public static String hashPassword(String plainTextPassword){
-		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
-	}
-
 	
 	public boolean checkPassword(String plainTextPassword){
-		return BCrypt.checkpw(plainTextPassword, this.password);
+		return UserService.doPasswordsMatch(plainTextPassword, this.password);
 	}
 
 	public UserEntity(@NotBlank String username, @NotBlank String password, @NotBlank String userType,
@@ -119,5 +114,5 @@ public class UserEntity implements AbstractEntity<String> {
 			return false;
 		return true;
 	}
-	
+
 }

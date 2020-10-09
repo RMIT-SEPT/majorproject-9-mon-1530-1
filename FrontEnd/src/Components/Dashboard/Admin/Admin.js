@@ -10,19 +10,26 @@ import {
   Content,
   Button,
   DashboardModule,
+  Loading,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
 
 // Admin dashboard component for a logged in admin.
-
+const token = localStorage.getItem('token');
+console.log(token);
 const Admin = ({ id }) => {
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+      .get(`http://localhost:8083/users/username?username=${id}`, {
+        headers: {
+          'Authorization': `${token}`,
+          'username': `${id}`
+        }
+      })
       .then((res) => res)
       .catch((error) => {
-        console.log('Error fetching user data: ' + error);
+        console.log('admin error' + error);
         throw error;
       });
 
@@ -53,12 +60,13 @@ const Admin = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
+        const localRole = localStorage.setItem('role', data.userType);
       },
     }
   );
 
   const [userName, setUserName] = useState();
-  const [role, setRole] = useState('User');
+  const [role, setRole] = useState();
   const [date] = useState(new Date());
   const [selectedWorker, setSelectedWorker] = useState();
 
@@ -69,7 +77,7 @@ const Admin = ({ id }) => {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loading />}
       {isError && <div>Error...</div>}
       {isSuccess && (
         <DashboardWrapper
@@ -148,7 +156,7 @@ const Admin = ({ id }) => {
 };
 
 Admin.defaultProps = {
-  id: 'lizatawaf',
+  id: localStorage.getItem('username'),
 };
 
 export default Admin;

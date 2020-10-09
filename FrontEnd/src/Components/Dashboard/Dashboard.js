@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LogOut, ChevronDown } from 'react-feather';
+import { LogOut } from 'react-feather';
 import { theme } from '../../App';
+import { Link } from 'react-router-dom';
 import logoAlt from '../../media/logo-alt.png';
 import {
   StyledNavWhite,
   StyledNavBarBorder,
   StyledLogoLink,
   GreenNavLink,
-  RightFlexElements,
-  StyledUserTagName,
 } from '../Navigation/Nav';
+import RightNavElement from '../Navigation/RightNavElemnet';
 
 // This is a wrapper component to use for dashboard views for the front-end. The
 // idea is to allow for cohesive re-use of the same component, simply by provid-
@@ -48,32 +48,10 @@ const MenuContainer = styled.div`
   height: calc(100% - 40px);
   align-items: center;
 `;
-
-const Logo = styled.div`
-  flex: none;
-  width: 56px;
-  height: 56px;
-  background-color: ${(props) => props.theme.colours.green.primary};
-  border-radius: 28px;
-  margin: 0px 12px 0px 24px;
-`;
-
-const UserName = styled.div`
-  text-align: right;
-  font-size: 20px;
-  font-weight: ${(props) => props.theme.fontWeight.semiBold};
-`;
-
-const Role = styled.div`
-  text-align: right;
-  color: ${(props) => props.theme.colours.green.primary};
-  font-size: 16px;
-  font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  text-transform: capitalize;
-`;
-
 // props gets passed in to the DashboardWrapper component to access dynamic ele-
 // ments such as the userName and role
+
+
 
 const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
@@ -88,14 +66,8 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
           <GreenNavLink>Appointments</GreenNavLink>
           <GreenNavLink>Contact-us</GreenNavLink>
           <GreenNavLink>About</GreenNavLink>
-          <RightFlexElements>
-            <StyledUserTagName>
-              <UserName>{userName || 'empty'}</UserName>
-              <Role>{role || 'empty'}</Role>
-            </StyledUserTagName>
-            <Logo></Logo>
-            <ChevronDown size={28} />
-          </RightFlexElements>
+          <RightNavElement userName={userName}
+            role={role}></RightNavElement>
         </StyledNavBarBorder>
       </StyledNavWhite>
       <FlexContainer>{children}</FlexContainer>
@@ -106,16 +78,26 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
 // MenuBarComponent renders the side bar for quick functionality at hand
 
 const MenuBarComponent = ({ children }) => {
+  function clear() {
+    localStorage.clear('');
+  }
+
   return (
     <MenuBar>
       <MenuContainer>
         {children}
-        <LogOut
-          className="menuIcon"
-          data-testid="logOutIcon"
-          color={theme.colours.grey.primary}
-          size={theme.icons.size.medium}
-        />
+        <Link to="/">
+          <LogOut
+            className="menuIcon"
+            data-testid="logOutIcon"
+            color={theme.colours.grey.primary}
+            size={theme.icons.size.medium}
+            onClick={() => {
+              clear();
+            }} />
+
+        </Link>
+
       </MenuContainer>
     </MenuBar>
   );

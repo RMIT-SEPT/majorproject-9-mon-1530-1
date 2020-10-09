@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -44,7 +42,7 @@ public class PatchBlackBoxTest extends UserBlackBoxHelper {
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", username));
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(new HashMap<String, String>()), String.class);
+        ResponseEntity<String> patchResult = patchRequest(getUrl(requestParameters), new HashMap<>());
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         ValidationError validationError = new ValidationError("Identifier field", String.format("No record with a identifier of %s was found", username));
@@ -61,7 +59,7 @@ public class PatchBlackBoxTest extends UserBlackBoxHelper {
         patchValues.put("userType", "");
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+        ResponseEntity<String> patchResult = patchRequest(getUrl(requestParameters), patchValues);
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(patchResult.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("userType", "must not be blank"))));
@@ -77,7 +75,7 @@ public class PatchBlackBoxTest extends UserBlackBoxHelper {
         patchValues.put("userType", Arrays.asList("an incorrect value"));
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+        ResponseEntity<String> patchResult = patchRequest(getUrl(requestParameters), patchValues);
 
         System.out.println(patchResult);
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -96,7 +94,7 @@ public class PatchBlackBoxTest extends UserBlackBoxHelper {
         patchValues.put("userType", incorrectField);
 
         // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+        ResponseEntity<String> patchResult = patchRequest(getUrl(requestParameters), patchValues);
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
