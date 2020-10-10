@@ -20,7 +20,7 @@ import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { BookingView } from '../Bookings/BookingView';
 import Unauthorized from '../../Auth/Unauthorized';
-
+import { Redirect } from 'react-router-dom';
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
@@ -115,7 +115,10 @@ const User = ({ id }) => {
   const [worker, setWorker] = useState(false);
   const [booking, setBooking] = useState(false);
 
-  return (
+  if (localStorage.getItem('role') === 'admin') {
+    return <Redirect to="/admin" />;
+  }else{
+return (
     <>
       {isLoading && <Loading />}
       {isError && <Unauthorized/>}
@@ -151,6 +154,7 @@ const User = ({ id }) => {
           </MenuBarComponent>
           {main && (
             <Content>
+              {}
               <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
               <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
               <DashboardModule title="Upcoming appointments">
@@ -201,7 +205,7 @@ const User = ({ id }) => {
         </DashboardWrapper>
       )}
     </>
-  );
+  )};
 };
 
 User.defaultProps = {

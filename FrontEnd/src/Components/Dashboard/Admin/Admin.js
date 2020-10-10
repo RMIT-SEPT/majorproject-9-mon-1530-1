@@ -11,12 +11,11 @@ import {
   Button,
   DashboardModule,
   Loading,
-  Error,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
 import Unauthorized from '../../Auth/Unauthorized';
-
+import { Redirect } from 'react-router-dom';
 // Admin dashboard component for a logged in admin.
 const token = localStorage.getItem('token');
 console.log(token);
@@ -76,7 +75,11 @@ const Admin = ({ id }) => {
   const [main, setMain] = useState(true);
   const [worker, setWorker] = useState(false);
   const [employee, setEmployee] = useState(false);
-
+  const isLoggedIn = localStorage.getItem('isAuth');
+ 
+    if (localStorage.getItem('role') === 'user') {
+      return <Redirect to="/user" />;
+    }else{
   return (
     <>
       {isLoading && <Loading />}
@@ -155,7 +158,7 @@ const Admin = ({ id }) => {
       )}
     </>
   );
-};
+}};
 
 Admin.defaultProps = {
   id: localStorage.getItem('username'),
