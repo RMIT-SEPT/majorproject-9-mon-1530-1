@@ -39,6 +39,7 @@ const Toolbar = ({ id }) => {
     return data;
   };
   useQuery(['adminData', id], fetchAdminData, {
+    retry: false, // Will retry failed requests 10 times before displaying an erro
     onSuccess: (data) => {
       setUserName(data.name);
       setRole(data.userType);
@@ -77,13 +78,13 @@ const Toolbar = ({ id }) => {
             <StyledNavBar>
               {role === 'user'
                 ? <a
-                  href="http://localhost:3000/user"
+                  href="/user"
                   style={{ textDecoration: 'none' }}
                 >
                   <GreenNavLink>Dashboard</GreenNavLink>
                 </a>
                 : <a
-                  href="http://localhost:3000/admin"
+                  href="/admin"
                   style={{ textDecoration: 'none' }}
                 >
                   <GreenNavLink>Dashboard</GreenNavLink>

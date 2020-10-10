@@ -5,7 +5,6 @@ import {
   RightFlexElements,
   StyledUserTagName,
 } from '../Navigation/Nav';
-
 const UserName = styled.div`
   text-align: right;
   font-size: 20px;
@@ -27,6 +26,9 @@ const Logo = styled.div`
   margin: 0px 12px 0px 24px;
 `;
 const rightNavElement = ({ userName, role }) => {
+  function clear() {
+    localStorage.clear('');
+  }
   return (
     <RightFlexElements>
       <StyledUserTagName>
@@ -34,7 +36,12 @@ const rightNavElement = ({ userName, role }) => {
         <Role>{role || 'empty'}</Role>
       </StyledUserTagName>
       <Logo></Logo>
-      <ChevronDown size={28} />
+
+      <a href="/"><ChevronDown
+          size={28}
+          onClick={() => {
+            clear();
+          }} /></a>
     </RightFlexElements>
   );
 };
