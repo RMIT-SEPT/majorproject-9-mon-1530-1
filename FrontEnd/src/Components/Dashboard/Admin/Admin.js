@@ -11,9 +11,11 @@ import {
   Button,
   DashboardModule,
   Loading,
+  Error,
 } from '../DashboardComponents';
 import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
+import Unauthorized from '../../Auth/Unauthorized';
 
 // Admin dashboard component for a logged in admin.
 const token = localStorage.getItem('token');
@@ -78,7 +80,7 @@ const Admin = ({ id }) => {
   return (
     <>
       {isLoading && <Loading />}
-      {isError && <div>Error...</div>}
+      {isError &&  <Unauthorized/>}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}

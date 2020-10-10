@@ -6,7 +6,6 @@ import { Watch, Clock, User } from 'react-feather';
 import BarLoader from 'react-spinners/BarLoader';
 import { theme } from '../../App';
 import hairdresserImage from '../../media/hairdresser-card.png';
-
 // Components defined here are specifically used for dashboard appointments
 
 const Heading = styled.div`
@@ -224,9 +223,6 @@ const Loading = () => {
   );
 };
 
-const Error = () => {
-  return <StyledStateContainer>Error...</StyledStateContainer>;
-};
 
 export {
   DashboardModule,
@@ -244,6 +240,5 @@ export {
   SelectedTime,
   StyledStateContainer,
   Loading,
-  Error,
   BookingsList,
 };

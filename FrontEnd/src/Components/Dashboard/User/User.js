@@ -19,6 +19,7 @@ import {
 import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { BookingView } from '../Bookings/BookingView';
+import Unauthorized from '../../Auth/Unauthorized';
 
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
@@ -117,7 +118,7 @@ const User = ({ id }) => {
   return (
     <>
       {isLoading && <Loading />}
-      {isError && <Error />}
+      {isError && <Unauthorized/>}
       {isSuccess && (
         <DashboardWrapper
           userName={userName}
