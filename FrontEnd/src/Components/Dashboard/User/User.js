@@ -117,95 +117,96 @@ const User = ({ id }) => {
 
   if (localStorage.getItem('role') === 'admin') {
     return <Redirect to="/admin" />;
-  }else{
-return (
-    <>
-      {isLoading && <Loading />}
-      {isError && <Unauthorized/>}
-      {isSuccess && (
-        <DashboardWrapper
-          userName={userName}
-          role={role}
-          actions={{ bookingLink: bookAppointment }}
-        >
-          <MenuBarComponent>
-            <Home
-              onClick={returnHome}
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <PlusCircle
-              onClick={bookAppointment}
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <Phone
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <Calendar
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-          </MenuBarComponent>
-          {main && (
-            <Content>
-              {}
-              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <DashboardModule title="Upcoming appointments">
-                {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
+  } else {
+    return (
+      <>
+        {isLoading && <Loading />}
+        {isError && <Unauthorized />}
+        {isSuccess && (
+          <DashboardWrapper
+            userName={userName}
+            role={role}
+            actions={{ bookingLink: bookAppointment }}
+          >
+            <MenuBarComponent>
+              <Home
+                onClick={returnHome}
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <PlusCircle
+                onClick={bookAppointment}
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <Phone
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <Calendar
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+            </MenuBarComponent>
+            {main && (
+              <Content>
+                {}
+                <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <DashboardModule title="Upcoming appointments">
+                  {/* Content of Upcoming appointments DashboardModule will change depending on how many appointments for the user
                   Potentially update to use flex container for wrapping? */}
-                <AppointmentsGrid>
-                  <BookingsList id={userId} />
-                </AppointmentsGrid>
-                <Button type="button" onClick={bookAppointment}>
-                  Book
+                  <AppointmentsGrid>
+                    <BookingsList id={userId} />
+                  </AppointmentsGrid>
+                  <Button type="button" onClick={bookAppointment}>
+                    Book
                 </Button>
-              </DashboardModule>
-            </Content>
-          )}
-          {worker && (
-            <Content>
-              <Heading>New booking</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={returnHome}>
-                Back
+                </DashboardModule>
+              </Content>
+            )}
+            {worker && (
+              <Content>
+                <Heading>New booking</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <Button type="button" onClick={returnHome}>
+                  Back
               </Button>
-              <DashboardModule title="Choose a worker">
-                <PanelGrid>
-                  <WorkerRadioList
-                    selectBooking={selectBooking}
-                    setWorkerId={setWorkerId}
-                  />
-                </PanelGrid>
-              </DashboardModule>
-            </Content>
-          )}
-          {booking && (
-            <Content>
-              <Heading>New booking</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={cancelBooking}>
-                Back
+                <DashboardModule title="Choose a worker">
+                  <PanelGrid>
+                    <WorkerRadioList
+                      selectBooking={selectBooking}
+                      setWorkerId={setWorkerId}
+                    />
+                  </PanelGrid>
+                </DashboardModule>
+              </Content>
+            )}
+            {booking && (
+              <Content>
+                <Heading>New booking</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <Button type="button" onClick={cancelBooking}>
+                  Back
               </Button>
-              <DashboardModule title="Availability">
-                <BookingView />
-              </DashboardModule>
+                <DashboardModule title="Availability">
+                  <BookingView />
+                </DashboardModule>
 
-              <Button type="button" onClick={mutate}>
-                Submit
+                <Button type="button" onClick={mutate}>
+                  Submit
               </Button>
-            </Content>
-          )}
-        </DashboardWrapper>
-      )}
-    </>
-  )};
+              </Content>
+            )}
+          </DashboardWrapper>
+        )}
+      </>
+    )
+  };
 };
 
 User.defaultProps = {

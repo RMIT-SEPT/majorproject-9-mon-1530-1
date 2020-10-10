@@ -76,89 +76,90 @@ const Admin = ({ id }) => {
   const [worker, setWorker] = useState(false);
   const [employee, setEmployee] = useState(false);
   const isLoggedIn = localStorage.getItem('isAuth');
- 
-    if (localStorage.getItem('role') === 'user') {
-      return <Redirect to="/user" />;
-    }else{
-  return (
-    <>
-      {isLoading && <Loading />}
-      {isError &&  <Unauthorized/>}
-      {isSuccess && (
-        <DashboardWrapper
-          userName={userName}
-          role={role}
-          actions={{ bookingLink: () => { } }}
-        >
-          <MenuBarComponent>
-            <Home
-              onClick={returnHome}
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <PlusCircle
-              onClick={() => { }}
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <Phone
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-            <Calendar
-              className="menuIcon"
-              color={theme.colours.grey.primary}
-              size={theme.icons.size.medium}
-            />
-          </MenuBarComponent>
-          {main && (
-            <Content>
-              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <DashboardModule title="Add an employee">
-                <WorkerList
-                  setWorker={setWorker}
-                  clear={clear}
-                  setSelectedWorker={setSelectedWorker}
-                />
-                <Button type="button" onClick={addEmployee}>
-                  Add An Employee
+
+  if (localStorage.getItem('role') === 'user') {
+    return <Redirect to="/user" />;
+  } else {
+    return (
+      <>
+        {isLoading && <Loading />}
+        {isError && <Unauthorized />}
+        {isSuccess && (
+          <DashboardWrapper
+            userName={userName}
+            role={role}
+            actions={{ bookingLink: () => { } }}
+          >
+            <MenuBarComponent>
+              <Home
+                onClick={returnHome}
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <PlusCircle
+                onClick={() => { }}
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <Phone
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+              <Calendar
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
+            </MenuBarComponent>
+            {main && (
+              <Content>
+                <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <DashboardModule title="Add an employee">
+                  <WorkerList
+                    setWorker={setWorker}
+                    clear={clear}
+                    setSelectedWorker={setSelectedWorker}
+                  />
+                  <Button type="button" onClick={addEmployee}>
+                    Add An Employee
                 </Button>
-              </DashboardModule>
-            </Content>
-          )}
-          {worker && (
-            <Content>
-              <Heading>Add worker hours</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={returnHome}>
-                Back
+                </DashboardModule>
+              </Content>
+            )}
+            {worker && (
+              <Content>
+                <Heading>Add worker hours</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <Button type="button" onClick={returnHome}>
+                  Back
               </Button>
-              <DashboardModule title="Add worker hours">
-                <WorkerHours worker={selectedWorker} userName={id} />
-              </DashboardModule>
-            </Content>
-          )}
-          {employee && (
-            <Content>
-              <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
-              <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
-              <Button type="button" onClick={returnHome}>
-                Back
+                <DashboardModule title="Add worker hours">
+                  <WorkerHours worker={selectedWorker} userName={id} />
+                </DashboardModule>
+              </Content>
+            )}
+            {employee && (
+              <Content>
+                <Heading>Welcome back, {userName.split(' ')[0]}!</Heading>
+                <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
+                <Button type="button" onClick={returnHome}>
+                  Back
               </Button>
-              <DashboardModule title="Fill employee details">
-                <FormDetails />
-              </DashboardModule>
-            </Content>
-          )}
-        </DashboardWrapper>
-      )}
-    </>
-  );
-}};
+                <DashboardModule title="Fill employee details">
+                  <FormDetails />
+                </DashboardModule>
+              </Content>
+            )}
+          </DashboardWrapper>
+        )}
+      </>
+    );
+  }
+};
 
 Admin.defaultProps = {
   id: localStorage.getItem('username'),
