@@ -77,23 +77,23 @@ const about = (props) => {
           <Toolbar />
         </Grid>
         <Grid item xs={5}>
-        <BigFont>Find Best Sevices </BigFont>
-              <BigFont>Near You</BigFont>
-              <SmallerFont>
-                {' '}
+          <BigFont>Find Best Sevices </BigFont>
+          <BigFont>Near You</BigFont>
+          <SmallerFont>
+            {' '}
                 All of our services are done by licenced experts in their
                 fields.
               </SmallerFont>
-              <SmallerFont>
-                {' '}
+          <SmallerFont>
+            {' '}
                 Our services{' '}
-                <TextLoop interval={350}>
-                  <span> Barbers </span>
-                  <span> Nail technicians </span>
-                  <span> Dentists </span>
-                  <span> Gyms </span>
-                  <span> Fitness Coaches </span>
-                </TextLoop>{' '}
+            <TextLoop interval={350}>
+              <span> Barbers </span>
+              <span> Nail technicians </span>
+              <span> Dentists </span>
+              <span> Gyms </span>
+              <span> Fitness Coaches </span>
+            </TextLoop>{' '}
                 And Much more .
               </SmallerFont>
         </Grid>

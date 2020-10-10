@@ -144,7 +144,7 @@ const contact = (props) => {
               <Heading>Richard wang : s3720241@student.rmit.edu.au </Heading>
               <Heading>Abrar Alsagheer : s3707180@student.rmit.edu.au</Heading>
               <Heading>Lawrence Abdelmalek:  s3656022@student.rmit.edu.au  </Heading>
-              </Grid>
+            </Grid>
           </Grid>
         </Right>
       </Grid>

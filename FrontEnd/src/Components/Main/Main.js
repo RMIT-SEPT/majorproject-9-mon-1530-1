@@ -118,7 +118,7 @@ function Main(props) {
               </a>
             </Grid>
             <Grid item xs={3}>
-             <a href="/login"> <img src={book} alt="big"  /></a>
+              <a href="/login"> <img src={book} alt="big" /></a>
             </Grid>
           </Grid>
         </Grid>

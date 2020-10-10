@@ -38,10 +38,10 @@ const rightNavElement = ({ userName, role }) => {
       <Logo></Logo>
 
       <a href="/"><ChevronDown
-          size={28}
-          onClick={() => {
-            clear();
-          }} /></a>
+        size={28}
+        onClick={() => {
+          clear();
+        }} /></a>
     </RightFlexElements>
   );
 };

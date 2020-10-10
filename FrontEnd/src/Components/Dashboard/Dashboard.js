@@ -68,7 +68,7 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
             <GreenNavLink>Contact-us</GreenNavLink>
           </a>
           <a href="/about" style={{ textDecoration: 'none' }}>
-          <GreenNavLink>About</GreenNavLink>
+            <GreenNavLink>About</GreenNavLink>
           </a>
           <RightNavElement userName={userName}
             role={role}></RightNavElement>
