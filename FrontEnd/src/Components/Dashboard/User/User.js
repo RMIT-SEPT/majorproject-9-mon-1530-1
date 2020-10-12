@@ -18,7 +18,7 @@ import {
 } from '../DashboardComponents';
 import { WorkerRadioList } from '../Bookings/BookingComponents';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import UserSettings from '../../UserSettings';
+import UserSettings from '../Settings/UserSettings';
 import { BookingView } from '../Bookings/BookingView';
 import Unauthorized from '../../Auth/Unauthorized';
 import { Redirect } from 'react-router-dom';

@@ -6,21 +6,31 @@ import TextField from "@material-ui/core/TextField";
 import { useForm } from "react-hook-form";
 import {
     SubHeading
-} from '../Components/Dashboard/DashboardComponents';
+} from '../DashboardComponents';
 
 export const UserSettings = ({ id }) => {
 
+    const token = localStorage.getItem('token');
     const fetchUserData = async (key, id) => {
-        const { data } = await axios
-          .get(`http://localhost:8083/users?username=${id}`)
-          .catch((error) => {
-            console.log('Error fetching user data: ' + error);
-          });
-    
-        return data;
+      const { data } = await axios
+        .get(`http://localhost:8083/users/username?username=${id}`, {
+          headers: {
+            'Authorization': `${token}`,
+            'username': `${id}`
+          }
+        })
+        .then((response) => response)
+        .then((res) => res)
+        .catch((error) => {
+          console.log('admin error' + error);
+          throw error;
+        });
+  
+      return data;
     };
 
     const [userName, setUserName] = useState();
+    const [address, setAddress] = useState();
 
     const { isSuccess, isLoading, isError } = useQuery(
         ['userData', id],
@@ -28,6 +38,7 @@ export const UserSettings = ({ id }) => {
         {
           onSuccess: (data) => {
             setUserName(data.name);
+            setAddress(data.address);
           },
         }
       );
@@ -57,7 +68,11 @@ export const UserSettings = ({ id }) => {
         var params = {
             name: values.name
         }
-        const { postNameData } = await axios.patch(`http://localhost:8083/users/?username=${id}`, params)
+        var headers = { headers: {
+            'Authorization': `${token}`,
+            'username': `${id}`
+        }}
+        const { postNameData } = await axios.patch(`http://localhost:8083/users/?username=${id}`, params, headers)
             .catch(function (error) {
                 if (error.response)
                 {
@@ -71,6 +86,7 @@ export const UserSettings = ({ id }) => {
                 }
                 console.log(error.config);
         });
+        setUserName(values.name);
         setNameErrors("name change accepted");
         handleSubmitName();
     }
@@ -84,7 +100,11 @@ export const UserSettings = ({ id }) => {
                 oldPassword: values.OldPassword,
                 newPassword: values.NewPassword
             }
-            const { postPassowrdData } = await axios.post(`http://localhost:8083/users/password/?username=${id}`, params)
+            var headers = { headers: {
+                'Authorization': `${token}`,
+                'username': `${id}`
+            }}
+            const { postPassowrdData } = await axios.patch(`http://localhost:8083/users/password/?username=${id}`, params, headers)
                                     .catch (function (error) {
                                         if (error.response)
                                         {
@@ -143,6 +163,33 @@ export const UserSettings = ({ id }) => {
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
                         />
+                        {/* <h2>Address</h2>
+                        <TextField
+                            value={address}
+                            name="address"
+                            inputRef={checkName({
+                                required: "address Required",
+                                maxLength: {
+                                    value: 250,
+                                    message: "address must be less than 250 characters ",
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: "address must be more than 5 character ",
+                                },
+                                pattern: {
+                                    value: /^\d+\s[A-z]+\s[A-z]+/,
+                                    message: "fist name must be only alphabet or numbers ",
+                                },
+                            })}
+                            id="outlined-full-width"
+                            style={{ margin: 8 }}
+                            helperText="Full width!"
+                            fullWidth
+                            margin="normal"
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                        /> */}
                         <Grid item xs={12}>
                             <Button onClick={handleSubmitName(onSubmitNameChange)} variant="contained" color="default">
                                 {" "}
