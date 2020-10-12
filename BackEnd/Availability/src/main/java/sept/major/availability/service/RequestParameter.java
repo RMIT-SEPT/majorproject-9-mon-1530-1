@@ -2,6 +2,10 @@ package sept.major.availability.service;
 
 import lombok.*;
 
+/**
+ * encapsulation of key/value in a convenience class. 
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

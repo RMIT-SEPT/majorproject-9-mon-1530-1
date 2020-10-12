@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Abstract class for external micro services to capture their common functionality.  
+ *
+ */
 @Service
 public abstract class ServiceConnector<E> {
 

@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Connector class for external Booking micro service to make it easier to use it and call it's methods. 
+ *
+ */
 @Service
 public class BookingServiceConnector extends ServiceConnector<BookingResponse> {
 

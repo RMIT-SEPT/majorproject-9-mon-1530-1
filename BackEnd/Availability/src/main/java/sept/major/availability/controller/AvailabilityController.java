@@ -21,6 +21,12 @@ import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
 import java.util.List;
 
+/**
+ * availability controller is the entry point for the service that receives the REST calls. 
+ * It works with hours and bookings services to process and return relevant results without 
+ * directly communicating with the database.
+ *
+ */
 @RestController
 @RequestMapping("/availability")
 @CrossOrigin
@@ -54,10 +60,14 @@ public class AvailabilityController {
      * This method will get user's available hours in the range get user's booked times overlay the booking on the availability calculate the result and return
      * as a list
      *
-     * @param startDateString, example : '2020-09-05T21:54:41.173'
-     * @param endDateString
-     * @param workerUsername
-     * @param creatorUsername
+     * @param token authorization token to identify the session 
+     * @param requesterUsername
+     * @param startDateString requests start date
+     * @param endDateString requests end date
+     * @param workerUsername worker username filter
+     * @param creatorUsername creator/supervisor username filter
+     * @param customerUsername
+     * @return available hours for the worker with the given filters  
      */
     @GetMapping("/range")
     public ResponseEntity getAvailabilityInRange(@RequestHeader("Authorization") String token,
@@ -85,12 +95,15 @@ public class AvailabilityController {
     }
 
     /**
-     * Return availabilities for a given worker for a given date
+     * Return availabilities for a given worker for a given date using hours and bookings services
      *
-     * @param dateString
-     * @param workerUsername
+     * @param token authorization token to identify the session 
+     * @param requesterUsername
+     * @param dateString date string filter
+     * @param workerUsername worker username filter
      * @param creatorUsername
-     * @return
+     * @param customerUsername
+     * @return available hours for the worker with the given filters
      */
     @GetMapping("/date")
     public ResponseEntity getAvailabilityInDate(@RequestHeader("Authorization") String token,
@@ -117,13 +130,15 @@ public class AvailabilityController {
 
     }
 
-
     /**
-     * return all available hours for the given worker and creator
-     *
-     * @param workerUsername
+     * return all available hours for the given worker and creator using the hours and bookings services
+     * 
+     * @param token authorization token to identify the session
+     * @param requesterUsername
+     * @param workerUsername worker username filter
      * @param creatorUsername
-     * @return
+     * @param customerUsername
+     * @return available hours for the worker with the given filter
      */
     @GetMapping("/all")
     public ResponseEntity getAllAvailabilities(@RequestHeader("Authorization") String token,
@@ -148,7 +163,7 @@ public class AvailabilityController {
     }
 
     /**
-     * There doesn't seem a need for implementing Delete for availability since there is no persistence. The availability is calculated from hours and bookings.
+     * There doesn't seem a need for implementing Delete for availability since there is no persistence.
      *
      * @return
      */
@@ -158,7 +173,17 @@ public class AvailabilityController {
         return new ResponseEntity<String>("Availability Delete method is not implemnted ", HttpStatus.NOT_IMPLEMENTED);
     }
 
-
+    
+    /**
+     * Return specific available time slots to the requestor but similar to the general service but results are returned in time slots. 
+     * @param token
+     * @param requesterUsername
+     * @param workerUsername
+     * @param creatorUsername
+     * @param customerUsername
+     * @param dateString
+     * @return
+     */
     @GetMapping("slot/date")
     public ResponseEntity getSlotsOnDate(@RequestHeader("Authorization") String token,
                                          @RequestHeader("username") String requesterUsername,
@@ -191,6 +216,18 @@ public class AvailabilityController {
         return new ResponseEntity(availabilityService.getTimeSlots(date, endDate, availabilityService.checkAllAvailabilities(hoursList, bookingsList)), HttpStatus.OK);
     }
 
+    /**
+     * Return available time slots to the requestor starting but similar to the general service but results are returned in time slots. It calculates the availability in 
+     * time slots and for the number of weeks passed in increment starting from this week. 
+     * 
+     * @param token authorization token to identify the session
+     * @param requesterUsername
+     * @param workerUsername worker username filter
+     * @param creatorUsername creator/supervisor username filter
+     * @param customerUsername
+     * @param increment the increment in weeks
+     * @return
+     */
     @GetMapping("slot/now")
     public ResponseEntity getTimeSlotsNow(@RequestHeader("Authorization") String token,
                                           @RequestHeader("username") String requesterUsername,

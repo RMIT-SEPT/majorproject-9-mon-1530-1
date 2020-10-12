@@ -7,6 +7,11 @@ import sept.major.availability.entity.BookingResponse;
 
 import java.util.List;
 
+
+/**
+ * Encapsulates the availability entities and the booking responses in one class for convenience. 
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

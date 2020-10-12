@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Exception class for microservice exceptions related to connectors. 
+ *
+ */
 public class ServiceConnectorException extends Exception {
 
     @Autowired
