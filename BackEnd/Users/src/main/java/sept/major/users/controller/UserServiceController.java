@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.service.UserService;
 
+import java.io.File;
 import java.util.*;
 
 @RestController
@@ -50,7 +53,35 @@ public class UserServiceController {
      */
     @GetMapping("/health")
     public ResponseEntity<Object> getUserServiceHealth() {
-    	return new ResponseEntity<Object>(HttpStatus.OK);
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "users");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
     }
     
     @GetMapping("/bulk")

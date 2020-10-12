@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import sept.major.availability.entity.BookingResponse;
@@ -16,6 +18,7 @@ import sept.major.availability.service.connector.BookingServiceConnector;
 import sept.major.availability.service.connector.HoursServiceConnector;
 import sept.major.availability.service.connector.ServiceConnectorException;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
@@ -45,7 +48,35 @@ public class AvailabilityController {
      */
     @GetMapping("/health")
     public ResponseEntity<Object> getAvailabilityServiceHealth() {
-    	return new ResponseEntity<Object>(HttpStatus.OK);
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "availability");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
     }
     
     /**
