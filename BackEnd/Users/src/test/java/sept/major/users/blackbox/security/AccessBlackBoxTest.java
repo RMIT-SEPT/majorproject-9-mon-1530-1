@@ -86,7 +86,7 @@ public class AccessBlackBoxTest extends UserBlackBoxHelper {
 
         // Attempt get all with user token
         response = getRequest(getUrl("bulk"), getAuthorizedUserHeaders(), String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertTrue(requestAuthenticated(response.getStatusCode()));
 
         // Attempt get all with admin token
         response = getRequest(getUrl("bulk"), getAuthorizedAdminHeaders(), String.class);
