@@ -3,7 +3,7 @@
   "containerDefinitions": [
 	{
        "name": "Hours",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Hours",
+       "image": "973460626477.dkr.ecr.us-east-1.amazonaws.com/sept:Hours",
    	   "memoryReservation": 128,
        "memory": 256,
    	   "portMappings": [
