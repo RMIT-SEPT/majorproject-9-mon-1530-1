@@ -160,6 +160,12 @@ const User = ({ id }) => {
                 color={theme.colours.grey.primary}
                 size={theme.icons.size.medium}
               />
+              <Settings
+                onClick={selectSetting}
+                className="menuIcon"
+                color={theme.colours.grey.primary}
+                size={theme.icons.size.medium}
+              />
             </MenuBarComponent>
             {main && (
               <Content>
