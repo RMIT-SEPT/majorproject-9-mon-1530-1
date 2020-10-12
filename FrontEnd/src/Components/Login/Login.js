@@ -135,20 +135,33 @@ const Login = (props) => {
   let history = useHistory();
   const onSubmit = (values) => {
     axios
-      .get(
-        `http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`
+      .put(
+        `http://localhost:8083/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
-        console.log(response.status);
+        console.log('response.data');
+        console.log(response.data.user.userType);
+
         let r = response.status;
         if (r === 200) {
+          const data = response.data
+          localStorage.setItem("token", data.token)
+          localStorage.setItem("role", response.data.user.userType)
+
+          console.log(`token: ${data.token}`)
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
           console.log(localStorage.getItem('username'));
+          console.log(values);
           auth.login(() => {
             //check standard user and then transfer to admin panel
             setLoginerror('sucess');
-            history.push('/user');
+            window.location.reload();
+            if (localStorage.getItem('role') === 'admin') {
+              history.push('/admin');
+            } else {
+              history.push('/user');
+            }
           });
         } else {
           setLoginerror('The username or password is incorrect.');
@@ -161,7 +174,12 @@ const Login = (props) => {
   };
   const isLoggedIn = localStorage.getItem('isAuth');
   if (isLoggedIn) {
-    return <Redirect to="/admin" />;
+    if (localStorage.getItem('role') === 'admin') {
+      return <Redirect to="/admin" />;
+    } else {
+      return <Redirect to="/user" />;
+    }
+
   } else {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>

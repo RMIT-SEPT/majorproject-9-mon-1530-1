@@ -147,7 +147,7 @@ public class GetBlackBoxTests extends BookingBlackBoxHelper {
 		List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("startDateTime", pastDateTime(0, 0, 1).toString()),
 				new RequestParameter("endDateTime", pastDateTime(0, 0, 3).toString()));
 
-		ResponseEntity<String> getResult = testRestTemplate.getForEntity(getUrl("range", requestParameters), String.class);
+        ResponseEntity<String> getResult = getRequest(getUrl("range", requestParameters), String.class);
 
 		assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 		ObjectMapper objectMapper = new ObjectMapper();

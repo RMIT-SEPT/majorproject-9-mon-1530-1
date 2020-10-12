@@ -1,6 +1,7 @@
 package sept.major.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,10 +9,7 @@ import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.service.UserService;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -27,7 +25,7 @@ public class UserServiceController {
         this.userControllerHelper = userControllerHelper;
     }
 
-    @GetMapping()
+    @GetMapping("/username")
     public ResponseEntity getUser(@RequestParam String username) {
         return userControllerHelper.getEntity(username, String.class);
     }
@@ -65,7 +63,7 @@ public class UserServiceController {
         }
     }
 
-    
+
     /**
      * Endpoint for changing user password
      * @param username
@@ -86,43 +84,27 @@ public class UserServiceController {
             response.put("status", "failed");
             return new ResponseEntity(response, HttpStatus.NOT_FOUND);
 		}
-	
-	}
-	
 
-    /**
-     * Endpoint to receive user password compare calls
-     * @param username
-     * @param password
-     * @return
-     */
-    @GetMapping("/password/compare") //TODO change to put
-    public ResponseEntity comparePassword(@RequestParam String username , String password) {
-    	System.out.println("username:"+ username + " password:" + password);
+    }
 
-        HashMap<String, Object> response = new HashMap<>();
+
+    @PutMapping("/token")
+    public ResponseEntity<Map> getToken(@RequestParam String username, String password) {
+        Map<String, Object> response = new HashMap<>();
         response.put("username", username);
-        response.put("password", password);
+        Pair<Optional<String>, Optional<UserEntity>> loginResult = userService.login(username, password);
+        if (loginResult.getFirst().isPresent()) {
+            response.put("status", "successful");
+            response.put("token", loginResult.getFirst().get());
+            if (loginResult.getSecond().isPresent()) {
+                response.put("user", loginResult.getSecond().get());
+            }
 
-        UserEntity userEntity;
-        try {
-            userEntity = userService.read(username);
-        } catch (RecordNotFoundException e) {
-            response.put("result", "failed");
-            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
-        }
-
-        boolean result = userService.comparePassword(username, password);
-
-        if (result) {
-            response.put("result", "successful");
-            response.put("user", userEntity);
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            response.put("result", "failed");
-            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+            response.put("status", "failed");
+            response.put("token", null);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
-
     }
 }

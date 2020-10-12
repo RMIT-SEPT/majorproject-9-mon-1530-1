@@ -12,7 +12,7 @@ import {
 import { TimeSlotView, DisabledButton } from './BookingComponents';
 import { sampleReturn } from './BookingsMockData';
 import { BookingContext } from '../../../Contexts/BookingContext';
-import { StyledGreenText } from '../DashboardComponents';
+import { StyledGreenText,SelectedTime } from '../DashboardComponents';
 
 function getWeekEndDate(viewDate) {
   let endDate = new Date(
@@ -30,7 +30,6 @@ function getWeekStartDate(viewDate) {
 
   return startDate;
 }
-
 function generateDays(startDate, endDate) {
   var indents = [];
 
@@ -199,7 +198,9 @@ const BookingView = ({ timeSlots }) => {
         {generateTimesForDays(weekStartDate, sampleReturn)}
       </ul>
       <div>
+        <SelectedTime>
         Selected time:{' '}
+        </SelectedTime>
         <StyledGreenText>
           {startTime && startTime.toLocaleString()} -{' '}
           {endTime && endTime.toLocaleString()}

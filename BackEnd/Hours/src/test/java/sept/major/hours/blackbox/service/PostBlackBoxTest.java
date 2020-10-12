@@ -27,7 +27,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
     void existing() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
         firstPostMap.remove("hoursId");
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
+        ResponseEntity<String> result = postRequest(firstPostMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(result.getBody()).startsWith("{\"message\":\"Hours provided conflicts with existing hours: ");
@@ -37,7 +37,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
     void missingField() throws JsonProcessingException {
         Map<String, String> randomEntityMap = randomEntityMap();
         randomEntityMap.remove("creatorUsername");
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("creatorUsername", "must not be blank"))));
@@ -47,7 +47,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
     void incorrectFieldTypeList() {
         Map<String, Object> randomEntityMap = new HashMap<>(randomEntityMap());
         randomEntityMap.put("creatorUsername", Arrays.asList("an incorrect value"));
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -58,7 +58,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
         Map<String, String> incorrectField = new HashMap<>();
         incorrectField.put("incorrect", "field");
         randomEntityMap.put("creatorUsername", incorrectField);
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -68,7 +68,7 @@ public class PostBlackBoxTest extends HoursBlackBoxTests {
         Map<String, String> randomEntityMap = randomEntityMap();
         randomEntityMap.put("startDateTime", pastDateTime(0, 0, 1).toString());
         randomEntityMap.put("endDateTime", pastDateTime(0, 0, 3).toString());
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(result.getBody()).isEqualTo("[{\"field\":\"endDateTime\",\"message\":\"must be after startDateTime\"}]");

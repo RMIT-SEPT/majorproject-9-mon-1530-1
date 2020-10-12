@@ -104,7 +104,7 @@ const CssTextFieldGreen = withStyles({
 const contact = (props) => {
   return (
     // this is the main grid that holds every element
-    <Grid container alignItems="center" justify="center" spacing={0}>
+    <Grid container alignItems="flex-start" justify="center" spacing={0}>
       {/* the logo and the img on the left  */}
       <Grid item xs={7}>
         <Left>
@@ -132,64 +132,18 @@ const contact = (props) => {
           <TopRight>
             Not a member? <a href="/form">Sign up</a>{' '}
           </TopRight>
+
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Bold>Send us a message </Bold>
+              <Bold>Contact us </Bold>
             </Grid>
             {/* form to sign up   */}
             <Grid item xs={12}>
-              <Heading>Name </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Email </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Phone </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Message</Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ColorButton variant="contained" color="#ffffff">
-                {' '}
-                Submit
-              </ColorButton>
+              <Heading>Elizabeth Tawaf : s3723812@student.rmit.edu.au </Heading>
+              <Heading>Brodey Yendall  : s3718834@student.rmit.edu.au </Heading>
+              <Heading>Richard wang : s3720241@student.rmit.edu.au </Heading>
+              <Heading>Abrar Alsagheer : s3707180@student.rmit.edu.au</Heading>
+              <Heading>Lawrence Abdelmalek:  s3656022@student.rmit.edu.au  </Heading>
             </Grid>
           </Grid>
         </Right>

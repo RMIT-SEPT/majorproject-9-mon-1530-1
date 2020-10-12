@@ -19,9 +19,15 @@ import { useQuery } from 'react-query';
 const Toolbar = ({ id }) => {
   const [main, setMain] = useState(false);
   const [worker, setWorker] = useState(false);
+  const token = localStorage.getItem('token');
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users?username=${id}`)
+      .get(`http://localhost:8083/users/username?username=${id}`, {
+        headers: {
+          'Authorization': `${token}`,
+          'username': `${id}`
+        }
+      })
       .then((res) => res)
       .then(setWorker(true))
       .catch((error) => {
@@ -33,6 +39,7 @@ const Toolbar = ({ id }) => {
     return data;
   };
   useQuery(['adminData', id], fetchAdminData, {
+    retry: false, // Will retry failed requests 10 times before displaying an erro
     onSuccess: (data) => {
       setUserName(data.name);
       setRole(data.userType);
@@ -67,7 +74,26 @@ const Toolbar = ({ id }) => {
           </RightFlexElements>
         )}
         {worker && (
-          <RightNavElement userName={userName} role={role}></RightNavElement>
+          <StyledNavBlack>
+            <StyledNavBar>
+              {role === 'user'
+                ? <a
+                  href="/user"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <GreenNavLink>Dashboard</GreenNavLink>
+                </a>
+                : <a
+                  href="/admin"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <GreenNavLink>Dashboard</GreenNavLink>
+                </a>
+              }
+              <RightNavElement userName={userName}
+                role={role}></RightNavElement>
+            </StyledNavBar>
+          </StyledNavBlack>
         )}
       </StyledNavBar>
     </StyledNavBlack>

@@ -117,7 +117,7 @@ export const FormDetails = (props) => {
             });
     };
     return (
-        <form style={{width: '840px'}} onSubmit={handleSubmit(onSubmit)}>
+        <form style={{ width: '840px' }} onSubmit={handleSubmit(onSubmit)}>
             <Grid container direction="row" spacing={3}>
                 <Grid item xs={6}>
                     <Heading>Full Name </Heading>
@@ -141,7 +141,7 @@ export const FormDetails = (props) => {
                         })}
                         id="outlined-full-width"
                         style={{ margin: 8 }}
-                        helperText="Full width!"
+                        helperText=""
                         fullWidth
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
@@ -166,7 +166,7 @@ export const FormDetails = (props) => {
                         })}
                         id="outlined-full-width"
                         style={{ margin: 8 }}
-                        helperText="Full width!"
+                        helperText=""
                         fullWidth
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
@@ -196,7 +196,7 @@ export const FormDetails = (props) => {
                         })}
                         id="outlined-full-width"
                         style={{ margin: 8 }}
-                        helperText="Full width!"
+                        helperText=""
                         fullWidth
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
@@ -225,7 +225,7 @@ export const FormDetails = (props) => {
                         })}
                         id="outlined-full-width"
                         style={{ margin: 8 }}
-                        helperText="Full width!"
+                        helperText=""
                         fullWidth
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
@@ -251,7 +251,7 @@ export const FormDetails = (props) => {
                         })}
                         id="outlined-full-width"
                         style={{ margin: 8 }}
-                        helperText="Full width!"
+                        helperText=""
                         fullWidth
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
