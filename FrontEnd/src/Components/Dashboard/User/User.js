@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { Home, PlusCircle } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -13,7 +13,6 @@ import {
   PanelGrid,
   Button,
   Loading,
-  Error,
   BookingsList,
 } from '../DashboardComponents';
 import { WorkerRadioList } from '../Bookings/BookingComponents';

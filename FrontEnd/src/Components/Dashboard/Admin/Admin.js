@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { Home, PlusCircle } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -63,7 +63,6 @@ const Admin = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
-        const localRole = localStorage.setItem('role', data.userType);
       },
     }
   );
@@ -77,7 +76,6 @@ const Admin = ({ id }) => {
   const [main, setMain] = useState(true);
   const [worker, setWorker] = useState(false);
   const [employee, setEmployee] = useState(false);
-  const isLoggedIn = localStorage.getItem('isAuth');
 
   if (localStorage.getItem('role') === 'user') {
     return <Redirect to="/user" />;
