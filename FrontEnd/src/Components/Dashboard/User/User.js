@@ -37,9 +37,9 @@ const User = ({ id }) => {
     const { data } = await axios
       .get(`http://localhost:8083/users/username?username=${id}`, {
         headers: {
-          'Authorization': `${token}`,
-          'username': `${id}`
-        }
+          Authorization: `${token}`,
+          username: `${id}`,
+        },
       })
       .then((response) => response)
       .then((res) => res)
@@ -165,7 +165,7 @@ const User = ({ id }) => {
                   </AppointmentsGrid>
                   <Button type="button" onClick={bookAppointment}>
                     Book
-                </Button>
+                  </Button>
                 </DashboardModule>
               </Content>
             )}
@@ -175,12 +175,13 @@ const User = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Choose a worker">
                   <PanelGrid>
                     <WorkerRadioList
                       selectBooking={selectBooking}
                       setWorkerId={setWorkerId}
+                      id={id}
                     />
                   </PanelGrid>
                 </DashboardModule>
@@ -192,21 +193,21 @@ const User = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={cancelBooking}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Availability">
                   <BookingView />
                 </DashboardModule>
 
                 <Button type="button" onClick={mutate}>
                   Submit
-              </Button>
+                </Button>
               </Content>
             )}
           </DashboardWrapper>
         )}
       </>
-    )
-  };
+    );
+  }
 };
 
 User.defaultProps = {

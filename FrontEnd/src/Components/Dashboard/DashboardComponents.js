@@ -115,7 +115,7 @@ const StyledGreenText = styled.span`
 `;
 const SelectedTime = styled.span`
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  font-size:25px;
+  font-size: 25px;
 `;
 
 const StyledStateContainer = styled.div`
@@ -183,12 +183,20 @@ const BookingsList = ({ id }) => {
   const fetchBookingsList = async (key) => {
     const dateIso = date.toISOString();
     console.log(dateIso.substring(0, dateIso.length - 1));
+    const token = localStorage.getItem('token');
+
     const { data } = await axios
       .get(
         `http://localhost:8081/bookings/range?startDateTime=${dateIso.substring(
           0,
           dateIso.length - 1
-        )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`
+        )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
       )
       .then((res) => res)
       .catch((error) => {
