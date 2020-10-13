@@ -1,5 +1,8 @@
 package sept.major.availability.service.connector;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,12 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import sept.major.common.testing.RequestParameter;
+import sept.major.availability.service.RequestParameter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Abstract class for external micro services to capture their common functionality.
+ */
 @Service
 public abstract class ServiceConnector<E> {
 
@@ -76,7 +83,12 @@ public abstract class ServiceConnector<E> {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 return new ArrayList<>();
             } else {
-                throw new ServiceConnectorException(getServiceName(), e.getMessage());
+                try {
+                    throw new ServiceConnectorException(getServiceName(), new ObjectMapper().readValue(e.getMessage().substring(6), JsonNode.class));
+                } catch (JsonProcessingException jsonError) {
+                    throw new ServiceConnectorException(getServiceName(), e.getMessage());
+                }
+
             }
         }
     }

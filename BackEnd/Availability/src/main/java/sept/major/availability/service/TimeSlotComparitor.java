@@ -2,6 +2,10 @@ package sept.major.availability.service;
 
 import java.util.Comparator;
 
+/**
+ * Comparator class for time slot
+ *
+ */
 public class TimeSlotComparitor implements Comparator<TimeSlot> {
     @Override
     public int compare(TimeSlot o1, TimeSlot o2) {

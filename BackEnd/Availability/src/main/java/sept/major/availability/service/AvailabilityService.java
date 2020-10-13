@@ -39,42 +39,43 @@ public class AvailabilityService {
 
 		return new AvailabilityPair(allAvailabilities, bookings);
 	}
-	
+
 	/**
-	 * Overlaps the availabilities with the booking 
+	 * Overlaps the availability hours with the booking to calculate the overall availabilities. It has considerations for 5 different scenarios about how to overlap
+	 * the two.
 	 * @param availabilities
 	 * @param booking
 	 */
 	private boolean overlap(List<AvailabilityEntity> availabilities, BookingResponse booking) {
 		for (int i = 0; i< availabilities.size(); ++i) {
 			AvailabilityEntity availability = availabilities.get(i);
-			
+
 			//if no overlap then no change
 			if (availability.getStartDateTime().isEqual(booking.getEndDateTime()) || availability.getStartDateTime().isAfter(booking.getEndDateTime())
 					|| availability.getEndDateTime().isEqual(booking.getStartDateTime()) || availability.getEndDateTime().isBefore(booking.getStartDateTime())) {
-				
+
 				//if partial overlap in the end, then adjust
 			} else if (booking.getStartDateTime().isAfter(availability.getStartDateTime()) && booking.getStartDateTime().isBefore(availability.getEndDateTime()) &&
 					(availability.getEndDateTime().isEqual(booking.getEndDateTime()) || availability.getEndDateTime().isBefore(booking.getEndDateTime()))) {
 				availability.setEndDateTime(booking.getStartDateTime());
 				return true;
-				
+
 				//if partial overlap in the start, then adjust
 			} else if ((availability.getStartDateTime().isEqual(booking.getStartDateTime()) || availability.getStartDateTime().isAfter(booking.getStartDateTime()))
 					&& booking.getEndDateTime().isAfter(availability.getStartDateTime()) && booking.getEndDateTime().isBefore(availability.getEndDateTime())) {
 				availability.setStartDateTime(booking.getEndDateTime());
 				return true;
-				
+
 				//if availability is within booking then remove
 			} else if ((availability.getStartDateTime().isEqual(booking.getStartDateTime()) || availability.getStartDateTime().isAfter(booking.getStartDateTime()))
 					&& (availability.getEndDateTime().isEqual(booking.getEndDateTime()) || availability.getEndDateTime().isBefore(booking.getEndDateTime()))) {
 				availabilities.remove(availability);
 				return true;
-				
+
 				// else, booking inside Availability, then split
-			} else {  //TODO not sure if the 
+			} else {
 				//split
-				availabilities.add(new AvailabilityEntity(availability.getHoursId(), availability.getWorkerUsername(), availability.getCustomerUsername(), booking.getEndDateTime(),
+				availabilities.add(new AvailabilityEntity(availability.getHoursId(), availability.getWorkerUsername(), availability.getCreatorUsername(), booking.getEndDateTime(),
 						availability.getEndDateTime()));
 				availability.setEndDateTime(booking.getStartDateTime());
 				return true;
@@ -84,6 +85,14 @@ public class AvailabilityService {
 		return false;
 	}
 
+	/**
+	 * gets availability pairs and calculate times lots for the given date range.
+	 *
+	 * @param providedDate
+	 * @param endOfWeek
+	 * @param availabilityPair
+	 * @return
+	 */
 	public Map<String, Set<TimeSlot>> getTimeSlots(LocalDate providedDate, LocalDate endOfWeek, AvailabilityPair availabilityPair) {
 		LocalDate startOfWeek = findStartOfWeek(providedDate);
 
@@ -114,6 +123,14 @@ public class AvailabilityService {
 		return timeSlotsPerDate;
 	}
 
+
+	/**
+	 * internal method to return all the time slots for a given range
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param isAvailable
+	 * @return all the time slots for a given range
+	 */
 	private List<TimeSlot> timeSlotsFromRange(LocalDateTime startDateTime, LocalDateTime endDateTime, boolean isAvailable) {
 
 		List<TimeSlot> timeSlots = new ArrayList<>();
@@ -141,14 +158,24 @@ public class AvailabilityService {
 	}
 
 
+	/**
+	 * helper method to return the first day of the week for a given date
+	 * @param date
+	 * @return the first day of the week for a given date
+	 */
 	public LocalDate findStartOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
 		return date.with(temporalField, 2);
 	}
 
+	/**
+	 * helper method to return the last day of the week for a given date
+	 * @param date
+	 * @return the last day of the week for a given date
+	 */
 	public LocalDate findEndOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
 		return date.with(temporalField, 7).plusDays(1);
 	}
-	
+
 }
