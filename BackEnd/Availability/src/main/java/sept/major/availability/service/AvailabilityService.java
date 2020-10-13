@@ -41,7 +41,8 @@ public class AvailabilityService {
 	}
 
 	/**
-	 * Overlaps the availabilities with the booking
+	 * Overlaps the availability hours with the booking to calculate the overall availabilities. It has considerations for 5 different scenarios about how to overlap
+	 * the two.
 	 * @param availabilities
 	 * @param booking
 	 */
@@ -84,6 +85,14 @@ public class AvailabilityService {
 		return false;
 	}
 
+	/**
+	 * gets availability pairs and calculate times lots for the given date range.
+	 *
+	 * @param providedDate
+	 * @param endOfWeek
+	 * @param availabilityPair
+	 * @return
+	 */
 	public Map<String, Set<TimeSlot>> getTimeSlots(LocalDate providedDate, LocalDate endOfWeek, AvailabilityPair availabilityPair) {
 		LocalDate startOfWeek = findStartOfWeek(providedDate);
 
@@ -114,6 +123,14 @@ public class AvailabilityService {
 		return timeSlotsPerDate;
 	}
 
+
+	/**
+	 * internal method to return all the time slots for a given range
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param isAvailable
+	 * @return all the time slots for a given range
+	 */
 	private List<TimeSlot> timeSlotsFromRange(LocalDateTime startDateTime, LocalDateTime endDateTime, boolean isAvailable) {
 
 		List<TimeSlot> timeSlots = new ArrayList<>();
@@ -141,11 +158,21 @@ public class AvailabilityService {
 	}
 
 
+	/**
+	 * helper method to return the first day of the week for a given date
+	 * @param date
+	 * @return the first day of the week for a given date
+	 */
 	public LocalDate findStartOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
 		return date.with(temporalField, 2);
 	}
 
+	/**
+	 * helper method to return the last day of the week for a given date
+	 * @param date
+	 * @return the last day of the week for a given date
+	 */
 	public LocalDate findEndOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
 		return date.with(temporalField, 7).plusDays(1);

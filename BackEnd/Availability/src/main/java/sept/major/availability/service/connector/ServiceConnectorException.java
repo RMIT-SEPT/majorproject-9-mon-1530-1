@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Exception class for microservice exceptions related to connectors.
+ */
 public class ServiceConnectorException extends Exception {
 
     private String service;
