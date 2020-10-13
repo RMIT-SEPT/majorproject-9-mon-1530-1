@@ -47,8 +47,6 @@ describe('Dashboard', () => {
     });
 
     it('should display placeholder info when props not provided', () => {
-      // TODO: Handle or enforce passing of actions for navigation links
-
       const { getAllByText } = renderComponent(
         <DashboardWrapper actions={actions}></DashboardWrapper>
       );

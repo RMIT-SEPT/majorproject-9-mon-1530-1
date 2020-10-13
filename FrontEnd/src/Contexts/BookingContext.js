@@ -25,7 +25,6 @@ const BookingContextProvider = (props) => {
       .toISOString()
       .substring(0, endTime.toISOString().length - 1);
 
-    // TODO: Handle errors
     await axios.post('http://localhost:8081/bookings', {
       workerUsername: workerId,
       customerUsername: customerId,

@@ -142,7 +142,6 @@ const UpcomingAppointmentCard = ({ booking }) => {
   const [endTime] = useState(new Date(booking.endDateTime));
 
   return (
-    // TODO: Solve responsive flex layout for these components when there are many elements in a single row
     <StyledAppointmentCard>
       <CardImage src={hairdresserImage} alt="Hairdresser image" />
       <CardContent>
@@ -230,7 +229,6 @@ const Loading = () => {
     </StyledStateContainer>
   );
 };
-
 
 export {
   DashboardModule,

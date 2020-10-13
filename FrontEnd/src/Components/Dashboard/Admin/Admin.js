@@ -16,17 +16,19 @@ import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
 import Unauthorized from '../../Auth/Unauthorized';
 import { Redirect } from 'react-router-dom';
+
 // Admin dashboard component for a logged in admin.
 const token = localStorage.getItem('token');
 console.log(token);
+
 const Admin = ({ id }) => {
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users/username?username=${id}`, {
         headers: {
-          'Authorization': `${token}`,
-          'username': `${id}`
-        }
+          Authorization: `${token}`,
+          username: `${id}`,
+        },
       })
       .then((res) => res)
       .catch((error) => {
@@ -88,7 +90,7 @@ const Admin = ({ id }) => {
           <DashboardWrapper
             userName={userName}
             role={role}
-            actions={{ bookingLink: () => { } }}
+            actions={{ bookingLink: () => {} }}
           >
             <MenuBarComponent>
               <Home
@@ -98,17 +100,7 @@ const Admin = ({ id }) => {
                 size={theme.icons.size.medium}
               />
               <PlusCircle
-                onClick={() => { }}
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Phone
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Calendar
+                onClick={addEmployee}
                 className="menuIcon"
                 color={theme.colours.grey.primary}
                 size={theme.icons.size.medium}
@@ -123,10 +115,11 @@ const Admin = ({ id }) => {
                     setWorker={setWorker}
                     clear={clear}
                     setSelectedWorker={setSelectedWorker}
+                    id={id}
                   />
                   <Button type="button" onClick={addEmployee}>
                     Add An Employee
-                </Button>
+                  </Button>
                 </DashboardModule>
               </Content>
             )}
@@ -136,7 +129,7 @@ const Admin = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Add worker hours">
                   <WorkerHours worker={selectedWorker} userName={id} />
                 </DashboardModule>
@@ -148,7 +141,7 @@ const Admin = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Fill employee details">
                   <FormDetails />
                 </DashboardModule>

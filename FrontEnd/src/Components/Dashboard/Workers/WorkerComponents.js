@@ -45,14 +45,20 @@ const StyledConatiner = styled.div`
   margin-bottom: 20px;
 `;
 
-const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
+const WorkerList = ({ setWorker, clear, setSelectedWorker, id }) => {
   const userType = 'Worker';
+  const token = localStorage.getItem('token');
 
   const [workerList, setWorkerList] = useState([]);
 
   const fetchWorkerList = async (key) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/bulk?userType=${userType}`)
+      .get(`http://localhost:8083/users/bulk?userType=${userType}`, {
+        headers: {
+          Authorization: `${token}`,
+          username: `${id}`,
+        },
+      })
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of workers: ' + error);

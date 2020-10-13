@@ -141,16 +141,6 @@ const User = ({ id }) => {
                 color={theme.colours.grey.primary}
                 size={theme.icons.size.medium}
               />
-              <Phone
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Calendar
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
             </MenuBarComponent>
             {main && (
               <Content>
