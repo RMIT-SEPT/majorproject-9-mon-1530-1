@@ -135,62 +135,15 @@ const contact = (props) => {
 
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Bold>Send us a message </Bold>
+              <Bold>Contact us </Bold>
             </Grid>
             {/* form to sign up   */}
             <Grid item xs={12}>
-              <Heading>Name </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Email </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Phone </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Message</Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ColorButton variant="contained" color="#ffffff">
-                {' '}
-                Submit
-              </ColorButton>
+              <Heading>Elizabeth Tawaf : s3723812@student.rmit.edu.au </Heading>
+              <Heading>Brodey Yendall  : s3718834@student.rmit.edu.au </Heading>
+              <Heading>Richard wang : s3720241@student.rmit.edu.au </Heading>
+              <Heading>Abrar Alsagheer : s3707180@student.rmit.edu.au</Heading>
+              <Heading>Lawrence Abdelmalek:  s3656022@student.rmit.edu.au  </Heading>
             </Grid>
           </Grid>
         </Right>

@@ -64,8 +64,12 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
           {/* TODO: Allow parent to control what navigation links show (booking not always needed) */}
           <GreenNavLink onClick={actions.bookingLink}>New Booking</GreenNavLink>
           <GreenNavLink>Appointments</GreenNavLink>
-          <GreenNavLink>Contact-us</GreenNavLink>
-          <GreenNavLink>About</GreenNavLink>
+          <a href="/contactus" style={{ textDecoration: 'none' }}>
+            <GreenNavLink>Contact-us</GreenNavLink>
+          </a>
+          <a href="/about" style={{ textDecoration: 'none' }}>
+            <GreenNavLink>About</GreenNavLink>
+          </a>
           <RightNavElement userName={userName}
             role={role}></RightNavElement>
         </StyledNavBarBorder>
