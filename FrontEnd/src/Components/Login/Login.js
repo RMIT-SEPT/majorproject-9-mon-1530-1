@@ -144,11 +144,11 @@ const Login = (props) => {
 
         let r = response.status;
         if (r === 200) {
-          const data = response.data
-          localStorage.setItem("token", data.token)
-          localStorage.setItem("role", response.data.user.userType)
+          const data = response.data;
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', response.data.user.userType);
 
-          console.log(`token: ${data.token}`)
+          console.log(`token: ${data.token}`);
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
           console.log(localStorage.getItem('username'));
@@ -174,12 +174,11 @@ const Login = (props) => {
   };
   const isLoggedIn = localStorage.getItem('isAuth');
   if (isLoggedIn) {
-    if (localStorage.getItem('role') === 'admin') {
+    if (localStorage.getItem('role') === 'Admin') {
       return <Redirect to="/admin" />;
     } else {
       return <Redirect to="/user" />;
     }
-
   } else {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>

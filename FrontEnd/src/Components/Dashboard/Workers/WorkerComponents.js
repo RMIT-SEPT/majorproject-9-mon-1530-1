@@ -106,6 +106,8 @@ const WorkerList = ({ setWorker, clear, setSelectedWorker, id }) => {
 const WorkerHours = ({ worker, userName }) => {
   const { isFirefox, isChrome } = useContext(BrowserContext);
 
+  const token = localStorage.getItem('token');
+
   const [startDateTime, setStartDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
   const [hoursSuccess, setHoursSuccess] = useState(false);
@@ -130,12 +132,21 @@ const WorkerHours = ({ worker, userName }) => {
     console.log(localStart);
     console.log(localEnd);
 
-    await axios.post('http://localhost:8082/hours', {
-      creatorUsername: userName,
-      workerUsername: worker.username,
-      startDateTime: localStart,
-      endDateTime: localEnd,
-    });
+    const headers = {
+      Authorization: `${token}`,
+      username: `${userName}`,
+    };
+
+    await axios.post(
+      'http://localhost:8082/hours',
+      {
+        creatorUsername: userName,
+        workerUsername: worker.username,
+        startDateTime: localStart,
+        endDateTime: localEnd,
+      },
+      { headers: headers }
+    );
   };
 
   const [mutate] = useMutation(

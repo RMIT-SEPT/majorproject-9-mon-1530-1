@@ -10,7 +10,7 @@ import {
   StyledList,
 } from './BookingView.styles';
 import { TimeSlotView, DisabledButton } from './BookingComponents';
-import { sampleReturn } from './BookingsMockData';
+import { sampleReturn, sampleReturnTwo } from './BookingsMockData';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { StyledGreenText, SelectedTime } from '../DashboardComponents';
 
@@ -102,9 +102,9 @@ function generateTimesForDays(startDate, timeSlots) {
                   endTime={currentTimeSlotEndDate}
                 >
                   {`
-                  ${currentTimeSlotStartDate.toTimeString().substring(0, 5)} 
-                  - 
-                  ${currentTimeSlotEndDate.toTimeString().substring(0, 5)}`}
+                    ${currentTimeSlotStartDate.toTimeString().substring(0, 5)} 
+                    - 
+                    ${currentTimeSlotEndDate.toTimeString().substring(0, 5)}`}
                 </TimeSlotView>
               </li>
             );
@@ -113,9 +113,9 @@ function generateTimesForDays(startDate, timeSlots) {
               <li key={currentTimeSlotStartDate} style={day}>
                 <DisabledButton disabled>
                   {`
-                  ${currentTimeSlotStartDate.toTimeString().substring(0, 5)} 
-                  - 
-                  ${currentTimeSlotEndDate.toTimeString().substring(0, 5)}`}
+                    ${currentTimeSlotStartDate.toTimeString().substring(0, 5)} 
+                    - 
+                    ${currentTimeSlotEndDate.toTimeString().substring(0, 5)}`}
                 </DisabledButton>
               </li>
             );

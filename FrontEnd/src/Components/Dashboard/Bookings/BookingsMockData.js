@@ -1,10 +1,10 @@
 //sample return of what should come from the get endpoint
 
 const sampleReturn = {
-  '27/09/2020': {},
-  '28/09/2020': {},
-  '29/09/2020': {},
-  '30/09/2020': [
+  '2020-09-27': [],
+  '2020-09-28': [],
+  '2020-09-29': [],
+  '2020-09-30': [
     {
       startDateTime: '2020-09-30T09:00',
       endDateTime: '2020-09-30T10:00',
@@ -51,7 +51,7 @@ const sampleReturn = {
       available: false,
     },
   ],
-  '01/10/2020': [
+  '2020-10-01': [
     {
       startDateTime: '2020-10-01T17:00',
       endDateTime: '2020-10-01T18:00',
@@ -88,7 +88,7 @@ const sampleReturn = {
       available: false,
     },
   ],
-  '02/10/2020': [
+  '2020-10-02': [
     {
       startDateTime: '2020-10-02T09:00',
       endDateTime: '2020-10-02T10:00',
@@ -135,7 +135,7 @@ const sampleReturn = {
       available: false,
     },
   ],
-  '03/10/2020': [
+  '2020-10-03': [
     {
       startDateTime: '2020-10-03T00:00',
       endDateTime: '2020-10-03T01:00',
@@ -179,4 +179,54 @@ const sampleReturn = {
   ],
 };
 
-export { sampleReturn };
+const sampleReturnTwo = {
+  '2020-10-15': [
+    {
+      startDateTime: '2020-10-15T09:00:00',
+      endDateTime: '2020-10-15T10:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T10:00:00',
+      endDateTime: '2020-10-15T11:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T11:00:00',
+      endDateTime: '2020-10-15T12:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T12:00:00',
+      endDateTime: '2020-10-15T13:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T13:00:00',
+      endDateTime: '2020-10-15T14:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T14:00:00',
+      endDateTime: '2020-10-15T15:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T15:00:00',
+      endDateTime: '2020-10-15T16:00:00',
+      available: true,
+    },
+    {
+      startDateTime: '2020-10-15T16:00:00',
+      endDateTime: '2020-10-15T17:00:00',
+      available: true,
+    },
+  ],
+  '2020-10-14': [],
+  '2020-10-17': [],
+  '2020-10-16': [],
+  '2020-10-13': [],
+  '2020-10-12': [],
+};
+
+export { sampleReturn, sampleReturnTwo };

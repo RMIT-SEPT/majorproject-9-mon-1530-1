@@ -77,7 +77,7 @@ const Admin = ({ id }) => {
   const [worker, setWorker] = useState(false);
   const [employee, setEmployee] = useState(false);
 
-  if (localStorage.getItem('role') === 'user') {
+  if (localStorage.getItem('role') === 'User') {
     return <Redirect to="/user" />;
   } else {
     return (
