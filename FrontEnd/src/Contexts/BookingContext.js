@@ -17,6 +17,8 @@ const BookingContextProvider = (props) => {
   };
 
   const submitBooking = async () => {
+    const token = localStorage.getItem('token');
+
     // Removes 'Z' character from end of string to allow it to be passed
     const modifiedStartTime = startTime
       .toISOString()
@@ -25,12 +27,21 @@ const BookingContextProvider = (props) => {
       .toISOString()
       .substring(0, endTime.toISOString().length - 1);
 
-    await axios.post('http://localhost:8081/bookings', {
-      workerUsername: workerId,
-      customerUsername: customerId,
-      startDateTime: modifiedStartTime,
-      endDateTime: modifiedEndTime,
-    });
+    const headers = {
+      Authorization: `${token}`,
+      username: `${customerId}`,
+    };
+
+    await axios.post(
+      'http://localhost:8081/bookings',
+      {
+        workerUsername: workerId,
+        customerUsername: customerId,
+        startDateTime: modifiedStartTime,
+        endDateTime: modifiedEndTime,
+      },
+      { headers: headers }
+    );
   };
 
   const bookingContext = {

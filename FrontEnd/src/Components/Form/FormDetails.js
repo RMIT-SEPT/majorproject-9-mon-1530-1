@@ -80,7 +80,7 @@ export const FormDetails = (props) => {
 
   const usertype = window.location.pathname.substring(1);
   const onSubmit = (values) => {
-    const type = usertype === 'Admin' ? 'Worker' : 'User';
+    const type = usertype === 'admin' ? 'Worker' : 'user';
 
     const headers = {
       'Content-Type': 'application/json',

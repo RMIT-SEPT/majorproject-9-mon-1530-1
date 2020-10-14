@@ -1,4 +1,6 @@
 import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import { Button } from '../../Dashboard/DashboardComponents';
 import { days, monthNames, MILLISECONDS_TO_DAYS_FACTOR } from './BookingUtils';
 import {
@@ -10,7 +12,6 @@ import {
   StyledList,
 } from './BookingView.styles';
 import { TimeSlotView, DisabledButton } from './BookingComponents';
-import { sampleReturn, sampleReturnTwo } from './BookingsMockData';
 import { BookingContext } from '../../../Contexts/BookingContext';
 import { StyledGreenText, SelectedTime } from '../DashboardComponents';
 
@@ -136,8 +137,12 @@ function generateTimesForDays(startDate, timeSlots) {
   return indents;
 }
 
-const BookingView = () => {
+const BookingView = ({ id }) => {
+  const token = localStorage.getItem('token');
+
   const { startTime, endTime, workerId } = useContext(BookingContext);
+
+  const [from, setFrom] = useState(0);
 
   const [viewDate, setViewDate] = useState(new Date());
   const [weekStartDate, setWeekStartDate] = useState(
@@ -146,7 +151,31 @@ const BookingView = () => {
   const [weekEndDate, setWeekEndDate] = useState(getWeekEndDate(viewDate));
   const [timeSlots, setTimeSlots] = useState();
 
-  // console.log(workerId);
+  const fetchWorkerAvailability = async (key, workerId, from) => {
+    const { data } = await axios
+      .get(
+        `http://localhost:8084/availability/slot/now?workerUsername=${workerId}&from=${from}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
+      .then((response) => response)
+      .catch((error) => {
+        console.log('Error fetching worker availability', error);
+        throw error;
+      });
+
+    return data;
+  };
+
+  useQuery(['workerAvailability', workerId, from], fetchWorkerAvailability, {
+    onSuccess: (data) => {
+      setTimeSlots(data);
+    },
+  });
 
   return (
     <>
@@ -158,6 +187,7 @@ const BookingView = () => {
                 setViewDate(new Date(viewDate.setDate(viewDate.getDate() - 7)));
                 setWeekStartDate(getWeekStartDate(viewDate));
                 setWeekEndDate(getWeekEndDate(viewDate));
+                setFrom(from - 1);
               }}
             >
               &#10094;
@@ -172,6 +202,7 @@ const BookingView = () => {
                 setViewDate(nextWeekDate);
                 setWeekStartDate(getWeekStartDate(nextWeekDate));
                 setWeekEndDate(getWeekEndDate(nextWeekDate));
+                setFrom(from + 1);
               }}
             >
               &#10095;
@@ -198,7 +229,7 @@ const BookingView = () => {
       </div>
       <ul style={weekdays}>
         {generateDays(weekStartDate, weekEndDate)}
-        {generateTimesForDays(weekStartDate, sampleReturn)}
+        {generateTimesForDays(weekStartDate, { ...timeSlots })}
       </ul>
       <div>
         <SelectedTime>Selected time: </SelectedTime>

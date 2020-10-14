@@ -211,7 +211,6 @@ const WorkerRadioList = ({ selectBooking, setWorkerId, id }) => {
 
   useQuery(['workerList'], fetchWorkerList, {
     onSuccess: (data) => {
-      console.log(data);
       setWorkerList(data);
     },
   });

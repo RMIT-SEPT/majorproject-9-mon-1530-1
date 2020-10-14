@@ -20,6 +20,7 @@ import { BookingContext } from '../../../Contexts/BookingContext';
 import { BookingView } from '../Bookings/BookingView';
 import Unauthorized from '../../Auth/Unauthorized';
 import { Redirect } from 'react-router-dom';
+
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
@@ -30,8 +31,12 @@ const User = ({ id }) => {
     setWorkerId,
     clearBooking,
     submitBooking,
+    setStartTime,
+    setEndTime,
   } = useContext(BookingContext);
+
   const token = localStorage.getItem('token');
+
   const fetchUserData = async (key, id) => {
     const { data } = await axios
       .get(`http://localhost:8083/users/username?username=${id}`, {
@@ -49,6 +54,7 @@ const User = ({ id }) => {
 
     return data;
   };
+
   const clear = () => {
     setBooking(false);
     setWorker(false);
@@ -76,6 +82,8 @@ const User = ({ id }) => {
   const cancelBooking = () => {
     setBooking(false);
     setWorker(true);
+    setStartTime();
+    setEndTime();
   };
 
   // Fetch user info from back-end
@@ -184,7 +192,7 @@ const User = ({ id }) => {
                   Back
                 </Button>
                 <DashboardModule title="Availability">
-                  <BookingView />
+                  <BookingView id={id} />
                 </DashboardModule>
 
                 <Button type="button" onClick={mutate}>
