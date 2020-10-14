@@ -97,9 +97,9 @@ public class AvailabilityService {
 		LocalDate startOfWeek = findStartOfWeek(providedDate);
 
 
-		Map<String, Set<TimeSlot>> timeSlotsPerDate = new HashMap<>();
+		Map<String, Set<TimeSlot>> timeSlotsPerDate = new LinkedHashMap<>();
 
-		for (LocalDate date = startOfWeek; date.isBefore(endOfWeek); date = date.plusDays(1)) {
+		for (LocalDate date = startOfWeek; !date.isEqual(endOfWeek); date = date.plusDays(1)) {
 			timeSlotsPerDate.put(date.toString(), new TreeSet<>(new TimeSlotComparitor()));
 		}
 
@@ -165,7 +165,7 @@ public class AvailabilityService {
 	 */
 	public LocalDate findStartOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
-		return date.with(temporalField, 2);
+		return date.with(temporalField, 1);
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class AvailabilityService {
 	 */
 	public LocalDate findEndOfWeek(LocalDate date) {
 		TemporalField temporalField = WeekFields.of(Locale.ENGLISH).dayOfWeek();
-		return date.with(temporalField, 7).plusDays(1);
+		return date.with(temporalField, 7);
 	}
 
 }
