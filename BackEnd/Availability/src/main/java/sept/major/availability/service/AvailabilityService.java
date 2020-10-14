@@ -99,7 +99,7 @@ public class AvailabilityService {
 
 		Map<String, Set<TimeSlot>> timeSlotsPerDate = new LinkedHashMap<>();
 
-		for (LocalDate date = startOfWeek; !date.isEqual(endOfWeek); date = date.plusDays(1)) {
+        for (LocalDate date = startOfWeek; date.isBefore(endOfWeek.plusDays(1)); date = date.plusDays(1)) {
 			timeSlotsPerDate.put(date.toString(), new TreeSet<>(new TimeSlotComparitor()));
 		}
 
