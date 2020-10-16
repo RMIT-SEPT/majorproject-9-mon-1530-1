@@ -81,12 +81,11 @@ const about = (props) => {
           <BigFont>Near You</BigFont>
           <SmallerFont>
             {' '}
-                All of our services are done by licenced experts in their
-                fields.
-              </SmallerFont>
+            All of our services are done by licenced experts in their fields.
+          </SmallerFont>
           <SmallerFont>
             {' '}
-                Our services{' '}
+            Our services{' '}
             <TextLoop interval={350}>
               <span> Barbers </span>
               <span> Nail technicians </span>
@@ -94,8 +93,8 @@ const about = (props) => {
               <span> Gyms </span>
               <span> Fitness Coaches </span>
             </TextLoop>{' '}
-                And Much more .
-              </SmallerFont>
+            And Much more .
+          </SmallerFont>
         </Grid>
         <Grid item xs={5} justify="flex-end">
           {/*this is the img of the gym*/}
@@ -105,9 +104,7 @@ const about = (props) => {
           <Doc src={doctor} alt="doctor" />
         </Grid>
         <Grid item xs={6}>
-          <Bold>
-            {'Signup or login to discover more services '}
-          </Bold>
+          <Bold>Signup or login to discover more services</Bold>
         </Grid>
       </Grid>
     </MainWrapper>

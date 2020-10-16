@@ -7,13 +7,13 @@ import About from './About';
 global.MutationObserver = window.MutationObserver;
 
 const renderComponent = (component) => {
-    return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
 describe('About', () => {
-    it('should render About', () => {
-        const { getByText } = renderComponent(<About></About>);
-        expect(getByText('Barbers')).toBeTruthy();
-        expect(getByText('Signup or login')).toBeTruthy();
-    });
+  it('should render About', () => {
+    const { getByText } = renderComponent(<About />);
+    expect(getByText('Barbers')).toBeTruthy();
+    expect(getByText('Signup or login to discover more services')).toBeTruthy();
+  });
 });

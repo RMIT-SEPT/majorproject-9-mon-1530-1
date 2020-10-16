@@ -105,13 +105,18 @@ const contact = () => {
             </Grid>
             {/* form to sign up   */}
             <Grid item xs={12}>
-              <Heading>Elizabeth Tawaf : s3723812@student.rmit.edu.au </Heading>
-              <Heading>Brodey Yendall : s3718834@student.rmit.edu.au </Heading>
-              <Heading>Richard wang : s3720241@student.rmit.edu.au </Heading>
-              <Heading>Abrar Alsagheer : s3707180@student.rmit.edu.au</Heading>
-              <Heading>
-                Lawrence Abdelmalek: s3656022@student.rmit.edu.au{' '}
-              </Heading>
+              <div>
+                <Heading>Elizabeth Tawaf:</Heading>{' '}
+                <span>s3723812@student.rmit.edu.au</span>
+                <Heading>Brodey Yendall:</Heading>{' '}
+                <span>s3718834@student.rmit.edu.au</span>
+                <Heading>Richard Wang:</Heading>
+                <span>s3720241@student.rmit.edu.au</span>
+                <Heading>Abrar Alsagheer:</Heading>
+                <span>s3707180@student.rmit.edu.au</span>
+                <Heading>Lawrence Abdelmalek:</Heading>
+                <span>s3656022@student.rmit.edu.au</span>
+              </div>
             </Grid>
           </Grid>
         </Right>
