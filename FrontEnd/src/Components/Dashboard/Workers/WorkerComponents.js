@@ -45,14 +45,23 @@ const StyledConatiner = styled.div`
   margin-bottom: 20px;
 `;
 
-const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
+const WorkerList = ({ setWorker, clear, setSelectedWorker, id }) => {
   const userType = 'Worker';
+  const token = localStorage.getItem('token');
 
   const [workerList, setWorkerList] = useState([]);
 
   const fetchWorkerList = async (key) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/bulk?userType=${userType}`)
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/bulk?userType=${userType}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of workers: ' + error);
@@ -100,6 +109,8 @@ const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
 const WorkerHours = ({ worker, userName }) => {
   const { isFirefox, isChrome } = useContext(BrowserContext);
 
+  const token = localStorage.getItem('token');
+
   const [startDateTime, setStartDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
   const [hoursSuccess, setHoursSuccess] = useState(false);
@@ -124,12 +135,21 @@ const WorkerHours = ({ worker, userName }) => {
     console.log(localStart);
     console.log(localEnd);
 
-    await axios.post('http://localhost:8082/hours', {
-      creatorUsername: userName,
-      workerUsername: worker.username,
-      startDateTime: localStart,
-      endDateTime: localEnd,
-    });
+    const headers = {
+      Authorization: `${token}`,
+      username: `${userName}`,
+    };
+
+    await axios.post(
+      `${process.env.REACT_APP_HOURS_ENDPOINT}/hours`,
+      {
+        creatorUsername: userName,
+        workerUsername: worker.username,
+        startDateTime: localStart,
+        endDateTime: localEnd,
+      },
+      { headers: headers }
+    );
   };
 
   const [mutate] = useMutation(

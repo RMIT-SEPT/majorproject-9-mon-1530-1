@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { Home, PlusCircle } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -16,18 +16,23 @@ import { WorkerList, WorkerHours } from '../Workers/WorkerComponents';
 import FormDetails from '../../Form/FormDetails';
 import Unauthorized from '../../Auth/Unauthorized';
 import { Redirect } from 'react-router-dom';
+
 // Admin dashboard component for a logged in admin.
 const token = localStorage.getItem('token');
 console.log(token);
+
 const Admin = ({ id }) => {
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/username?username=${id}`, {
-        headers: {
-          'Authorization': `${token}`,
-          'username': `${id}`
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/username?username=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
         }
-      })
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('admin error' + error);
@@ -61,7 +66,6 @@ const Admin = ({ id }) => {
       onSuccess: (data) => {
         setUserName(data.name);
         setRole(data.userType);
-        const localRole = localStorage.setItem('role', data.userType);
       },
     }
   );
@@ -75,9 +79,8 @@ const Admin = ({ id }) => {
   const [main, setMain] = useState(true);
   const [worker, setWorker] = useState(false);
   const [employee, setEmployee] = useState(false);
-  const isLoggedIn = localStorage.getItem('isAuth');
 
-  if (localStorage.getItem('role') === 'user') {
+  if (localStorage.getItem('role') === 'User') {
     return <Redirect to="/user" />;
   } else {
     return (
@@ -88,7 +91,7 @@ const Admin = ({ id }) => {
           <DashboardWrapper
             userName={userName}
             role={role}
-            actions={{ bookingLink: () => { } }}
+            actions={{ bookingLink: () => {} }}
           >
             <MenuBarComponent>
               <Home
@@ -98,17 +101,7 @@ const Admin = ({ id }) => {
                 size={theme.icons.size.medium}
               />
               <PlusCircle
-                onClick={() => { }}
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Phone
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Calendar
+                onClick={addEmployee}
                 className="menuIcon"
                 color={theme.colours.grey.primary}
                 size={theme.icons.size.medium}
@@ -123,10 +116,11 @@ const Admin = ({ id }) => {
                     setWorker={setWorker}
                     clear={clear}
                     setSelectedWorker={setSelectedWorker}
+                    id={id}
                   />
                   <Button type="button" onClick={addEmployee}>
                     Add An Employee
-                </Button>
+                  </Button>
                 </DashboardModule>
               </Content>
             )}
@@ -136,7 +130,7 @@ const Admin = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Add worker hours">
                   <WorkerHours worker={selectedWorker} userName={id} />
                 </DashboardModule>
@@ -148,7 +142,7 @@ const Admin = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Fill employee details">
                   <FormDetails />
                 </DashboardModule>

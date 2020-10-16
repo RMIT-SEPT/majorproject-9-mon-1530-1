@@ -136,7 +136,7 @@ const Login = (props) => {
   const onSubmit = (values) => {
     axios
       .put(
-        `http://localhost:8083/users/token/?username=${values.username}&password=${values.password}`
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
         console.log('response.data');
@@ -144,11 +144,11 @@ const Login = (props) => {
 
         let r = response.status;
         if (r === 200) {
-          const data = response.data
-          localStorage.setItem("token", data.token)
-          localStorage.setItem("role", response.data.user.userType)
+          const data = response.data;
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', response.data.user.userType);
 
-          console.log(`token: ${data.token}`)
+          console.log(`token: ${data.token}`);
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
           console.log(localStorage.getItem('username'));
@@ -174,12 +174,11 @@ const Login = (props) => {
   };
   const isLoggedIn = localStorage.getItem('isAuth');
   if (isLoggedIn) {
-    if (localStorage.getItem('role') === 'admin') {
+    if (localStorage.getItem('role') === 'Admin') {
       return <Redirect to="/admin" />;
     } else {
       return <Redirect to="/user" />;
     }
-
   } else {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>

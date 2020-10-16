@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { Home, Phone, Calendar, PlusCircle } from 'react-feather';
+import { Home, PlusCircle } from 'react-feather';
 import { theme } from '../../../App';
 import { DashboardWrapper, MenuBarComponent } from '../Dashboard';
 import {
@@ -13,7 +13,6 @@ import {
   PanelGrid,
   Button,
   Loading,
-  Error,
   BookingsList,
 } from '../DashboardComponents';
 import { WorkerRadioList } from '../Bookings/BookingComponents';
@@ -21,6 +20,7 @@ import { BookingContext } from '../../../Contexts/BookingContext';
 import { BookingView } from '../Bookings/BookingView';
 import Unauthorized from '../../Auth/Unauthorized';
 import { Redirect } from 'react-router-dom';
+
 // User dashboard component for a logged in user. id of user is passed in a pro-
 // ps so that we can reuse the Dashboard component. Here we can handle the logi-
 // c of booking a service and such
@@ -31,16 +31,23 @@ const User = ({ id }) => {
     setWorkerId,
     clearBooking,
     submitBooking,
+    setStartTime,
+    setEndTime,
   } = useContext(BookingContext);
+
   const token = localStorage.getItem('token');
+
   const fetchUserData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/username?username=${id}`, {
-        headers: {
-          'Authorization': `${token}`,
-          'username': `${id}`
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/username?username=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
         }
-      })
+      )
       .then((response) => response)
       .then((res) => res)
       .catch((error) => {
@@ -50,6 +57,7 @@ const User = ({ id }) => {
 
     return data;
   };
+
   const clear = () => {
     setBooking(false);
     setWorker(false);
@@ -77,6 +85,8 @@ const User = ({ id }) => {
   const cancelBooking = () => {
     setBooking(false);
     setWorker(true);
+    setStartTime();
+    setEndTime();
   };
 
   // Fetch user info from back-end
@@ -141,16 +151,6 @@ const User = ({ id }) => {
                 color={theme.colours.grey.primary}
                 size={theme.icons.size.medium}
               />
-              <Phone
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
-              <Calendar
-                className="menuIcon"
-                color={theme.colours.grey.primary}
-                size={theme.icons.size.medium}
-              />
             </MenuBarComponent>
             {main && (
               <Content>
@@ -165,7 +165,7 @@ const User = ({ id }) => {
                   </AppointmentsGrid>
                   <Button type="button" onClick={bookAppointment}>
                     Book
-                </Button>
+                  </Button>
                 </DashboardModule>
               </Content>
             )}
@@ -175,12 +175,13 @@ const User = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={returnHome}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Choose a worker">
                   <PanelGrid>
                     <WorkerRadioList
                       selectBooking={selectBooking}
                       setWorkerId={setWorkerId}
+                      id={id}
                     />
                   </PanelGrid>
                 </DashboardModule>
@@ -192,21 +193,21 @@ const User = ({ id }) => {
                 <SubHeading>Today is {date.toLocaleDateString()}</SubHeading>
                 <Button type="button" onClick={cancelBooking}>
                   Back
-              </Button>
+                </Button>
                 <DashboardModule title="Availability">
-                  <BookingView />
+                  <BookingView id={id} />
                 </DashboardModule>
 
                 <Button type="button" onClick={mutate}>
                   Submit
-              </Button>
+                </Button>
               </Content>
             )}
           </DashboardWrapper>
         )}
       </>
-    )
-  };
+    );
+  }
 };
 
 User.defaultProps = {

@@ -83,7 +83,7 @@ const StyledDateTimeInput = styled.input`
   display: block;
   border: none;
   outline: none;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   position: relative;
   right: 2px;
   margin-top: 4px;
@@ -135,7 +135,7 @@ const DisabledButton = styled.button`
   font-family: ${(props) => props.theme.font.primary};
   font-size: 16px;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  color: #B8B2B2;
+  color: #b8b2b2;
   border: 2px solid transparent;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
@@ -185,14 +185,24 @@ const WorkerRadioButton = ({ worker, onChange, onClick }) => {
   );
 };
 
-const WorkerRadioList = ({ selectBooking, setWorkerId }) => {
+const WorkerRadioList = ({ selectBooking, setWorkerId, id }) => {
+  const token = localStorage.getItem('token');
+
   const userType = 'Worker';
 
   const [workerList, setWorkerList] = useState([]);
 
   const fetchWorkerList = async (key) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/bulk?userType=${userType}`)
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/bulk?userType=${userType}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of workers: ' + error);
@@ -204,7 +214,6 @@ const WorkerRadioList = ({ selectBooking, setWorkerId }) => {
 
   useQuery(['workerList'], fetchWorkerList, {
     onSuccess: (data) => {
-      console.log(data);
       setWorkerList(data);
     },
   });

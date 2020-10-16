@@ -18,26 +18,31 @@ import { useQuery } from 'react-query';
 
 const Toolbar = ({ id }) => {
   const [main, setMain] = useState(false);
-  const [worker, setWorker] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const token = localStorage.getItem('token');
+
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/username?username=${id}`, {
-        headers: {
-          'Authorization': `${token}`,
-          'username': `${id}`
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/username?username=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
         }
-      })
+      )
       .then((res) => res)
-      .then(setWorker(true))
+      .then(setLoggedIn(true))
       .catch((error) => {
         setMain(true);
-        setWorker(false);
+        setLoggedIn(false);
         throw error;
       });
 
     return data;
   };
+
   useQuery(['adminData', id], fetchAdminData, {
     retry: false, // Will retry failed requests 10 times before displaying an erro
     onSuccess: (data) => {
@@ -45,8 +50,10 @@ const Toolbar = ({ id }) => {
       setRole(data.userType);
     },
   });
+
   const [userName, setUserName] = useState();
   const [role, setRole] = useState();
+
   return (
     <StyledNavBlack>
       <StyledNavBar>
@@ -73,27 +80,19 @@ const Toolbar = ({ id }) => {
             </GreenNavLink>
           </RightFlexElements>
         )}
-        {worker && (
-          <StyledNavBlack>
-            <StyledNavBar>
-              {role === 'user'
-                ? <a
-                  href="/user"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <GreenNavLink>Dashboard</GreenNavLink>
-                </a>
-                : <a
-                  href="/admin"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <GreenNavLink>Dashboard</GreenNavLink>
-                </a>
-              }
-              <RightNavElement userName={userName}
-                role={role}></RightNavElement>
-            </StyledNavBar>
-          </StyledNavBlack>
+        {loggedIn && (
+          <>
+            {role === 'User' ? (
+              <a href="/user" style={{ textDecoration: 'none' }}>
+                <GreenNavLink>Dashboard</GreenNavLink>
+              </a>
+            ) : (
+              <a href="/admin" style={{ textDecoration: 'none' }}>
+                <GreenNavLink>Dashboard</GreenNavLink>
+              </a>
+            )}
+            <RightNavElement userName={userName} role={role}></RightNavElement>
+          </>
         )}
       </StyledNavBar>
     </StyledNavBlack>

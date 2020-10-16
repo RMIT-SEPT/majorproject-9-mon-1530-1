@@ -51,8 +51,6 @@ const MenuContainer = styled.div`
 // props gets passed in to the DashboardWrapper component to access dynamic ele-
 // ments such as the userName and role
 
-
-
 const DashboardWrapper = ({ children, userName, role, actions }) => {
   return (
     <StyledPageWrapper>
@@ -61,17 +59,14 @@ const DashboardWrapper = ({ children, userName, role, actions }) => {
           <StyledLogoLink href="/">
             <img src={logoAlt} alt="AGEM black logo" />
           </StyledLogoLink>
-          {/* TODO: Allow parent to control what navigation links show (booking not always needed) */}
           <GreenNavLink onClick={actions.bookingLink}>New Booking</GreenNavLink>
-          <GreenNavLink>Appointments</GreenNavLink>
           <a href="/contactus" style={{ textDecoration: 'none' }}>
             <GreenNavLink>Contact-us</GreenNavLink>
           </a>
           <a href="/about" style={{ textDecoration: 'none' }}>
             <GreenNavLink>About</GreenNavLink>
           </a>
-          <RightNavElement userName={userName}
-            role={role}></RightNavElement>
+          <RightNavElement userName={userName} role={role}></RightNavElement>
         </StyledNavBarBorder>
       </StyledNavWhite>
       <FlexContainer>{children}</FlexContainer>
@@ -98,10 +93,9 @@ const MenuBarComponent = ({ children }) => {
             size={theme.icons.size.medium}
             onClick={() => {
               clear();
-            }} />
-
+            }}
+          />
         </Link>
-
       </MenuContainer>
     </MenuBar>
   );
