@@ -39,12 +39,15 @@ const User = ({ id }) => {
 
   const fetchUserData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/username?username=${id}`, {
-        headers: {
-          Authorization: `${token}`,
-          username: `${id}`,
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/username?username=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((response) => response)
       .then((res) => res)
       .catch((error) => {

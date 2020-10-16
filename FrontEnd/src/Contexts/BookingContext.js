@@ -33,7 +33,7 @@ const BookingContextProvider = (props) => {
     };
 
     await axios.post(
-      'http://localhost:8081/bookings',
+      `${process.env.REACT_APP_BOOKINGS_ENDPOINT}/bookings`,
       {
         workerUsername: workerId,
         customerUsername: customerId,

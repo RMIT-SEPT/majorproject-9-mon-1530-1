@@ -194,12 +194,15 @@ const WorkerRadioList = ({ selectBooking, setWorkerId, id }) => {
 
   const fetchWorkerList = async (key) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/bulk?userType=${userType}`, {
-        headers: {
-          Authorization: `${token}`,
-          username: `${id}`,
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/bulk?userType=${userType}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of workers: ' + error);

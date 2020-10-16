@@ -10,9 +10,11 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000/tcp
+RUN npm run build
+
+EXPOSE 5000/tcp
 EXPOSE 80/tcp
 
 ENV CI true
 
-CMD [ "npm", "start" ]
+CMD [ "serve", "-s", "build" ]

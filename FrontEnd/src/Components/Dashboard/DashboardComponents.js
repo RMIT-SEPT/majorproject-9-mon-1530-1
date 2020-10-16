@@ -186,7 +186,9 @@ const BookingsList = ({ id }) => {
 
     const { data } = await axios
       .get(
-        `http://localhost:8081/bookings/range?startDateTime=${dateIso.substring(
+        `${
+          process.env.REACT_APP_BOOKINGS_ENDPOINT
+        }/bookings/range?startDateTime=${dateIso.substring(
           0,
           dateIso.length - 1
         )}&endDateTime=${'2999-09-30T00:00:00.000'}&customerUsername=${id}`,

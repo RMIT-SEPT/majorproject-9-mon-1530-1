@@ -154,7 +154,7 @@ const BookingView = ({ id }) => {
   const fetchWorkerAvailability = async (key, workerId, from) => {
     const { data } = await axios
       .get(
-        `http://localhost:8084/availability/slot/now?workerUsername=${workerId}&from=${from}`,
+        `${process.env.REACT_APP_AVAILABILITY_ENDPOINT}/availability/slot/now?workerUsername=${workerId}&from=${from}`,
         {
           headers: {
             Authorization: `${token}`,

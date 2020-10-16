@@ -136,7 +136,7 @@ const Login = (props) => {
   const onSubmit = (values) => {
     axios
       .put(
-        `http://localhost:8083/users/token/?username=${values.username}&password=${values.password}`
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
         console.log('response.data');

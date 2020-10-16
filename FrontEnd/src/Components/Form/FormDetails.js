@@ -88,7 +88,7 @@ export const FormDetails = (props) => {
 
     axios
       .post(
-        'http://localhost:8083/users',
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users`,
         {
           username: values.username,
           userType: type,

@@ -24,12 +24,15 @@ console.log(token);
 const Admin = ({ id }) => {
   const fetchAdminData = async (key, id) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/username?username=${id}`, {
-        headers: {
-          Authorization: `${token}`,
-          username: `${id}`,
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/username?username=${id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('admin error' + error);
