@@ -4,6 +4,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * a class for a single time slot whether the time is available or not.
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

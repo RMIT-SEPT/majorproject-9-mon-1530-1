@@ -30,14 +30,14 @@ public class BookingServiceConnector extends ServiceConnector<BookingResponse> {
     @Override
     protected List<BookingResponse> convertResultToList(List<Map> list) {
         return list.stream().map(map -> {
-            Object hoursId = map.get("bookingId");
+            Object bookingId = map.get("bookingId");
             Object workerUsername = map.get("workerUsername");
             Object customerUsername = map.get("customerUsername");
             Object startDateTime = map.get("startDateTime");
             Object endDateTime = map.get("endDateTime");
 
             return new BookingResponse(
-                    hoursId == null ? null : Integer.parseInt(hoursId.toString()),
+                    bookingId == null ? null : Integer.parseInt(bookingId.toString()),
                     workerUsername == null ? null : workerUsername.toString(),
                     customerUsername == null ? null : customerUsername.toString(),
                     startDateTime == null ? null : LocalDateTime.parse(startDateTime.toString()),

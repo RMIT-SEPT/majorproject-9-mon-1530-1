@@ -139,14 +139,14 @@ const Login = (props) => {
         `http://localhost:8083/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
-        console.log(response.status);
-
-
+        console.log('response.data');
+        console.log(response.data.user.userType);
 
         let r = response.status;
         if (r === 200) {
           const data = response.data
           localStorage.setItem("token", data.token)
+          localStorage.setItem("role", response.data.user.userType)
 
           console.log(`token: ${data.token}`)
           //setLocalStorage to user data
@@ -174,7 +174,12 @@ const Login = (props) => {
   };
   const isLoggedIn = localStorage.getItem('isAuth');
   if (isLoggedIn) {
-    return <Redirect to="/admin" />;
+    if (localStorage.getItem('role') === 'admin') {
+      return <Redirect to="/admin" />;
+    } else {
+      return <Redirect to="/user" />;
+    }
+
   } else {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
