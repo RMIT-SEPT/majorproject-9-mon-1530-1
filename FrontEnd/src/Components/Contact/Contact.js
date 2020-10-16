@@ -1,9 +1,7 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { Grid } from '@material-ui/core';
 import logo from '../../media/logo.png';
 import construction from '../../media/contact.png';
-import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 
 const Heading = styled.div`
@@ -65,43 +63,11 @@ const Logo = styled.img`
   /* padding-left: 10%; */
 `;
 
-const ColorButton = withStyles((theme) => ({
-  root: {
-    margin: '4px',
-    color: theme.palette.getContrastText('#000000'),
-    backgroundColor: '#5AC490',
-    '&:hover': {
-      backgroundColor: '#60BF90',
-    },
-  },
-}))(Button);
-
-const CssTextFieldGreen = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: 'green',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'green',
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'green',
-      },
-      '&:hover fieldset': {
-        borderColor: 'light green',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'green',
-      },
-    },
-  },
-})(TextField);
 // this is a conrtact us page where a user can send contact us and leaves a message
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
 
-const contact = (props) => {
+const contact = () => {
   return (
     // this is the main grid that holds every element
     <Grid container alignItems="flex-start" justify="center" spacing={0}>
@@ -139,11 +105,18 @@ const contact = (props) => {
             </Grid>
             {/* form to sign up   */}
             <Grid item xs={12}>
-              <Heading>Elizabeth Tawaf : s3723812@student.rmit.edu.au </Heading>
-              <Heading>Brodey Yendall  : s3718834@student.rmit.edu.au </Heading>
-              <Heading>Richard wang : s3720241@student.rmit.edu.au </Heading>
-              <Heading>Abrar Alsagheer : s3707180@student.rmit.edu.au</Heading>
-              <Heading>Lawrence Abdelmalek:  s3656022@student.rmit.edu.au  </Heading>
+              <div>
+                <Heading>Elizabeth Tawaf:</Heading>{' '}
+                <span>s3723812@student.rmit.edu.au</span>
+                <Heading>Brodey Yendall:</Heading>{' '}
+                <span>s3718834@student.rmit.edu.au</span>
+                <Heading>Richard Wang:</Heading>
+                <span>s3720241@student.rmit.edu.au</span>
+                <Heading>Abrar Alsagheer:</Heading>
+                <span>s3707180@student.rmit.edu.au</span>
+                <Heading>Lawrence Abdelmalek:</Heading>
+                <span>s3656022@student.rmit.edu.au</span>
+              </div>
             </Grid>
           </Grid>
         </Right>
