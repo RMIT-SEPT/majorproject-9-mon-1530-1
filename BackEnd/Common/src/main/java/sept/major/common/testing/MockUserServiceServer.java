@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
+import org.mockserver.model.Parameter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,8 +51,9 @@ public class MockUserServiceServer {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/users/token")
+                                .withPath("/users/username")
                                 .withHeaders(new Header("Authorization", "foo"), new Header("username", "ValidUser"))
+                                .withQueryStringParameter(new Parameter("username", "ValidUser"))
                 ).respond(
                 response()
                         .withStatusCode(HttpStatus.OK.value())
@@ -66,8 +68,9 @@ public class MockUserServiceServer {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/users/token")
+                                .withPath("/users/username")
                                 .withHeaders(new Header("Authorization", "foo"), new Header("username", "ValidAdmin"))
+                                .withQueryStringParameter(new Parameter("username", "ValidAdmin"))
                 ).respond(
                 response()
                         .withStatusCode(HttpStatus.OK.value())
