@@ -22,7 +22,7 @@ public class GetBlackboxTests extends UserBlackBoxHelper {
 
         String username = postResult.get("username");
 
-        successfulGet(postResult, getUrl(Arrays.asList(new RequestParameter("username", username))));
+        successfulGet(postResult, getUrl("username", Arrays.asList(new RequestParameter("username", username))));
     }
 
     @Test
@@ -50,10 +50,28 @@ public class GetBlackboxTests extends UserBlackBoxHelper {
         Map<String, String> firstExpected = successfulPost(randomEntityMap());
         Map<String, String> secondExcepted = successfulPost(randomEntityMap());
 
+        /*
+        For authenication testing we need these two records in the database. They expected but not posted here
+         */
+        Map<String, String> thirdExpected = new HashMap<>();
+        thirdExpected.put("address", "Test address");
+        thirdExpected.put("name", "Test name");
+        thirdExpected.put("phone", "Test phone");
+        thirdExpected.put("userType", "User");
+        thirdExpected.put("username", "ValidUser");
+
+        Map<String, String> fourthExpected = new HashMap<>();
+        fourthExpected.put("address", "Test address");
+        fourthExpected.put("name", "Test name");
+        fourthExpected.put("phone", "Test phone");
+        fourthExpected.put("userType", "Admin");
+        fourthExpected.put("username", "ValidAdmin");
+
+
         firstExpected.remove("password");
         secondExcepted.remove("password");
 
-        successfulGetList(Arrays.asList(firstExpected, secondExcepted), getUrl("bulk"));
+        successfulGetList(Arrays.asList(firstExpected, secondExcepted, thirdExpected, fourthExpected), getUrl("bulk"));
     }
 
 

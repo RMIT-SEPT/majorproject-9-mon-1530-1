@@ -99,12 +99,12 @@ public abstract class UserBlackBoxHelper extends BlackboxTestHelper {
         assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<HashMap<String, String>> getCastedResult = objectMapper.readValue(getResult.getBody(), new TypeReference<List<HashMap<String, String>>>() {
+        List<Map<String, String>> getCastedResult = objectMapper.readValue(getResult.getBody(), new TypeReference<List<Map<String, String>>>() {
         });
 
 
         System.out.println(getCastedResult);
-        assertThat(getCastedResult).isEqualTo(expected);
+        assertThat(getCastedResult).containsAll(expected);
     }
 
 
