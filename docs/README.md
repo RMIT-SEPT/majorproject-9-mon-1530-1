@@ -31,6 +31,10 @@ Contains various filse for local and cloud setup
 
 # Quick Start
 
+## Deploying the project
+Deploying of the project is autoamtically done when  code is commited through the attached circleCI
+
+
 ## Setting up database docker image
 
 For our project we currently use a docker image for our database.
