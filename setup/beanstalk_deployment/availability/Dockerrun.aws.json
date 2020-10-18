@@ -3,7 +3,7 @@
   "containerDefinitions": [
    	{
        "name": "Availability",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
+       "image": "973460626477.dkr.ecr.us-east-1.amazonaws.com/sept:Availability",
    	   "memoryReservation": 128,
        "memory": 256,
    	   "portMappings": [
