@@ -1,9 +1,7 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { Grid } from '@material-ui/core';
 import logo from '../../media/logo.png';
 import construction from '../../media/contact.png';
-import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 
 const Heading = styled.div`
@@ -65,46 +63,14 @@ const Logo = styled.img`
   /* padding-left: 10%; */
 `;
 
-const ColorButton = withStyles((theme) => ({
-  root: {
-    margin: '4px',
-    color: theme.palette.getContrastText('#000000'),
-    backgroundColor: '#5AC490',
-    '&:hover': {
-      backgroundColor: '#60BF90',
-    },
-  },
-}))(Button);
-
-const CssTextFieldGreen = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: 'green',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'green',
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'green',
-      },
-      '&:hover fieldset': {
-        borderColor: 'light green',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'green',
-      },
-    },
-  },
-})(TextField);
 // this is a conrtact us page where a user can send contact us and leaves a message
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
 
-const contact = (props) => {
+const contact = () => {
   return (
     // this is the main grid that holds every element
-    <Grid container alignItems="center" justify="center" spacing={0}>
+    <Grid container alignItems="flex-start" justify="center" spacing={0}>
       {/* the logo and the img on the left  */}
       <Grid item xs={7}>
         <Left>
@@ -115,7 +81,7 @@ const contact = (props) => {
             alignItems="center"
           >
             <Grid item xs={12}>
-              <a href="http://localhost:3000/">
+              <a href="/">
                 {' '}
                 <Logo src={logo} alt="logo" />{' '}
               </a>
@@ -130,66 +96,27 @@ const contact = (props) => {
       <Grid item xs={5}>
         <Right>
           <TopRight>
-            Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
+            Not a member? <a href="/form">Sign up</a>{' '}
           </TopRight>
+
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Bold>Send us a message </Bold>
+              <Bold>Contact us </Bold>
             </Grid>
             {/* form to sign up   */}
             <Grid item xs={12}>
-              <Heading>Name </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Email </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Phone </Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Heading>Message</Heading>
-              <CssTextFieldGreen
-                id="outlined-full-width"
-                style={{ margin: 8 }}
-                helperText="Full width!"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ColorButton variant="contained" color="#ffffff">
-                {' '}
-                Submit
-              </ColorButton>
+              <div>
+                <Heading>Elizabeth Tawaf:</Heading>{' '}
+                <span>s3723812@student.rmit.edu.au</span>
+                <Heading>Brodey Yendall:</Heading>{' '}
+                <span>s3718834@student.rmit.edu.au</span>
+                <Heading>Richard Wang:</Heading>
+                <span>s3720241@student.rmit.edu.au</span>
+                <Heading>Abrar Alsagheer:</Heading>
+                <span>s3707180@student.rmit.edu.au</span>
+                <Heading>Lawrence Abdelmalek:</Heading>
+                <span>s3656022@student.rmit.edu.au</span>
+              </div>
             </Grid>
           </Grid>
         </Right>

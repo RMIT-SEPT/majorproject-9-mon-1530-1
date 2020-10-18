@@ -1,20 +1,18 @@
 package sept.major.users.blackbox.service;
 
-import static sept.major.users.UserTestHelper.randomAlphanumericString;
-import static sept.major.users.UserTestHelper.randomEntityMap;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import sept.major.common.testing.RequestParameter;
+import sept.major.users.blackbox.UserBlackBoxHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import sept.major.common.testing.RequestParameter;
-import sept.major.users.blackbox.UserBlackBoxHelper;
+import static sept.major.users.UserTestHelper.randomAlphanumericString;
+import static sept.major.users.UserTestHelper.randomEntityMap;
 
 public class GetBlackBoxTests extends UserBlackBoxHelper {
 
@@ -26,7 +24,7 @@ public class GetBlackBoxTests extends UserBlackBoxHelper {
 
         List<RequestParameter> requestParameters = Arrays.asList(new RequestParameter("username", username));
 
-        successfulGet(postResults.get(0), getUrl(requestParameters));
+        successfulGet(postResults.get(0), getUrl("username", requestParameters));
     }
 
     @Test

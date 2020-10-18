@@ -3,15 +3,19 @@ package sept.major.bookings.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.bookings.service.BookingService;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.response.ValidationError;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +37,42 @@ public class BookingServiceController {
         this.bookingControllerHelper = bookingControllerHelper;
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getBookingServiceHealth() {
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "bookings");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
+    }
+    
     //get bookings within range
     @GetMapping("/range")
     public ResponseEntity getRange(@RequestParam(name = "startDateTime") String startDateTimeString,
@@ -69,9 +109,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsInRange(startDateTime, endDateTime, workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -97,9 +137,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsOnDate(date, workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -118,9 +158,9 @@ public class BookingServiceController {
             List<BookingEntity> entityList = bookingService.getBookingsFor(workerUsername, customerUsername);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

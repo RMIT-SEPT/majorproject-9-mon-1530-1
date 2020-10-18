@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Booking response entity class used in availability service.
+ */
 @Getter
 @Setter
 @ToString

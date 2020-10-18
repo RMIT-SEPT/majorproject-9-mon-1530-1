@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
 import { User } from 'react-feather';
 import { theme } from '../../../App';
 import { PanelGrid, StyledGreenText, Button } from '../DashboardComponents';
-import { DateTimeSelector, TimeFlex } from '../Bookings/BookingComponents';
+import {
+  DateTimeSelector,
+  TimeFlex,
+  DateSelector,
+  TimeSelector,
+} from '../Bookings/BookingComponents';
+import { BrowserContext } from '../../../Contexts/BrowserContext';
 
 const StyledWorkerItem = styled.div`
   height: 56px;
@@ -39,14 +45,23 @@ const StyledConatiner = styled.div`
   margin-bottom: 20px;
 `;
 
-const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
+const WorkerList = ({ setWorker, clear, setSelectedWorker, id }) => {
   const userType = 'Worker';
+  const token = localStorage.getItem('token');
 
   const [workerList, setWorkerList] = useState([]);
 
   const fetchWorkerList = async (key) => {
     const { data } = await axios
-      .get(`http://localhost:8083/users/bulk?userType=${userType}`)
+      .get(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/bulk?userType=${userType}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+            username: `${id}`,
+          },
+        }
+      )
       .then((res) => res)
       .catch((error) => {
         console.log('Error fetching list of workers: ' + error);
@@ -92,17 +107,49 @@ const WorkerList = ({ setWorker, clear, setSelectedWorker }) => {
 };
 
 const WorkerHours = ({ worker, userName }) => {
+  const { isFirefox, isChrome } = useContext(BrowserContext);
+
+  const token = localStorage.getItem('token');
+
   const [startDateTime, setStartDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
   const [hoursSuccess, setHoursSuccess] = useState(false);
 
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endDate, setEndDate] = useState();
+  const [endTime, setEndTime] = useState();
+
   const submitHours = async () => {
-    await axios.post('http://localhost:8082/hours', {
-      creatorUsername: userName,
-      workerUsername: worker.username,
-      startDateTime,
-      endDateTime,
-    });
+    var localStart;
+    var localEnd;
+
+    if (isFirefox) {
+      localStart = startDate + 'T' + startTime;
+      localEnd = endDate + 'T' + endTime;
+    } else if (isChrome) {
+      localStart = startDateTime;
+      localEnd = endDateTime;
+    }
+
+    console.log(localStart);
+    console.log(localEnd);
+
+    const headers = {
+      Authorization: `${token}`,
+      username: `${userName}`,
+    };
+
+    await axios.post(
+      `${process.env.REACT_APP_HOURS_ENDPOINT}/hours`,
+      {
+        creatorUsername: userName,
+        workerUsername: worker.username,
+        startDateTime: localStart,
+        endDateTime: localEnd,
+      },
+      { headers: headers }
+    );
   };
 
   const [mutate] = useMutation(
@@ -123,16 +170,21 @@ const WorkerHours = ({ worker, userName }) => {
         Add hours for <StyledGreenText>{worker.name}</StyledGreenText>
       </StyledConatiner>
       <TimeFlex>
-        <>
-          <DateTimeSelector
-            label="Start time"
-            onChange={setStartDateTime}
-          ></DateTimeSelector>
-          <DateTimeSelector
-            label="End time"
-            onChange={setEndDateTime}
-          ></DateTimeSelector>
-        </>
+        {isChrome && (
+          <>
+            <DateTimeSelector label="Start time" onChange={setStartDateTime} />
+            <DateTimeSelector label="End time" onChange={setEndDateTime} />
+          </>
+        )}
+        {isFirefox && (
+          <>
+            <DateSelector label="Start date" onChange={setStartDate} />
+            <TimeSelector label="Start time" onChange={setStartTime} />
+
+            <DateSelector label="End date" onChange={setEndDate} />
+            <TimeSelector label="End time" onChange={setEndTime} />
+          </>
+        )}
       </TimeFlex>
       <Button type="button" onClick={mutate}>
         Submit

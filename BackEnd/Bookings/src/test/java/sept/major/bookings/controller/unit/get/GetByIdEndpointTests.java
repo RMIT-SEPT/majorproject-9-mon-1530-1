@@ -9,6 +9,7 @@ import sept.major.bookings.controller.unit.UnitTestHelper;
 import sept.major.bookings.entity.BookingEntity;
 import sept.major.common.response.ValidationError;
 
+import java.util.AbstractMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,8 @@ class GetByIdEndpointTests extends UnitTestHelper {
     void missingValue() {
         Integer id = randomInt(4);
 
-        runTest(new ResponseEntity(String.format("No record with a identifier of %s was found", id), HttpStatus.NOT_FOUND),
+
+        runTest(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", String.format("No record with a identifier of %s was found", id)), HttpStatus.NOT_FOUND),
                 Optional.empty(), id.toString());
     }
 

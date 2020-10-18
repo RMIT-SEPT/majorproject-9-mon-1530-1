@@ -6,6 +6,34 @@ orbs:
   aws-ecs: circleci/aws-ecs@1.3.0
 
 jobs: # a collection of steps
+  deploy-beanstalk:
+    docker:
+      - image: circleci/python:3.8.6
+
+    parameters:
+      ebEnvironmentName:   #name of the environment as well as name of the folder that holds the Dockerrun.aws.json
+        type: string
+
+    steps:
+    - checkout
+    - run: echo "--- START ----" 
+    - run: echo 'parameter, << parameters.ebEnvironmentName >>' 
+    
+    #setup AWS eb cli  (Elastic Beanstalk)
+    - run:
+        name: Install AWS EB CLI
+        command: |
+          sudo apt-get update
+          # sudo apt-get -y -qq install awscli
+          pip install awsebcli
+
+    - run: 
+        name: Deploy Elastic Beanstalk
+        command: |
+          cd setup/beanstalk_deployment/<< parameters.ebEnvironmentName >>
+          eb init -r us-east-1 << parameters.ebEnvironmentName >>
+          eb deploy
+
 
   build-deploy-front-end:
     docker:
@@ -128,7 +156,7 @@ jobs: # a collection of steps
       
       - store_artifacts: # store the uberjar as an artifact
       # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: BackEnd/Common/target/common-1.1.4.jar
+          path: BackEnd/Common/target/common-1.1.7.jar
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples  
       
       
@@ -138,7 +166,7 @@ jobs: # a collection of steps
           root: BackEnd/
           # Must be relative path from root
           paths:
-            - Common/target/common-1.1.4.jar
+            - Common/target/common-1.1.7.jar
             - Common/pom.xml
         
   build-availability: # runs not using Workflows must have a `build` job as entry point
@@ -158,7 +186,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.7.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.7" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -203,7 +231,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.7.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.7" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -248,7 +276,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.7.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.7" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -295,7 +323,7 @@ jobs: # a collection of steps
       
       - run: ls -R
       
-      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.4.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.4" -Dpackaging=jar
+      - run: mvn install:install-file -Dfile="dependency/Common/target/common-1.1.7.jar" -DgroupId=sept.major -DartifactId=common -Dversion="1.1.7" -Dpackaging=jar
       
       - run: ls ../.m2 -R
       
@@ -329,6 +357,9 @@ workflows:
   version: 2
   workflow:
     jobs:
+    - Hold-For-Approval:
+        type: approval
+
     - build-deploy-front-end:
         filters:
           branches:
@@ -336,7 +367,14 @@ workflows:
               - develop
               - master
               - /.*circleci.*/
-          
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-frontend
+        ebEnvironmentName: Sept
+        requires:
+          - build-deploy-front-end
+          - Hold-For-Approval
+
     - build-common:
         filters:
           branches:
@@ -356,6 +394,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-availability
         backedn_service_dir_name: Availability
         requires:
           - build-availability
@@ -365,6 +404,13 @@ workflows:
               - develop
               - master
               - /.*circleci.*/
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-availability
+        ebEnvironmentName: availability
+        requires:
+          - docker-build-deploy-backend-availability
+          - Hold-For-Approval
 
     - build-hours:
         requires:
@@ -377,6 +423,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-availability-hours
         backedn_service_dir_name: Hours
         requires:
           - build-hours
@@ -386,6 +433,13 @@ workflows:
               - develop
               - master
               - /.*circleci.*/
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-hours
+        ebEnvironmentName: hours
+        requires:
+          - docker-build-deploy-backend-availability-hours
+          - Hold-For-Approval
 
     - build-bookings:
         requires:
@@ -398,6 +452,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-bookings
         backedn_service_dir_name: Bookings
         requires:
           - build-bookings
@@ -407,6 +462,13 @@ workflows:
               - develop
               - master
               - /.*circleci.*/
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-bookings
+        ebEnvironmentName: bookings
+        requires:
+          - docker-build-deploy-backend-bookings
+          - Hold-For-Approval
 
     - build-users:
         requires:
@@ -419,6 +481,7 @@ workflows:
               - /.*circleci.*/
 
     - docker-build-deploy-backend:
+        name: docker-build-deploy-backend-users
         backedn_service_dir_name: Users
         requires:
           - build-users
@@ -428,3 +491,10 @@ workflows:
               - develop
               - master
               - /.*circleci.*/
+
+    - deploy-beanstalk:
+        name: deploy-beanstalk-users
+        ebEnvironmentName: users
+        requires:
+          - docker-build-deploy-backend-users
+          - Hold-For-Approval

@@ -6,305 +6,276 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import sept.major.availability.entity.AvailabilityEntity;
 import sept.major.availability.entity.BookingResponse;
 import sept.major.availability.entity.HoursResponse;
+import sept.major.availability.service.AvailabilityPair;
 import sept.major.availability.service.AvailabilityService;
-import sept.major.common.testing.RequestParameter;
+import sept.major.availability.service.connector.BookingServiceConnector;
+import sept.major.availability.service.connector.HoursServiceConnector;
+import sept.major.availability.service.connector.ServiceConnectorException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * availability controller is the entry point for the service that receives the REST calls.
+ * It works with hours and bookings services to process and return relevant results without
+ * directly communicating with the database.
+ */
 @RestController
 @RequestMapping("/availability")
 @CrossOrigin
 public class AvailabilityController {
 
     private static final Logger log = LoggerFactory.getLogger(AvailabilityController.class);
-    private static final String USER_SERVICE_ENDPOINT = "user.service.endpoint";
-    private static final String HOURS_SERVICE_ENDPOINT = "hours.service.endpoint";
-    private static final String BOOKINGS_SERVICE_ENDPOINT = "bookings.service.endpoint";
+
     @Autowired
     public Environment env;
+
     @Autowired
     RestTemplate restTemplate;
     @Autowired
     private AvailabilityService availabilityService;
 
+    @Autowired
+    private HoursServiceConnector hoursServiceConnector;
+
+    @Autowired
+    private BookingServiceConnector bookingServiceConnector;
+
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getAvailabilityServiceHealth() {
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "availability");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
+    }
+
     /**
      * This method will get user's available hours in the range get user's booked times overlay the booking on the availability calculate the result and return
      * as a list
      *
-     * @param startDateString, example : '2020-09-05T21:54:41.173'
-     * @param endDateString
-     * @param workerUsername
-     * @param creatorUsername
+     * @param token authorization token to identify the session
+     * @param requesterUsername
+     * @param startDateString requests start date
+     * @param endDateString requests end date
+     * @param workerUsername worker username filter
+     * @param creatorUsername creator/supervisor username filter
+     * @param customerUsername
+     * @return available hours for the worker with the given filters
      */
     @GetMapping("/range")
-    public ResponseEntity getAvailabilityInRange(@RequestParam(name = "startDateTime") String startDateString,
+    public ResponseEntity getAvailabilityInRange(@RequestHeader("Authorization") String token,
+                                                 @RequestHeader("username") String requesterUsername,
+                                                 @RequestParam(name = "startDateTime") String startDateString,
                                                  @RequestParam(name = "endDateTime") String endDateString,
                                                  @RequestParam(required = false) String workerUsername,
                                                  @RequestParam(required = false) String creatorUsername,
                                                  @RequestParam(required = false) String customerUsername) {
 
         log.info("startDateTime:{}, endDateTime:{}, workerUsername:{}, creatorUsername:{}, ", startDateString, endDateString, workerUsername, creatorUsername);
-        String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
-        String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
-        String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
 
-        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
-        hoursRequestParameters.add(new RequestParameter("startDate", startDateString));
-        hoursRequestParameters.add(new RequestParameter("endDate", endDateString));
-        List<RequestParameter> bookingsRequestParameters = new ArrayList<>(hoursRequestParameters);
-
-        if (workerUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-        }
-        if (creatorUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
-        }
-        if (customerUsername != null) {
-            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
-        }
-
-        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
         List<HoursResponse> hoursList;
+        List<BookingResponse> bookingsList;
         try {
-            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("service", "hours");
-            response.put("details", e.getMessage());
-            return new ResponseEntity(response, e.getStatusCode());
+            hoursList = hoursServiceConnector.getRange(token, requesterUsername, startDateString, endDateString, workerUsername, creatorUsername);
+            log.info(hoursList.toString());
+            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, startDateString, endDateString, workerUsername, customerUsername);
+            log.info(bookingsList.toString());
+        } catch (ServiceConnectorException e) {
+            return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
         }
 
-        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
-        List<BookingResponse> bookingsList = new ArrayList<>();
-        try {
-            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                HashMap<String, Object> response = new HashMap<>();
-                response.put("service", "hours");
-                response.put("details", e.getMessage());
-                return new ResponseEntity(response, e.getStatusCode());
-            }
-        }
-
-        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
+        return evaluateAvailabilities(hoursList, bookingsList);
     }
 
     /**
-     * Return availabilities for a given worker for a given date
+     * Return availabilities for a given worker for a given date using hours and bookings services
      *
-     * @param dateString
-     * @param workerUsername
+     * @param token authorization token to identify the session
+     *@param requesterUsername
+     * @param dateString date string filter
+     * @param workerUsername worker username filter
      * @param creatorUsername
-     * @return
+     * @param customerUsername
+     *@return available hours for the worker with the given filters
      */
     @GetMapping("/date")
-    public ResponseEntity getAvailabilityInDate(@RequestParam(name = "date") String dateString,
+    public ResponseEntity getAvailabilityInDate(@RequestHeader("Authorization") String token,
+                                                @RequestHeader("username") String requesterUsername,
+                                                @RequestParam(name = "date") String dateString,
                                                 @RequestParam(required = false) String workerUsername,
                                                 @RequestParam(required = false) String creatorUsername,
                                                 @RequestParam(required = false) String customerUsername) {
 
         log.info("dateString:{}, workerUsername:{}, creatorUsername:{}, ", dateString, workerUsername, creatorUsername);
 
-        String userServiceEndpoint = env.getProperty(USER_SERVICE_ENDPOINT);
-        String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
-        String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
-
-        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
-        hoursRequestParameters.add(new RequestParameter("date", dateString));
-        List<RequestParameter> bookingsRequestParameters = new ArrayList<>(hoursRequestParameters);
-
-        if (workerUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-        }
-        if (creatorUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
-        }
-        if (customerUsername != null) {
-            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
-        }
-
-        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
         List<HoursResponse> hoursList;
+        List<BookingResponse> bookingsList;
         try {
-            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("service", "hours");
-            response.put("details", e.getMessage());
-            return new ResponseEntity(response, e.getStatusCode());
+            hoursList = hoursServiceConnector.getDate(token, requesterUsername, dateString, workerUsername, creatorUsername);
+            log.info(hoursList.toString());
+            bookingsList = bookingServiceConnector.getDate(token, requesterUsername, dateString, workerUsername, customerUsername);
+            log.info(bookingsList.toString());
+        } catch (ServiceConnectorException e) {
+            return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
         }
 
-        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
-        List<BookingResponse> bookingsList = new ArrayList<>();
-        try {
-            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                HashMap<String, Object> response = new HashMap<>();
-                response.put("service", "hours");
-                response.put("details", e.getMessage());
-                return new ResponseEntity(response, e.getStatusCode());
-            }
-        }
-
-        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
+        return evaluateAvailabilities(hoursList, bookingsList);
 
     }
 
 
     /**
-     * return all available hours for the given worker and creator
+     * return all available hours for the given worker and creator using the hours and bookings services
      *
-     * @param workerUsername
+     * @param token authorization token to identify the session
+     * @param requesterUsername
+     * @param workerUsername worker username filter
      * @param creatorUsername
-     * @return
+     * @param customerUsername
+     * @return available hours for the worker with the given filter
      */
     @GetMapping("/all")
-    public ResponseEntity getAllAvailabilities(@RequestParam(required = false) String workerUsername,
+    public ResponseEntity getAllAvailabilities(@RequestHeader("Authorization") String token,
+                                               @RequestHeader("username") String requesterUsername,
+                                               @RequestParam(required = false) String workerUsername,
                                                @RequestParam(required = false) String creatorUsername,
                                                @RequestParam(required = false) String customerUsername) {
         log.info("workerUsername:{}, creatorUsername:{}, ", workerUsername, creatorUsername);
 
-        String hoursServiceEndpoint = env.getProperty(HOURS_SERVICE_ENDPOINT);
-        String bookingsServiceEndpoint = env.getProperty(BOOKINGS_SERVICE_ENDPOINT);
-
-        List<RequestParameter> hoursRequestParameters = new ArrayList<>();
-        List<RequestParameter> bookingsRequestParameters = new ArrayList<>();
-
-        if (workerUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-            bookingsRequestParameters.add(new RequestParameter("workerUsername", workerUsername));
-        }
-        if (creatorUsername != null) {
-            hoursRequestParameters.add(new RequestParameter("creatorUsername", creatorUsername));
-        }
-        if (customerUsername != null) {
-            bookingsRequestParameters.add(new RequestParameter("creatorUsername", customerUsername));
-        }
-
-        String hoursTemplateUrl = addRequestParameters(hoursServiceEndpoint + "/all", hoursRequestParameters);
         List<HoursResponse> hoursList;
+        List<BookingResponse> bookingsList;
         try {
-            hoursList = convertMapListToHoursList(restTemplate.getForObject(hoursTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("service", "hours");
-            response.put("details", e.getMessage());
-            return new ResponseEntity(response, e.getStatusCode());
+            hoursList = hoursServiceConnector.getAll(token, requesterUsername, workerUsername, creatorUsername);
+            log.info(hoursList.toString());
+            bookingsList = bookingServiceConnector.getAll(token, requesterUsername, workerUsername, customerUsername);
+            log.info(bookingsList.toString());
+        } catch (ServiceConnectorException e) {
+            return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
         }
 
-        String bookingsTemplateUrl = addRequestParameters(bookingsServiceEndpoint + "/all", bookingsRequestParameters);
-        List<BookingResponse> bookingsList = new ArrayList<>();
-        try {
-            bookingsList = convertMapListToBookingList(restTemplate.getForObject(bookingsTemplateUrl, List.class));
-        } catch (HttpClientErrorException e) {
-            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                HashMap<String, Object> response = new HashMap<>();
-                response.put("service", "hours");
-                response.put("details", e.getMessage());
-                return new ResponseEntity(response, e.getStatusCode());
-            }
-        }
-
-        List<AvailabilityEntity> allAvailabilities = availabilityService.checkAllAvailabilities(hoursList, bookingsList);
-
-        return new ResponseEntity(allAvailabilities, HttpStatus.ACCEPTED);
+        return evaluateAvailabilities(hoursList, bookingsList);
     }
 
+
     /**
-     * There doesn't seem a need for implementing Delete for availability since there is no persistence. The availability is calculated from hours and bookings.
-     *
+     * Return specific available time slots to the requestor but similar to the general service but results are returned in time slots.
+     * @param token
+     * @param requesterUsername
+     * @param workerUsername
+     * @param creatorUsername
+     * @param customerUsername
+     * @param dateString
      * @return
      */
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> delete() {
-        log.info("unimplemented Delete method called");
-        return new ResponseEntity<String>("Availability Delete method is not implemnted ", HttpStatus.NOT_IMPLEMENTED);
-    }
-
-
-    /**
-     * Adds the provided requestParameters to the provided url in the format needed for API requests.
-     * For example: <url>?hoursId=1&workerUsername=bob
-     *
-     * @param url               The url to add request parameters to
-     * @param requestParameters The request parameters to add to the url
-     * @return The url with the request parameters added
-     */
-    private String addRequestParameters(String url, List<RequestParameter> requestParameters) {
-        if (requestParameters != null && !requestParameters.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder(url);
-            for (int i = 0; i < requestParameters.size(); i++) {
-                if (i == 0) {
-                    stringBuilder.append("?");
-                } else {
-                    stringBuilder.append("&");
-                }
-                stringBuilder.append(requestParameters.get(i));
-            }
-
-            return stringBuilder.toString();
+    @GetMapping("slot/date")
+    public ResponseEntity getSlotsOnDate(@RequestHeader("Authorization") String token,
+                                         @RequestHeader("username") String requesterUsername,
+                                         @RequestParam(required = false) String workerUsername,
+                                         @RequestParam(required = false) String creatorUsername,
+                                         @RequestParam(required = false) String customerUsername,
+                                         @RequestParam(name = "date") String dateString) {
+        LocalDate date;
+        try {
+            date = LocalDate.parse(dateString);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", "Provided date must have YYYY-MM-DD format"), HttpStatus.BAD_REQUEST);
         }
 
-        return url;
+        List<HoursResponse> hoursList;
+        List<BookingResponse> bookingsList;
+
+        LocalDate endDate = availabilityService.findEndOfWeek(date);
+
+        try {
+            hoursList = hoursServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), workerUsername, creatorUsername);
+            log.info(hoursList.toString());
+            bookingsList = bookingServiceConnector.getRange(token, requesterUsername, date.atStartOfDay().toString(), endDate.atTime(23, 59, 59).toString(), workerUsername, customerUsername);
+            log.info(bookingsList.toString());
+        } catch (ServiceConnectorException e) {
+            return new ResponseEntity(e.getJsonFormat(), HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity(availabilityService.getTimeSlots(date, endDate, availabilityService.checkAllAvailabilities(hoursList, bookingsList)), HttpStatus.OK);
     }
 
-//	private <E> List<E> convertMapListToEntityList(List<Map> mapList, Class<E> entityClass) {
-//		final ObjectMapper objectMapper = new ObjectMapper();
-//		return mapList.stream()
-//				.map(map -> objectMapper.convertValue(map, entityClass))
-//				.collect(Collectors.toList());
-//	}
-
-    private List<HoursResponse> convertMapListToHoursList(List<Map> mapList) {
-        return mapList.stream().map(map -> {
-            Object hoursId = map.get("hoursId");
-            Object workerUsername = map.get("workerUsername");
-            Object creatorUsername = map.get("creatorUsername");
-            Object startDateTime = map.get("startDateTime");
-            Object endDateTime = map.get("endDateTime");
-
-            return new HoursResponse(
-                    hoursId == null ? null : Integer.parseInt(hoursId.toString()),
-                    workerUsername == null ? null : workerUsername.toString(),
-                    creatorUsername == null ? null : creatorUsername.toString(),
-                    startDateTime == null ? null : LocalDateTime.parse(startDateTime.toString()),
-                    endDateTime == null ? null : LocalDateTime.parse(endDateTime.toString()));
-        }).collect(Collectors.toList());
+    /**
+     * Return available time slots to the requestor starting but similar to the general service but results are returned in time slots. It calculates the availability in
+     * time slots and for the number of weeks passed in increment starting from this week.
+     *
+     * @param token             authorization token to identify the session
+     * @param requesterUsername
+     * @param workerUsername    worker username filter
+     * @param creatorUsername   creator/supervisor username filter
+     * @param customerUsername
+     * @param increment         the increment in weeks
+     * @return
+     */
+    @GetMapping("slot/now")
+    public ResponseEntity getTimeSlotsNow(@RequestHeader("Authorization") String token,
+                                          @RequestHeader("username") String requesterUsername,
+                                          @RequestParam(required = false) String workerUsername,
+                                          @RequestParam(required = false) String creatorUsername,
+                                          @RequestParam(required = false) String customerUsername,
+                                          @RequestParam(name = "from", required = false) Integer increment) {
+        LocalDate date = LocalDate.now();
+        if (increment != null) {
+            date = availabilityService.findStartOfWeek(date).plusWeeks(increment);
+        }
+        return getSlotsOnDate(token, requesterUsername, workerUsername, creatorUsername, customerUsername, date.toString());
     }
 
-    private List<BookingResponse> convertMapListToBookingList(List<Map> mapList) {
-        return mapList.stream().map(map -> {
-            Object hoursId = map.get("bookingId");
-            Object workerUsername = map.get("workerUsername");
-            Object customerUsername = map.get("customerUsername");
-            Object startDateTime = map.get("startDateTime");
-            Object endDateTime = map.get("endDateTime");
+    private ResponseEntity evaluateAvailabilities(List<HoursResponse> hoursResponses, List<BookingResponse> bookingResponses) {
+        if (hoursResponses.isEmpty()) {
+            return new ResponseEntity(new AbstractMap.SimpleEntry("message", "found no hours in the range provided"), HttpStatus.NOT_FOUND);
+        }
 
-            return new BookingResponse(
-                    hoursId == null ? null : Integer.parseInt(hoursId.toString()),
-                    workerUsername == null ? null : workerUsername.toString(),
-                    customerUsername == null ? null : customerUsername.toString(),
-                    startDateTime == null ? null : LocalDateTime.parse(startDateTime.toString()),
-                    endDateTime == null ? null : LocalDateTime.parse(endDateTime.toString()));
-        }).collect(Collectors.toList());
+        AvailabilityPair allAvailabilities = availabilityService.checkAllAvailabilities(hoursResponses, bookingResponses);
+
+        if (allAvailabilities.isEmpty()) {
+            return new ResponseEntity(new AbstractMap.SimpleEntry("message", "found no availabilities in the range provided"), HttpStatus.NOT_FOUND);
+        }
+
+
+        return new ResponseEntity(allAvailabilities, HttpStatus.OK);
     }
+
+
 }

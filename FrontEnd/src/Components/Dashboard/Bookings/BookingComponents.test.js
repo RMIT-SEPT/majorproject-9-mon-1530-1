@@ -49,8 +49,8 @@ describe('BookingComponents', () => {
 
   describe('WorkerRadioButton', () => {
     const testWorker = {
-      workerUserName: 'kath123',
-      workerFullName: 'Kathreen McDonald',
+      username: 'kath123',
+      name: 'Kathreen McDonald',
     };
 
     it('should render component and details when provided a worker as prop', () => {
@@ -58,7 +58,7 @@ describe('BookingComponents', () => {
         <WorkerRadioButton worker={testWorker}></WorkerRadioButton>
       );
 
-      expect(getByText(testWorker.workerFullName)).toBeTruthy();
+      expect(getByText(testWorker.name)).toBeTruthy();
     });
 
     it('should simulate onChange event', () => {
@@ -73,7 +73,7 @@ describe('BookingComponents', () => {
         ></WorkerRadioButton>
       );
 
-      fireEvent.click(getByText(testWorker.workerFullName));
+      fireEvent.click(getByText(testWorker.name));
 
       expect(onChangeMock).toHaveBeenCalled();
     });

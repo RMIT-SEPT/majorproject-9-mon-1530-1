@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -11,9 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import sept.major.common.testing.BlackboxTestHelper;
+import sept.major.common.testing.MockUserServiceServer;
 import sept.major.common.testing.RequestParameter;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +24,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static sept.major.common.testing.MockUserServiceServer.getAuthorizedAdminHeaders;
+import static sept.major.common.testing.MockUserServiceServer.getAuthorizedUserHeaders;
 
 public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
 
@@ -38,9 +42,19 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
         return "bookings";
     }
 
+    @BeforeAll
+    public static void setupMockUserServiceServer() {
+        MockUserServiceServer.startUpServer();
+    }
+
+    @AfterAll
+    public static void closeMockedUserServiceServer() {
+        MockUserServiceServer.stopServer();
+    }
+
 
     protected HashMap<String, String> successfulPost(Map<String, String> entityMap) {
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), entityMap, String.class);
+        ResponseEntity<String> result = postRequest(entityMap);
 
         System.out.println(result);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -78,8 +92,7 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
                 new RequestParameter("bookingId", postResult.get("bookingId"))
         );
 
-        // RestTemplate doesn't have postForEntity method so we need to use .exchange() to get the ResponseEntity
-        ResponseEntity<String> patchResult = testRestTemplate.exchange(getUrl(requestParameters), HttpMethod.PATCH, new HttpEntity<>(patchValues), String.class);
+        ResponseEntity<String> patchResult = patchRequest(getUrl(requestParameters), patchValues);
 
         assertThat(patchResult.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -102,7 +115,7 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
 
 
     protected void successfulGet(Map<String, String> expected, String url) {
-        ResponseEntity<HashMap> getResult = testRestTemplate.getForEntity(url, HashMap.class);
+        ResponseEntity<HashMap> getResult = getRequest(url, HashMap.class);
         HashMap<String, String> getCastedResult = new HashMap<>();
         for (Object entry : getResult.getBody().entrySet()) {
             Map.Entry<String, Object> castEntry = (Map.Entry<String, Object>) entry;
@@ -116,7 +129,7 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
 
     @SneakyThrows
     protected void successfulGetList(List<Map<String, String>> expected, String url) {
-        ResponseEntity<String> getResult = testRestTemplate.getForEntity(url, String.class);
+        ResponseEntity<String> getResult = getRequest(url, String.class);
 
         System.out.println(getResult);
         assertThat(getResult.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -128,5 +141,72 @@ public abstract class BookingBlackBoxHelper extends BlackboxTestHelper {
 
         System.out.println(getCastedResult);
         assertThat(getCastedResult).isEqualTo(expected);
+    }
+
+
+    protected <T> ResponseEntity<T> getRequest(String url, Class<T> returnType) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                getAuthorizedUserHeaders(),
+                returnType);
+
+    }
+
+    protected ResponseEntity<String> patchRequest(String url, Object body) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.PATCH,
+                getAuthorizedAdminHeaders(body),
+                String.class);
+    }
+
+    protected ResponseEntity<String> postRequest(Object body) {
+        return testRestTemplate.exchange(
+                getUrl(),
+                HttpMethod.POST,
+                getAuthorizedAdminHeaders(body),
+                String.class);
+    }
+
+    protected ResponseEntity<String> deleteRequest(String url) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                getAuthorizedAdminHeaders(),
+                String.class);
+    }
+
+    protected <T> ResponseEntity<T> getRequest(String url, HttpEntity httpEntity, Class<T> returnType) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                httpEntity,
+                returnType);
+
+    }
+
+    protected ResponseEntity<String> patchRequest(String url, HttpEntity httpEntity) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.PATCH,
+                httpEntity,
+                String.class);
+    }
+
+    protected ResponseEntity<String> postRequest(HttpEntity httpEntity) {
+        return testRestTemplate.exchange(
+                getUrl(),
+                HttpMethod.POST,
+                httpEntity,
+                String.class);
+    }
+
+    protected ResponseEntity<String> deleteRequest(String url, HttpEntity httpEntity) {
+        return testRestTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                httpEntity,
+                String.class);
     }
 }
