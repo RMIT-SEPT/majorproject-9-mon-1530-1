@@ -78,6 +78,8 @@ const theme = {
 };
 
 function App() {
+  console.log('Environment', process.env.REACT_APP_ENVIRONMENT);
+
   return (
     <>
       <ThemeProvider theme={theme}>

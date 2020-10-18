@@ -25,17 +25,17 @@ public class PostBlackBoxTest extends UserBlackBoxHelper {
     @Test
     void existing() {
         Map<String, String> firstPostMap = successfulPost(randomEntityMap());
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), firstPostMap, String.class);
+        ResponseEntity<String> result = postRequest(firstPostMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(result.getBody()).isEqualTo("Cannot create entity because an entity with given identifier already exists");
+        assertThat(result.getBody()).isEqualTo("{\"message\":\"Cannot create entity because an entity with given identifier already exists\"}");
     }
 
     @Test
     void missingField() throws JsonProcessingException {
         Map<String, String> randomEntityMap = randomEntityMap();
         randomEntityMap.remove("userType");
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(result.getBody()).isEqualTo(new ObjectMapper().writeValueAsString(Arrays.asList(new ValidationError("userType", "must not be blank"))));
@@ -45,7 +45,7 @@ public class PostBlackBoxTest extends UserBlackBoxHelper {
     void incorrectFieldTypeList() {
         Map<String, Object> randomEntityMap = new HashMap<>(randomEntityMap());
         randomEntityMap.put("userType", Arrays.asList("an incorrect value"));
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -56,7 +56,7 @@ public class PostBlackBoxTest extends UserBlackBoxHelper {
         Map<String, String> incorrectField = new HashMap<>();
         incorrectField.put("incorrect", "field");
         randomEntityMap.put("userType", incorrectField);
-        ResponseEntity<String> result = testRestTemplate.postForEntity(getUrl(), randomEntityMap, String.class);
+        ResponseEntity<String> result = postRequest(randomEntityMap);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }

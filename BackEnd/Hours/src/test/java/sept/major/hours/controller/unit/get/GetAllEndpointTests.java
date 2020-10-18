@@ -9,10 +9,7 @@ import sept.major.common.response.ValidationError;
 import sept.major.hours.entity.HoursEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -38,7 +35,7 @@ public class GetAllEndpointTests extends GetEndpointUnitTestHelper {
     @Test
     @DisplayName("No record found")
     void missingResult() {
-        testWithUsernameFilters(new ResponseEntity("No records within provided bounds were found", HttpStatus.NOT_FOUND),
+        testWithUsernameFilters(new ResponseEntity(new AbstractMap.SimpleEntry<>("message", "No records within provided bounds were found"), HttpStatus.NOT_FOUND),
                 Arrays.asList());
     }
 

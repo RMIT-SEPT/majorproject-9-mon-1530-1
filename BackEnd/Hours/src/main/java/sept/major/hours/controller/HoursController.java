@@ -3,6 +3,8 @@ package sept.major.hours.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.common.exception.ValidationErrorException;
@@ -10,9 +12,11 @@ import sept.major.common.response.ValidationError;
 import sept.major.hours.entity.HoursEntity;
 import sept.major.hours.service.HoursService;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +40,42 @@ public class HoursController {
         this.hoursService = hoursService;
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getHoursServiceHealth() {
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "availability");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
+    }
+    
     @GetMapping("/range")
     public ResponseEntity getHoursInRange(@RequestParam(name = "startDateTime") String startDateString,
                                           @RequestParam(name = "endDateTime") String endDateString,
@@ -76,7 +116,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getHoursBetweenDates(startDate, endDate, workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
 
     }
@@ -96,7 +136,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getHoursInDate(LocalDate.parse(dateString), workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (DateTimeParseException e) {
             return new ResponseEntity(new ValidationError("date", INCORRECT_DATE_FORMAT_ERROR_MESSAGE), HttpStatus.BAD_REQUEST);
         } catch (ValidationErrorException e) {
@@ -119,7 +159,7 @@ public class HoursController {
             List<HoursEntity> hours = hoursService.getAllHours(workerUsername, creatorUsername);
             return new ResponseEntity(hours, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

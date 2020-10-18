@@ -1,42 +1,25 @@
 package sept.major.availability.entity;
 
 import lombok.*;
-import sept.major.common.entity.AbstractEntity;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ * Availability Entity encapsulates entity details and unlike most other entity classes, is not backed by a database table. This is because
+ * it doesn't need to persist data.
+ *
+ * @author Abrar
+ */
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "availability")
-public class AvailabilityEntity implements AbstractEntity<Integer> {
-
-    @Id
-    @Setter(onMethod = @__(@Id))
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AvailabilityEntity {
     private Integer hoursId;
-
-    @NotBlank
     private String workerUsername;
-
-    @NotBlank
-    private String customerUsername;
-
-    @NotNull
+    private String creatorUsername;
     private LocalDateTime startDateTime;
-
-    @NotNull
     private LocalDateTime endDateTime;
-
-    @Override
-    public Integer getID() {
-        return hoursId;
-    }
 }

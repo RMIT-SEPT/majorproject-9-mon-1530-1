@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { DashboardWrapper, MenuBarComponent } from './Dashboard';
 import { theme } from '../../App';
 
@@ -8,7 +9,11 @@ import { theme } from '../../App';
 // test failing
 
 const renderComponent = (component) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(
+    <Router>
+      <ThemeProvider theme={theme}>{component}</ThemeProvider>
+    </Router>
+  );
 };
 
 describe('Dashboard', () => {
@@ -47,8 +52,6 @@ describe('Dashboard', () => {
     });
 
     it('should display placeholder info when props not provided', () => {
-      // TODO: Handle or enforce passing of actions for navigation links
-
       const { getAllByText } = renderComponent(
         <DashboardWrapper actions={actions}></DashboardWrapper>
       );

@@ -1,15 +1,15 @@
 {
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
-	{
-       "name": "Hours",
-       "image": "762317197200.dkr.ecr.us-east-1.amazonaws.com/sept:Hours",
+   	{
+       "name": "Users",
+       "image": "973460626477.dkr.ecr.us-east-1.amazonaws.com/sept:Users",
    	   "memoryReservation": 128,
-       "memory": 256,
+   	   "memory": 256,
    	   "portMappings": [
         {
           "hostPort": 80,
-          "containerPort": 8082
+          "containerPort": 8083
         }
       ]
      }

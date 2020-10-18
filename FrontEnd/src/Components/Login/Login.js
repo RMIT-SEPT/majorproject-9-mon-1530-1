@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import auth from '../Auth/auth';
 import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 const axios = require('axios');
 
 const ColorButton = withStyles((theme) => ({
@@ -128,33 +129,39 @@ const Left = styled.div`
 // this is a login page, a user can log in
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
-export const Login = (props) => {
+const Login = (props) => {
   const { register, handleSubmit, errors, reset } = useForm();
   const [loginerror, setLoginerror] = useState('');
   let history = useHistory();
-
-  // every time a user goes to login page it resets
-  // useEffect(() => {
-  //   auth.logout(()=>{
-
-  //   });
-  // }, [])
-
   const onSubmit = (values) => {
     axios
-      .get(
-        `http://localhost:8083/users/password/compare?username=${values.username}&password=${values.password}`
+      .put(
+        `${process.env.REACT_APP_USERS_ENDPOINT}/users/token/?username=${values.username}&password=${values.password}`
       )
       .then(function (response) {
-        console.log(response.data);
-        let r = response.data;
-        console.log(JSON.parse(response.data));
-        if (r.result === 'true') {
+        console.log('response.data');
+        console.log(response.data.user.userType);
+
+        let r = response.status;
+        if (r === 200) {
+          const data = response.data;
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', response.data.user.userType);
+
+          console.log(`token: ${data.token}`);
           //setLocalStorage to user data
           localStorage.setItem('username', values.username);
+          console.log(localStorage.getItem('username'));
+          console.log(values);
           auth.login(() => {
             //check standard user and then transfer to admin panel
-            history.push('/about');
+            setLoginerror('sucess');
+            window.location.reload();
+            if (localStorage.getItem('role') === 'admin') {
+              history.push('/admin');
+            } else {
+              history.push('/user');
+            }
           });
         } else {
           setLoginerror('The username or password is incorrect.');
@@ -165,94 +172,109 @@ export const Login = (props) => {
         console.log(error);
       });
   };
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container alignItems="center" justify="center" spacing={0}>
-        <Grid item xs={7}>
-          {/* the logo and the img on the left  */}
-          <Left>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="center"
-            >
-              <Grid item xs={12}>
-                <a href="http://localhost:3000/">
-                  {' '}
-                  <Logo src={logo} alt="logo" />{' '}
-                </a>
+  const isLoggedIn = localStorage.getItem('isAuth');
+  if (isLoggedIn) {
+    if (localStorage.getItem('role') === 'Admin') {
+      return <Redirect to="/admin" />;
+    } else {
+      return <Redirect to="/user" />;
+    }
+  } else {
+    return (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container alignItems="center" justify="center" spacing={0}>
+          <Grid item xs={7}>
+            {/* the logo and the img on the left  */}
+            <Left>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="center"
+              >
                 <Grid item xs={12}>
-                  <Construction src={construction} alt="contact" />
+                  <a href="/">
+                    {' '}
+                    <Logo src={logo} alt="logo" />{' '}
+                  </a>
+                  <Grid item xs={12}>
+                    <Construction src={construction} alt="contact" />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          </Left>
-        </Grid>
+            </Left>
+          </Grid>
 
-        <Grid item xs={5}>
-          <Right>
-            {/* link to sign up  */}
-            <TopRight>
-              Not a member? <a href="http://localhost:3000/form">Sign up</a>{' '}
-            </TopRight>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Bold> Log In to Agem </Bold>
+          <Grid item xs={5}>
+            <Right>
+              {/* link to sign up  */}
+              <TopRight>
+                Not a member? <a href="/form">Sign up</a>{' '}
+              </TopRight>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Bold> Log In to Agem </Bold>
+                </Grid>
+                <Grid item xs={12}>
+                  <Heading>User Name </Heading>
+                  <CssTextFieldGreen
+                    required
+                    name="username"
+                    inputRef={register({
+                      required: 'username is Required',
+                    })}
+                    id="outlined-full-width"
+                    data-testid="username-field"
+                    style={{ margin: 8 }}
+                    helperText="Full width!"
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                  />
+                  {errors.username && <span>username is Required</span>}
+                </Grid>
+                <Grid item xs={12}>
+                  <Heading>Password</Heading>
+                  <CssTextField
+                    required
+                    type="password"
+                    name="password"
+                    inputRef={register({
+                      required: 'password is Required',
+                    })}
+                    data-testid="password-field"
+                    id="outlined-full-width"
+                    style={{ margin: 8 }}
+                    helperText="Full width!"
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                  />
+                  {errors.password && <span>password is Required</span>}
+                </Grid>
+                {/* submit button */}
+                <Grid item xs={12}>
+                  {loginerror}
+                  <ColorButton
+                    type="submit"
+                    variant="contained"
+                    color="default"
+                  >
+                    {' '}
+                    Submit
+                  </ColorButton>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Heading>User Name </Heading>
-                <CssTextFieldGreen
-                  required
-                  name="username"
-                  inputRef={register({
-                    required: 'username is Required',
-                  })}
-                  id="outlined-full-width"
-                  data-testid="username-field"
-                  style={{ margin: 8 }}
-                  helperText="Full width!"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                  variant="outlined"
-                />
-                {errors.username && <span>username is Required</span>}
-              </Grid>
-              <Grid item xs={12}>
-                <Heading>Password</Heading>
-                <CssTextField
-                  required
-                  type="password"
-                  name="password"
-                  inputRef={register({
-                    required: 'password is Required',
-                  })}
-                  data-testid="password-field"
-                  id="outlined-full-width"
-                  style={{ margin: 8 }}
-                  helperText="Full width!"
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                  variant="outlined"
-                />
-                {errors.password && <span>password is Required</span>}
-              </Grid>
-              {/* submit button */}
-              <Grid item xs={12}>
-                {loginerror}
-                <ColorButton type="submit" variant="contained" color="default">
-                  {' '}
-                  Submit
-                </ColorButton>
-              </Grid>
-            </Grid>
-          </Right>
+            </Right>
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
-  );
+      </form>
+    );
+  }
 };
-
+Login.defaultProps = {
+  id: localStorage.getItem('username'),
+};
 export default Login;

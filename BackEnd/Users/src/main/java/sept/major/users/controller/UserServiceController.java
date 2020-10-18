@@ -1,15 +1,18 @@
 package sept.major.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import sept.major.common.exception.RecordNotFoundException;
 import sept.major.users.entity.UserEntity;
 import sept.major.users.service.UserService;
 
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -25,7 +28,7 @@ public class UserServiceController {
         this.userControllerHelper = userControllerHelper;
     }
 
-    @GetMapping()
+    @GetMapping("/username")
     public ResponseEntity getUser(@RequestParam String username) {
         return userControllerHelper.getEntity(username, String.class);
     }
@@ -45,17 +48,53 @@ public class UserServiceController {
         return userControllerHelper.validateInputAndPatch(UserEntity.class, username, String.class, requestBody);
     }
 
+    /**
+     * @return simple "ok" response to allow health check of the service to pass
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Object> getUserServiceHealth() {
+    	MultiValueMap<String, String> s= new LinkedMultiValueMap<String, String>();
+    	
+    	s.add("Service:", "users");
+    	
+    	try {
+    		s.add("availableProcessors:", "" + Runtime.getRuntime().availableProcessors());
+		} catch (Exception e) {
+			s.add("Getting processor details excption:", e.getMessage());
+		}
+		
+    	try {
+			s.add("totalMemory:", "" + Runtime.getRuntime().totalMemory());
+			s.add("freeMemory", "" + Runtime.getRuntime().freeMemory());
+			s.add("maxMemory:", "" + Runtime.getRuntime().maxMemory());
+
+		} catch (Exception e) {
+			s.add("Getting memory details excption:", e.getMessage());
+		}
+
+    	try {
+			File diskPartition = new File("/");
+			s.add("getTotalSpace:", "" + diskPartition.getTotalSpace());
+			s.add("getFreeSpace:", "" + diskPartition.getFreeSpace());
+			s.add("getUsableSpace:", "" + diskPartition.getUsableSpace());
+    	} catch (Exception e) {
+    		s.add("Getting disk details excption:", e.getMessage());
+    	}
+    	
+    	return new ResponseEntity<Object>(""+s, HttpStatus.OK);
+    }
+    
     @GetMapping("/bulk")
     public ResponseEntity<List<UserEntity>> getBulkUsers(@RequestParam(required = false) String userType) {
         try {
             List<UserEntity> entityList = userService.readBulkUsers(userType);
             return new ResponseEntity(entityList, HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new AbstractMap.SimpleEntry<>("message", e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
-    
+
     /**
      * Endpoint for changing user password
      * @param username
@@ -65,29 +104,38 @@ public class UserServiceController {
      */
     @PatchMapping("/password") //TODO change to put
 	public ResponseEntity updatePassword(@RequestParam String username, String oldPassword, String newPassword) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("username", username);
+        response.put("oldPassword", oldPassword);
 		try {
 			userService.updatePassword(username, oldPassword, newPassword);
-			return new ResponseEntity("place holder message: password updated" + " username:" + username
-                    + " oldPassword:" + oldPassword, HttpStatus.OK);
+            response.put("status", "successful");
+            return new ResponseEntity(response, HttpStatus.OK);
 		} catch (RuntimeException e) {
-			return new ResponseEntity("place holder message: provided input is incorrect" + " username:" + username
-					+ " oldPassword:" + oldPassword, HttpStatus.NOT_FOUND);
+            response.put("status", "failed");
+            return new ResponseEntity(response, HttpStatus.NOT_FOUND);
 		}
-	
-	}
-	
 
-    /**
-     * Endpoint to receive user password compare calls
-     * @param username
-     * @param password
-     * @return
-     */
-    @GetMapping("/password/compare") //TODO change to put
-    public ResponseEntity comparePassword(@RequestParam String username , String password) {
-    	System.out.println("username:"+ username + " password:" + password);
-    	boolean result = userService.comparePassword(username,password);
+    }
 
-        return new ResponseEntity("input," + "username:" + username + " password:" + password + ", password compare:" + result, HttpStatus.OK);
+
+    @PutMapping("/token")
+    public ResponseEntity<Map> getToken(@RequestParam String username, String password) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("username", username);
+        Pair<Optional<String>, Optional<UserEntity>> loginResult = userService.login(username, password);
+        if (loginResult.getFirst().isPresent()) {
+            response.put("status", "successful");
+            response.put("token", loginResult.getFirst().get());
+            if (loginResult.getSecond().isPresent()) {
+                response.put("user", loginResult.getSecond().get());
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            response.put("status", "failed");
+            response.put("token", null);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 }

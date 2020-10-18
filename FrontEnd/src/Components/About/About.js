@@ -36,6 +36,26 @@ const MainWrapper = styled.div`
   flex-grow: 1;
   color: white;
 `;
+const BigFont = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 70px;
+  line-height: 95px;
+  letter-spacing: -0.05em;
+  color: white;
+  margin: 1%;
+  margin-left: 5%;
+`;
+const SmallerFont = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 35px;
+  letter-spacing: -0.05em;
+  color: white;
+  margin: 1%;
+  margin-left: 5%;
+`;
 //this is the about us  page, it contains a tool bar
 // items are allocated evenly using a Grid function in material ui library
 // we use normal routing in order to move between pages
@@ -57,18 +77,24 @@ const about = (props) => {
           <Toolbar />
         </Grid>
         <Grid item xs={5}>
-          <Bold>
-            {'Agem helps your find you best \nLocal services such as\n'}
-            {/* moving words in loop */}
+          <BigFont>Find Best Sevices </BigFont>
+          <BigFont>Near You</BigFont>
+          <SmallerFont>
+            {' '}
+            All of our services are done by licenced experts in their fields.
+          </SmallerFont>
+          <SmallerFont>
+            {' '}
+            Our services{' '}
             <TextLoop interval={350}>
-              <span>Barbers </span>
-              <span>Nail technicians</span>
-              <span>Dentists</span>
-              <span>Gyms</span>
-              <span>Fitness Coaches</span>
+              <span> Barbers </span>
+              <span> Nail technicians </span>
+              <span> Dentists </span>
+              <span> Gyms </span>
+              <span> Fitness Coaches </span>
             </TextLoop>{' '}
             And Much more .
-          </Bold>
+          </SmallerFont>
         </Grid>
         <Grid item xs={5} justify="flex-end">
           {/*this is the img of the gym*/}
@@ -78,17 +104,7 @@ const about = (props) => {
           <Doc src={doctor} alt="doctor" />
         </Grid>
         <Grid item xs={6}>
-          <Bold>
-            {'Agem helps your find you best \nLocal services such as\n'}
-            <TextLoop interval={350}>
-              <span>Barbers </span>
-              <span>Nail technicians</span>
-              <span>Dentists</span>
-              <span>Gyms</span>
-              <span>Fitness Coaches</span>
-            </TextLoop>{' '}
-            And Much more .
-          </Bold>
+          <Bold>Signup or login to discover more services</Bold>
         </Grid>
       </Grid>
     </MainWrapper>
